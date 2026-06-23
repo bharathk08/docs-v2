@@ -1,0 +1,50 @@
+---
+title: "Create Elements Manually"
+description: "Element path plays an important role in dynamic websites. Learn how to create elements manually for a Mobile Web Application project in Testsigma."
+sidebar:
+  order: 6.62
+---
+
+---
+
+
+In dynamic websites, elements can have varying attributes/properties across sessions. In such cases, we need to create elements manually. This article discusses how to create elements manually with simple steps for a mobile web application.
+
+
+---
+
+
+> <p id="prerequisites">Prerequisites</p>
+>
+>
+> Before you begin, ensure that:
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - You have a mobile web application that is available for testing.
+
+---
+
+## **Steps to Create an Element**
+
+1. From the left navigation bar, navigate to **Create Tests > Elements**.
+![Elements](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_mmw_1.png)
+
+
+2. Click  **Create Element**.
+![Create](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_mmw_2.png)
+
+
+3. In the **Create Element** Overlay, enter all the details:
+![Overlay](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_mmw_3.png)
+    - **Name:** Enter the name you want to give your element.
+    - **Screen Name:** Mention the screen that your element resides on.
+    - **Element Type:** There are 5 types of element types supported in Testsigma. This field is a drop-down list; you can select any of them: **XPATH**, **ID**, **Name**, **Class Name**, or **Accessibility ID**.
+    - **Enter Value:** Enter the value corresponding to the **Element Type** you selected.
+
+
+4. Click **Create Element**. 
+![Create Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_mmw_4.png)
+
+
+5. The element will be saved in the elements list. 
+
+---

@@ -1,0 +1,516 @@
+---
+import '@astrojs/starlight/style/markdown.css';
+/**
+ * API Reference page layout — two-column: description+params left, code panel right.
+ * Used automatically for any page that has `api:` in its frontmatter.
+ * Falls back to normal markdown rendering for non-API pages.
+ */
+const { entry } = Astro.locals.starlightRoute;
+const api = (entry.data as any).api as {
+  method: string; path: string; baseUrl: string;
+  pathParams: { name: string; desc: string }[];
+  query: { name: string; desc: string }[];
+  bodyFields: { name: string; desc: string }[];
+  requestBody?: Record<string, unknown> | unknown[];
+  formData?: Record<string, unknown>;
+  response: unknown;
+  status: number; statusText: string;
+  responseAttributes: { name: string; desc: string }[];
+} | undefined;
+
+if (!api) {
+  // non-API page — render markdown body normally
+}
+
+const METHOD_COLOR: Record<string, string> = {
+  GET: '#00a96e', POST: '#e67e22', PUT: '#2980b9',
+  PATCH: '#8e44ad', DELETE: '#e74c3c',
+};
+const color = api ? (METHOD_COLOR[api.method] ?? '#444') : '';
+const fullUrl = api ? api.baseUrl + api.path : '';
+
+// A form-data value of the form "@filename" denotes a file field.
+const isFile = (v: unknown): v is string => typeof v === 'string' && v.startsWith('@');
+
+function buildCurl(method: string, url: string, body?: Record<string, unknown> | unknown[], form?: Record<string, unknown>): string {
+  // Multipart/form-data: one `-F` per field; curl sets the Content-Type + boundary.
+  if (form) {
+    const fields = Object.entries(form)
+      .map(([k, v]) => `  -F '${k}=${v}'`)
+      .join(' \\\n');
+    return `curl -X ${method} \\\n  '${url}' \\\n  -H 'Authorization: Bearer <API_KEY>' \\\n${fields}`;
+  }
+  let s = `curl -X ${method} \\\n  '${url}' \\\n  -H 'Authorization: Bearer <API_KEY>' \\\n  -H 'Content-Type: application/json'`;
+  if (body) s += ` \\\n  -d '${JSON.stringify(body, null, 2).replace(/\n/g, '\n  ')}'`;
+  return s;
+}
+
+function buildJs(method: string, url: string, body?: Record<string, unknown> | unknown[], form?: Record<string, unknown>): string {
+  if (form) {
+    const appends = Object.entries(form)
+      .map(([k, v]) => isFile(v)
+        ? `form.append('${k}', fileInput.files[0]);`
+        : `form.append('${k}', '${v}');`)
+      .join('\n');
+    return `const form = new FormData();\n${appends}\n\nconst response = await fetch('${url}', {\n  method: '${method}',\n  headers: { 'Authorization': 'Bearer <API_KEY>' },\n  body: form\n});\nconst data = await response.json();`;
+  }
+  let opts = `  method: '${method}',\n  headers: {\n    'Authorization': 'Bearer <API_KEY>',\n    'Content-Type': 'application/json'\n  }`;
+  if (body) opts += `,\n  body: JSON.stringify(${JSON.stringify(body, null, 4).split('\n').join('\n  ')})`;
+  return `const response = await fetch('${url}', {\n${opts}\n});\nconst data = await response.json();`;
+}
+
+function buildPython(method: string, url: string, body?: Record<string, unknown> | unknown[], form?: Record<string, unknown>): string {
+  const m = method.toLowerCase();
+  if (form) {
+    const data = Object.entries(form).filter(([, v]) => !isFile(v));
+    const files = Object.entries(form).filter(([, v]) => isFile(v));
+    const dataStr = data.length
+      ? `,\n  data={\n${data.map(([k, v]) => `    '${k}': '${v}'`).join(',\n')}\n  }`
+      : '';
+    const filesStr = files.length
+      ? `,\n  files={\n${files.map(([k, v]) => `    '${k}': open('${String(v).slice(1)}', 'rb')`).join(',\n')}\n  }`
+      : '';
+    return `import requests\n\nresponse = requests.${m}(\n  '${url}',\n  headers={ 'Authorization': 'Bearer <API_KEY>' }${dataStr}${filesStr}\n)\ndata = response.json()`;
+  }
+  let s = `import requests\n\nresponse = requests.${m}(\n  '${url}',\n  headers={\n    'Authorization': 'Bearer <API_KEY>',\n    'Content-Type': 'application/json'\n  }`;
+  if (body) s += `,\n  json=${JSON.stringify(body, null, 4).split('\n').join('\n  ')}`;
+  s += `\n)\ndata = response.json()`;
+  return s;
+}
+
+const curlCode   = api ? buildCurl(api.method, fullUrl, api.requestBody, api.formData) : '';
+const jsCode     = api ? buildJs(api.method, fullUrl, api.requestBody, api.formData) : '';
+const pythonCode = api ? buildPython(api.method, fullUrl, api.requestBody, api.formData) : '';
+const responseJson = api ? JSON.stringify(api.response, null, 2) : '';
+const statusColor = api && api.status < 300 ? '#00a96e' : '#e74c3c';
+---
+
+{api ? (
+  <div class="ts-api-page">
+
+    {/* ── Left column ── */}
+    <div class="ts-api-left">
+      <h1 class="ts-api-title">{entry.data.title}</h1>
+
+      <div class="ts-api-endpoint-row">
+        <span class="ts-method-badge" style={`background:${color}`}>{api.method}</span>
+        <code class="ts-endpoint-path">{api.path}</code>
+      </div>
+      <p class="ts-api-base-url">
+        Base URL&nbsp;
+        <code class="ts-base-url-code">{api.baseUrl}</code>
+      </p>
+
+      {entry.data.description && (
+        <p class="ts-api-description">{entry.data.description}</p>
+      )}
+
+      <div class="ts-api-auth-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span>
+          Authenticate with your API key as a <code>Bearer</code> token in the
+          <code>Authorization</code> header.{' '}
+          <a href="/docs/suite/configuration/api-keys/" class="ts-api-auth-link">Generate a key →</a>
+        </span>
+      </div>
+
+      {api.pathParams.length > 0 && (
+        <div class="ts-api-params-block">
+          <p class="ts-api-section-label">PATH PARAMETERS</p>
+          <table class="ts-api-params-table">
+            <tbody>
+              {api.pathParams.map(p => (
+                <tr>
+                  <td class="ts-param-name"><code>{p.name}</code></td>
+                  <td class="ts-param-desc">{p.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {api.query.length > 0 && (
+        <div class="ts-api-params-block">
+          <p class="ts-api-section-label">QUERY PARAMETERS</p>
+          <table class="ts-api-params-table">
+            <tbody>
+              {api.query.map(p => (
+                <tr>
+                  <td class="ts-param-name"><code>{p.name}</code></td>
+                  <td class="ts-param-desc">{p.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {api.bodyFields.length > 0 && (
+        <div class="ts-api-params-block">
+          <p class="ts-api-section-label">REQUEST BODY</p>
+          <table class="ts-api-params-table">
+            <tbody>
+              {api.bodyFields.map(p => (
+                <tr>
+                  <td class="ts-param-name"><code>{p.name}</code></td>
+                  <td class="ts-param-desc">{p.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {api.responseAttributes.length > 0 && (
+        <div class="ts-api-params-block">
+          <p class="ts-api-section-label">RESPONSE ATTRIBUTES</p>
+          <table class="ts-api-params-table">
+            <tbody>
+              {api.responseAttributes.map(p => (
+                <tr>
+                  <td class="ts-param-name"><code>{p.name}</code></td>
+                  <td class="ts-param-desc">{p.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+
+    {/* ── Right column (code panels) ── */}
+    <div class="ts-api-right">
+      <div class="ts-code-panel">
+        <div class="ts-code-panel-header">
+          <span class="ts-panel-label">REQUEST</span>
+          <div class="ts-tab-group" role="tablist">
+            <button class="ts-tab-btn ts-tab-btn--active" data-tab="curl" role="tab">cURL</button>
+            <button class="ts-tab-btn" data-tab="js" role="tab">JavaScript</button>
+            <button class="ts-tab-btn" data-tab="python" role="tab">Python</button>
+          </div>
+        </div>
+        <div class="ts-code-body">
+          <pre class="ts-code-pre" data-lang="curl"><code>{curlCode}</code></pre>
+          <pre class="ts-code-pre ts-hidden" data-lang="js"><code>{jsCode}</code></pre>
+          <pre class="ts-code-pre ts-hidden" data-lang="python"><code>{pythonCode}</code></pre>
+          <button class="ts-copy-btn" data-copy-target="request" aria-label="Copy code">Copy</button>
+        </div>
+      </div>
+
+      <div class="ts-response-panel">
+        <div class="ts-code-panel-header">
+          <span class="ts-panel-label">RESPONSE</span>
+          <span class="ts-status-badge" style={`color:${statusColor}`}>
+            <span class="ts-status-dot" style={`background:${statusColor}`}></span>
+            {api.status} {api.statusText}
+          </span>
+        </div>
+        <div class="ts-code-body">
+          <pre class="ts-code-pre ts-response-pre"><code>{responseJson}</code></pre>
+          <button class="ts-copy-btn" data-copy-target="response" aria-label="Copy response">Copy</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+) : (
+  <div class="sl-markdown-content"><slot /></div>
+)}
+
+<script>
+  // Tab switching
+  document.querySelectorAll<HTMLElement>('.ts-code-panel').forEach(panel => {
+    const btns = panel.querySelectorAll<HTMLButtonElement>('.ts-tab-btn');
+    const pres = panel.querySelectorAll<HTMLElement>('.ts-code-pre');
+
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('ts-tab-btn--active'));
+        btn.classList.add('ts-tab-btn--active');
+        const lang = btn.dataset.tab!;
+        pres.forEach(pre => {
+          pre.classList.toggle('ts-hidden', pre.dataset.lang !== lang);
+        });
+      });
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll<HTMLButtonElement>('.ts-copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panel = btn.closest('.ts-code-body');
+      const pre = panel?.querySelector<HTMLElement>('.ts-code-pre:not(.ts-hidden)');
+      const text = pre?.textContent ?? '';
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1800);
+      });
+    });
+  });
+</script>
+
+<style>
+  /* ── Two-column page wrapper ── */
+  .ts-api-page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+    gap: 48px;
+    align-items: start;
+    max-width: 100%;
+    padding: 32px 0 64px;
+  }
+
+  @media (max-width: 72rem) {
+    .ts-api-page { grid-template-columns: 1fr; }
+    .ts-api-right { position: static; }
+  }
+
+  /* ── Left column ── */
+  .ts-api-left { min-width: 0; }
+
+  .ts-api-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ts-text-primary);
+    margin: 0 0 20px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    border: none !important;
+  }
+
+  .ts-api-endpoint-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .ts-method-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+    border-radius: 5px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+  }
+
+  .ts-endpoint-path {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ts-text-primary);
+    background: transparent;
+    padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .ts-api-base-url {
+    font-size: 12px;
+    color: var(--ts-text-tertiary);
+    margin: 0 0 20px;
+  }
+  .ts-base-url-code {
+    color: var(--ts-text-secondary);
+    font-size: 12px;
+    background: transparent;
+    padding: 0;
+  }
+
+  .ts-api-description {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ts-text-secondary);
+    margin: 0 0 24px;
+  }
+
+  .ts-api-auth-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--ts-hover-row);
+    border: 1px solid var(--ts-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--ts-text-secondary);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .ts-api-auth-note svg { flex-shrink: 0; margin-top: 1px; }
+  .ts-api-auth-note code {
+    background: rgba(0,0,0,.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .ts-api-auth-link {
+    color: var(--ts-accent-text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .ts-api-auth-link:hover { text-decoration: underline; }
+
+  /* ── Param tables ── */
+  .ts-api-params-block { margin-bottom: 28px; }
+
+  .ts-api-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ts-text-tertiary);
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+
+  .ts-api-params-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .ts-api-params-table tr {
+    border-top: 1px solid var(--ts-border);
+  }
+  .ts-api-params-table tr:last-child {
+    border-bottom: 1px solid var(--ts-border);
+  }
+  .ts-param-name {
+    padding: 12px 16px 12px 0;
+    vertical-align: top;
+    width: 38%;
+    white-space: nowrap;
+  }
+  .ts-param-name code {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ts-text-primary);
+    background: transparent;
+    padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  .ts-param-desc {
+    padding: 12px 0;
+    color: var(--ts-text-secondary);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+
+  /* ── Right column ── */
+  .ts-api-right {
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── Code panels (shared) ── */
+  .ts-code-panel,
+  .ts-response-panel {
+    background: #1e2330;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .ts-code-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .ts-panel-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,.4);
+    text-transform: uppercase;
+  }
+
+  .ts-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ts-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  /* Tabs */
+  .ts-tab-group {
+    display: flex;
+    gap: 4px;
+  }
+  .ts-tab-btn {
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,.5);
+    cursor: pointer;
+    transition: background .12s, color .12s;
+    font-family: var(--sl-font);
+  }
+  .ts-tab-btn:hover { color: rgba(255,255,255,.8); }
+  .ts-tab-btn--active {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+  }
+
+  /* Code body */
+  .ts-code-body { position: relative; }
+
+  .ts-code-pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    background: transparent;
+    border: none;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #cdd6f4;
+    font-family: 'IBM Plex Mono', 'Fira Code', monospace;
+    white-space: pre;
+    border-radius: 0;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+  .ts-response-pre { max-height: 400px; }
+
+  .ts-hidden { display: none !important; }
+
+  .ts-copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.6);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--sl-font);
+    transition: background .12s, color .12s;
+  }
+  .ts-copy-btn:hover {
+    background: rgba(255,255,255,.16);
+    color: #fff;
+  }
+</style>

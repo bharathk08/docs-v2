@@ -1,0 +1,49 @@
+---
+title: "Bulk Actions"
+description: "This article discusses bulk actions you can perform on recorded test steps in Testsigma’s test recorder UI for an android, iOS or a web project"
+sidebar:
+  order: 4.424
+---
+
+---
+
+When test steps are recorded using test recorder, Testsigma gives you the option to select multiple test steps at a time and then perform bulk actions on your selection. In this document, we will discuss bulk actions and how to perform them.
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that:
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - You have installed the Testsigma's test step recorder. For more information on installing Testsigma's test step recorder, refer to the [documentation on installing Testsigma's step test recorder](https://testsigma.com/docs/test-step-recorder/install-chrome-extension/).
+> - You have referred to the [documentation on creating a test case](https://testsigma.com/docs/test-cases/manage/add-edit-delete/).
+
+---
+
+## **Bulk Actions on Test Steps**
+
+Once the steps are recorded, click the **checkboxes** next to each test step to select the **steps** you want to include in the **bulk action**.
+
+![Check Steps](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/BulkActionsOnTestSteps.png)
+
+You can perform following actions on selected test steps:
+
+- **Update Settings**: You can use this option to update settings for the selected test steps all at once.
+      
+    ![Update Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/BulkUpdate_Settings.png)
+
+- **Create Block**: Use this option to create a block from the selected test steps. This will help you manage and structure your test cases.
+
+    ![Create Block](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/CreateBlock_BulkActions.png)
+
+- **Create Step Group**: Use this option to create a step group from the selected test steps. This will help you manage and structure your test cases.
+    
+    ![Create Step Group](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/StepGroup_BulkAction.png)
+
+
+- **Delete**: You can delete the selected test steps in bulk if they are no longer needed.
+
+    ![Delete Selected](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Delete_BulkAction.png) 
+
+---

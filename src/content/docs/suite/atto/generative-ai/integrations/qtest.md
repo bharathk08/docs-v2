@@ -1,0 +1,42 @@
+---
+title: "Integrating qTest with Testsigma"
+description: "qTest is a Test Management tool that gives the structure to organize, plan, and report the progress of testing. Learn how to integrate qTest with Testsigma Application"
+sidebar:
+  order: 4.7445
+---
+
+---
+
+With qTest integrated into Testsigma, you can generate test cases by selecting structured test modules and cases from qTest. Testsigma’s Generative AI creates executable tests, ensuring faster automation.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> - Before you begin, ensure you have a valid **Host URL** and **Bearer Token** from qTest.
+
+---
+
+## **Steps to Integrate Testsigma with qTest**
+
+1. From the left navigation bar, go to **Settings > Integrations**.
+   ![Integrations](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/TestRail_Navigation.png)
+
+2. Enable toggle on **qTest** widget.
+   ![qTest Widget](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/qTest_Widget.png)
+
+3. On the **qTest Details** dialog, enter **Host URL** and **Bearer Token**.
+   ![qTest Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/qTest_Details.png)
+
+4. Click **Save & Enable**.
+   ![Save qTest Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/qTest_Details_Save.png)
+
+:::note[NOTE]
+1.  You must obtain the **Bearer Token** from the **Download qTest Resources** page. *For more information on downloading the qTest resources, refer to the <a href="https://documentation.tricentis.com/qtest/od/en/content/overview/download_qtest_resources_page.htm" rel="nofollow">documentation on donwloading the qTest resources</a>.*
+![Bearer Token](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/qTest_BearerToken.png)
+2. Please copy the token except **Bearer**. 
+:::
+
+
+---
+

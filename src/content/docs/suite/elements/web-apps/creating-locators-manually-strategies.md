@@ -1,0 +1,83 @@
+---
+title: "Strategies for Formulating Elements"
+description: "Learn how to find and create locators for the Elements using single attributes, text, or Xpath and CSS Selectors in Testsigma Application"
+sidebar:
+  order: 6.26
+---
+
+---
+
+For this guide, it would be recommended to get familiar with the Chrome Developer Tools and Elements Panel for finding the Elements and their attributes. For more information on getting started with viewing and changing the DOM, refer to the <a href="https://developer.chrome.com/docs/devtools/dom/" rel="nofollow">documentation on getting started with viewing and changing the DOM</a>.
+
+
+Elements can be created from the attributes/properties of an HTML Element, using:
+1. Attributes of the element like id, name, placeholder
+2. Link Text and partial link text of the element
+3. XPaths/ CSS Selectors
+
+<br>
+
+---
+
+## **1. Using Unique Single Element Attributes**
+
+You can use any of the element attributes such as ID, Name, Class Name, etc if their value is unique. ID locator is the most preferred and recommended single attribute.
+
+Check the below section “Get Locators value manually using Chrome Developer Tools” to learn how to use Chrome Developer Tools to get the attribute value.
+
+
+---
+
+## **2. Using Link Text and Partial Link Text**
+
+You can use the visible text(fully or partially) on a link(anchor tag) for formulating Elements.
+
+Check the below section “Get Locators value manually using Chrome Developer Tools” to learn how to use Chrome Developer Tools to get the link text.
+
+
+
+---
+
+## **3. Using XPath/CSS Selectors**
+
+You can generate XPath/ CSS Selectors for elements using Chrome Developer tools if you are familiar with XPath/CSS Selector creation.
+
+Check the below section “Get Locators value manually using Chrome Developer Tools” to learn how to use Chrome Developer Tools to get the XPath or CSS Selector.
+
+
+---
+
+## **Get Locators value manually using Chrome Developer Tools**
+
+For demonstration, we will take the example of a simple Login button on the <a href="http://opensource.demo.orangehrmlive.com/" rel="nofollow">OrangeHRM Login page</a>. We will try to get the Attribute values for the Login button below:
+
+1. Navigate to the page in your Google Chrome Browser.
+2. Right-click on the element you want to get locator for and select Inspect Element from the popup menu. In this case, it is the Login button on the OrangeHRM login page.
+
+The **Elements** panel of Google Chrome Developer Tools will open up on the right or bottom of your web browser window and your clicked element will be highlighted in blue.
+
+3. Check the highlighted text in the Elements panel. That is the HTML code for the selected Element.
+
+The general format of HTML code for a HTML Page Element is:<br>
+
+< tag_ name attribute1_ name = "attribute1_ value" attribute2_ name="attribute2_ value" attribute3_ name="attribute3_ value" > value </ tag_name>
+
+This is the code for the LOGIN button on above OrangeHRM Web page.<br>
+< input type = "submit" name="Submit" class="button" id="btnLogin" value="LOGIN">
+
+---
+
+## **Finding Element attributes and their values**
+
+In this case, the tag name is ‘input’. Attribute names are ‘type’, ‘name’, ‘class’, ‘id’, and ‘value’ and their respective values are the strings in quotes following their name and equal sign. For example, the value of the ‘name’ attribute is ‘Submit’. Similarly, you can find the attribute values for ID, Class, etc
+
+
+---
+
+## **Find XPath or CSS Locator**
+
+In the Elements panel, right-click on the highlighted element, hover over the Copy option, and select ‘Copy XPath’ or ‘Copy Selector’ from the popup menu.
+
+Your Xpath or CSS Locator will be copied to the clipboard.
+
+---

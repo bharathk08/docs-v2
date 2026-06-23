@@ -1,0 +1,46 @@
+---
+title: "Bug Reporter Agent in Testsigma"
+description: "The Bug Reporter Agent in Testsigma streamlines bug reporting by allowing users to log bugs directly from the Analyzer Agent panel | Learn about Bug Reporter in Testsigma"
+sidebar:
+  order: 4.816
+---
+
+---
+
+The Bug Reporter Agent in Testsigma streamlines bug reporting by allowing users to log bugs directly from the Analyzer Agent panel. It automatically captures necessary data like error type, root cause, recommended fixes, and visual evidence and attaches them to a new bug report. This eliminates manual effort in reproducing failures and enhances collaboration between QA and development teams by ensuring each issue is logged with complete and actionable context. This article discusses the Bug Reporter Agent in Testsigma. 
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> - Before you begin, ensure the Analyzer Agent has reviewed at least one failed test step and a bug tracking tool is integrated with Testsigma.
+
+---
+
+## **Steps to Report a Bug**
+
+1. From the left navigation bar, go to **Run Results**.
+   ![Run Results](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_3.png)
+
+2. Open the test plan that contains failed test cases.
+
+3. Select a test case with a failed step and click the step to open its details.
+
+4. In the **Step Details** panel, click **Analyze with Agent**, and wait for the analysis to complete.
+   ![Analyze with Agent](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_4.png)
+
+5. In the **Analyzer Agent** overlay, click **Report Bug**.
+   ![Report Bug](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_5.png)
+
+6. On the **QA Agent** overlay, select a bug tracking tool.
+   ![Select Tool](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_6.png)
+
+7. Select **Project**, **Group**, **Person**, and **Status**. Update the title if needed, and review the **Description**.
+   ![Project](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_1.png)
+   
+8. Click **Report Bug**. 
+   ![Report Bug](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_2.png)
+
+9.  The issue will be created in Jira with all the details.
+
+---

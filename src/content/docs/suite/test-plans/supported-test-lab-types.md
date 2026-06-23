@@ -1,0 +1,77 @@
+---
+title: "Test Lab Types"
+description: "Execute your tests on different Test Lab Types with Testsigma application. Choose from Testsigma Labs, Local Devices, BrowserStack, Sauce Labs, and more."
+sidebar:
+  order: 8.29
+---
+
+---
+
+Testsigma platform allows you to execute your tests using different Test Lab Types such as:
+
+1. Testsigma Labs
+   
+2. Local Devices
+
+3. BrowserStack
+   
+4. Sauce Labs
+   
+5. Kobiton Test Lab
+   
+6. TestMU
+   
+7. Private Grid
+
+Let’s learn more about these grids.
+
+1. **Testsigma Labs**
+
+   This option allows you to run tests on Testsigma′s own cloud infrastructure. Testsigma Labs hosts a set of devices which can be used to run the tests with maximum security and compatibility. This is the recommended option as the systems are pre-configured with optimal settings for the test environments and the devices are used for only one purpose, i.e for running tests.
+
+   Use this option only if the application that you need to test is accessible over the Internet and not blocked by the firewall of a company network.
+
+2. **Local Devices** 
+
+   It enables you to use your own local machines for setting up the test environment and running the tests on them. This is the most preferred option if your application is hosted locally on company premises and is not accessible over the internet and this is mostly the case when an application is under active development.
+
+   [[info | **NOTE**:]]
+   | You need to install a helper agent application on your local machine to use this option. This agent configures the connection between Testsigma servers and your machine to perform the Test Plan on your local machine. 
+
+   For more information on creating test plans, refer to the [documentation on creating test plans to run tests on local machines](https://testsigma.com/tutorials/test-plans/using-local-devices/).
+
+3. <a href="https://www.browserstack.com/#" rel="nofollow">BrowserStack</a>
+
+   Testsigma also allows us to use cloud devices on the BrowserStack Model to run your tests. You just need to integrate your BrowserStack account with your Testsigma Account by entering the login credentials. Also, while creating a test plan, provide the required device details on the test plan configurations page.
+
+   For more information on configuring BrowserStack, refer to the [documentation on configuring BrowserStack](https://testsigma.com/docs/integrations/test-labs/browserstack/).
+
+   Use this option only if the application that you need to test is accessible over the Internet and not blocked by the firewall of a company network.
+
+4. <a href="https://saucelabs.com/" rel="nofollow">Sauce Labs</a>
+
+   Similar to BrowserStack, it is possible to use Sauce Labs for your test execution by integrating it with Testsigma Account. You just need to integrate your Sauce Labs account with your Testsigma Account by entering the login credentials. Also, while creating a test plan, provide the required device details on the test plan configurations page.
+
+   For more information on configuring Sauce Labs, refer to the [documentation on configuring Sauce Labs](https://testsigma.com/docs/integrations/test-labs/sauce-labs/)
+
+   Use this option only if the application that you need to test is accessible over the Internet and not blocked by the firewall of a company network.
+
+5. <a href="https://kobiton.com/" rel="nofollow">Kobiton Test Lab</a>
+
+   Testsigma also allows us to use cloud devices on Kobiton Test Lab to run your tests. You just need to integrate your Kobiton Test Lab account with your Testsigma Account by entering the login credentials. Also, while creating a test plan, provide the required device details on the test plan configurations page.
+
+   Use this option only if the application that you need to test is accessible over the Internet and not blocked by the firewall of a company network.
+
+6. <a href="https://www.testmuai.com/" rel="nofollow">TestMU</a>
+
+   Testsigma also allows us to use cloud devices on TestMU to run your tests. You just need to integrate your TestMU account with your Testsigma Account by entering the login credentials. Also, while creating a test plan, provide the required device details on the test plan configurations page.
+
+   Use this option only if the application that you need to test is accessible over the Internet and not blocked by the firewall of a company network.
+
+7. **Private Grid**   
+
+   Similar to Local Devices, a Private grid allows you to configure a set of Machines for local Execution. Please contact the Testsigma Support team for more details as this involves Advanced Steps.
+
+   For more information on executing tests in private grid, refer to the [documentation on executing tests on Testsigma private grid](https://testsigma.com/docs/runs/executing-tests-in-private-grid/)
+
+---

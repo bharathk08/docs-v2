@@ -1,0 +1,319 @@
+---
+const { toc, editUrl, lastUpdated, entry } = Astro.locals.starlightRoute;
+
+const isApiPage = !!(entry.data as any).api;
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+interface TocItem {
+  slug: string;
+  text: string;
+  children: TocItem[];
+}
+---
+
+{isApiPage ? null : <div class="ts-right-panel">
+
+  {toc && toc.items.length > 0 && (
+    <nav class="ts-toc" aria-labelledby="ts-toc-heading" data-ts-toc>
+      <p class="ts-toc-heading" id="ts-toc-heading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/>
+        </svg>
+        ON THIS PAGE
+      </p>
+      <ul class="ts-toc-list">
+        {(toc.items as TocItem[]).map((h2) => (
+          <li>
+            <a href={`#${h2.slug}`} class="ts-toc-link">{h2.text}</a>
+            {h2.children.length > 0 && (
+              <ul class="ts-toc-sub">
+                {h2.children.map((h3) => (
+                  <li>
+                    <a href={`#${h3.slug}`} class="ts-toc-link ts-toc-link--sub">{h3.text}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  <div class="ts-helpful">
+    <p class="ts-helpful-label">Was this helpful?</p>
+    <div class="ts-helpful-row">
+      <button class="ts-helpful-btn" data-val="yes" aria-label="Yes, helpful" title="Yes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/>
+          <circle cx="9" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+      <button class="ts-helpful-btn" data-val="neutral" aria-label="Somewhat helpful" title="Somewhat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="8" y1="14" x2="16" y2="14" stroke-linecap="round"/>
+          <circle cx="9" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+      <button class="ts-helpful-btn" data-val="no" aria-label="Not helpful" title="Not helpful">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 16s1.5-2 4-2 4 2 4 2" stroke-linecap="round"/>
+          <circle cx="9" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <a
+    href={editUrl?.href ?? 'https://github.com/testsigmahq/testsigma-docs'}
+    class="ts-edit-card"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Edit this page on GitHub"
+  >
+    <svg class="ts-edit-card-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+    </svg>
+    <span class="ts-edit-card-body">
+      <span class="ts-edit-card-title">Edit this page</span>
+      {lastUpdated && (
+        <span class="ts-edit-card-date">Last updated {formatDate(lastUpdated)}</span>
+      )}
+    </span>
+  </a>
+
+  <div class="ts-promo-card">
+    <p class="ts-promo-title">Ship with confidence</p>
+    <p class="ts-promo-body">See how Testsigma gives your team release confidence in the AI-driven coding era.</p>
+    <a href="https://testsigma.com/book-demo" class="ts-promo-cta" target="_blank" rel="noopener noreferrer">
+      Book a free demo
+    </a>
+  </div>
+
+</div>}
+
+<script>
+  // Scroll-spy: find the last heading that's scrolled past the 25% mark
+  const nav = document.querySelector('[data-ts-toc]');
+  if (nav) {
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>('.ts-toc-link[href^="#"]')];
+    let active: HTMLAnchorElement | null = null;
+
+    function setActive(link: HTMLAnchorElement | null) {
+      if (link === active) return;
+      if (active) active.removeAttribute('aria-current');
+      if (link) link.setAttribute('aria-current', 'true');
+      active = link;
+    }
+
+    const headingIds = links.map(l => l.getAttribute('href')!.slice(1));
+    const headings = headingIds
+      .map(id => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    function updateActive() {
+      if (!headings.length) return;
+      const scrollY = window.scrollY;
+      const threshold = scrollY + window.innerHeight * 0.25;
+      let current = headings[0]; // default to first
+      for (const h of headings) {
+        if (h.offsetTop <= threshold) {
+          current = h;
+        } else {
+          break;
+        }
+      }
+      const idx = headings.indexOf(current);
+      if (idx >= 0) setActive(links[idx] ?? null);
+    }
+
+    updateActive(); // highlight on load
+    window.addEventListener('scroll', updateActive, { passive: true });
+  }
+
+  // Feedback buttons — works regardless of TOC presence
+  document.querySelectorAll('.ts-helpful-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ts-helpful-btn').forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', 'true');
+    });
+  });
+</script>
+
+<style>
+  .ts-right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-size: 13px;
+  }
+
+  /* ── TOC ── */
+  .ts-toc-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ts-text-tertiary);
+    margin: 0 0 10px;
+  }
+
+  .ts-toc-list,
+  .ts-toc-sub {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .ts-toc-sub {
+    padding-left: 12px;
+    margin-top: 2px;
+  }
+
+  .ts-toc-link {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.5;
+    padding: 3px 0;
+    color: var(--ts-text-tertiary) !important;
+    text-decoration: none !important;
+    transition: color 0.12s;
+    overflow-wrap: anywhere;
+  }
+  .ts-toc-link:hover {
+    color: var(--ts-text-primary) !important;
+  }
+  .ts-toc-link[aria-current='true'] {
+    color: var(--ts-accent-text) !important;
+    font-weight: 600;
+  }
+  .ts-toc-link--sub {
+    font-size: 12px;
+    padding: 2px 0;
+  }
+
+  /* ── Helpful ── */
+  .ts-helpful-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ts-text-secondary);
+    margin: 0 0 10px;
+  }
+  .ts-helpful-row {
+    display: flex;
+    gap: 8px;
+  }
+  .ts-helpful-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--ts-border-strong);
+    background: transparent;
+    cursor: pointer;
+    color: var(--ts-text-tertiary);
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+    padding: 0;
+  }
+  .ts-helpful-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+  .ts-helpful-btn:hover {
+    border-color: var(--ts-accent);
+    color: var(--ts-accent-text);
+  }
+  .ts-helpful-btn[data-active] {
+    border-color: var(--ts-accent);
+    background: var(--ts-accent-low);
+    color: var(--ts-accent-text);
+  }
+
+  /* ── Edit card ── */
+  .ts-edit-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--ts-border);
+    border-radius: 10px;
+    background: transparent;
+    text-decoration: none !important;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .ts-edit-card:hover {
+    background: var(--ts-hover-row);
+    border-color: var(--ts-border-strong);
+  }
+  .ts-edit-card-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--ts-text-primary);
+  }
+  .ts-edit-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .ts-edit-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ts-text-primary);
+    line-height: 1.3;
+  }
+  .ts-edit-card-date {
+    font-size: 11.5px;
+    color: var(--ts-text-tertiary);
+    line-height: 1.3;
+  }
+
+  /* ── Promo card ── */
+  .ts-promo-card {
+    border: 1px solid var(--ts-border);
+    border-radius: 10px;
+    padding: 14px;
+    background: var(--ts-hover-row);
+  }
+  .ts-promo-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ts-text-primary);
+    margin: 0 0 6px;
+  }
+  .ts-promo-body {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ts-text-secondary);
+    margin: 0 0 12px;
+  }
+  .ts-promo-cta {
+    display: block;
+    text-align: center;
+    background: var(--ts-accent);
+    color: #fff !important;
+    text-decoration: none !important;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: opacity 0.12s;
+  }
+  .ts-promo-cta:hover {
+    opacity: 0.9;
+  }
+</style>

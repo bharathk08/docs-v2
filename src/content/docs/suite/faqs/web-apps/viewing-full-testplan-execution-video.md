@@ -1,0 +1,46 @@
+---
+title: "Why Is a Single Video for All Test Cases in a Test Plan Unavailable in Some Cases?"
+pagetitle: "Full Test Plan Execution Video: Steps to Access and View"
+description: "Viewing the full video of the test plan execution is easy. Re-run your test plan with the reset session disabled to see the complete execution video."
+search_keyword: ""
+sidebar:
+  order: 25.18
+---
+
+---
+
+
+When you enable the **Reset session for every test case** option in **Parallel Settings**, Testsigma assigns a fresh machine to execute the next queued test case. This process continues until all test case executions are complete. In this case, the complete video of the test plan is unavailable. To capture a single video of the entire test plan execution, you need to disable **Reset session for every test case** option.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test plans](https://testsigma.com/docs/test-plans/overview/).
+> - [Documentation on creating test suites](https://testsigma.com/docs/test-suites/overview/).
+> - [Documentation on creating test machines](https://testsigma.com/docs/test-plans/manage-test-machines/).
+
+---
+
+## **Disabling the Reset Session in Parallel Settings**
+
+1. On the **Create** or **Edit Test Plan** page, go to the **Add Test Suites & Link Machine Profiles** tab.
+![Create or Edit](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_single_video_1.png)
+
+2. If the test machine is already linked, click the **Settings** icon under the **Test Machine** tab. Click the **Link to Test Machine** icon to add a new machine profile. 
+![Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_single_video_2.png)
+
+3. In the **Edit Test Machine or Device Profile** overlay, locate the checkbox labelled **Reset session for every test case**.
+![Reset](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_single_video_3.png)
+
+4. Unselect this checkbox to disable the reset session for all test cases. 
+![Unselect](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_single_video_4.png)
+
+5. Click **Create** or **Update Profile** to save your changes. 
+![disable reset session for test machine](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_single_video_5.png)
+
+6. You can now watch the complete video for each test suite under **Run Results > Test Suite > Watch Video**.
+![Watch Video](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_single_video_6.png)
+
+---

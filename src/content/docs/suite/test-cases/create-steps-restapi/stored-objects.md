@@ -1,0 +1,23 @@
+---
+title: "Stored Objects"
+description: "Stored objects refer to the data that is stored in the database and is used to test the API. Learn about Stored Objects in RESTful API in Testsigma"
+search_keyword: ""
+sidebar:
+  order: 4.792
+---
+
+---
+
+Stored objects have **GLOBAL** scope, which can be used for cross-test case verification. Objects can be saved using the Rest API.  Stored objects in RESTful API testing refer to the data that is stored in the database and is used to test the API. This data can include user accounts, product information, and other data that is used to test the API. The stored objects are used to ensure that the API is functioning correctly and that the data is being returned correctly. You can **download** objects from **save response** and **stored objects** tab.
+
+---
+
+## **Store Objects from Save response**
+
+1. **Send** an API request, and at the bottom of the screen, the **response body** will appear for the request you sent.
+   ![Send a request](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_save_as_object_1.png)
+
+2. Click **Save Response**, then select **As an Object** to upload it directly into Stored Objects.
+   ![Save Response](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_save_as_object_2.png)
+
+---

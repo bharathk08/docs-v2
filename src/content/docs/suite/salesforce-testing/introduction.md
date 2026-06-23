@@ -1,0 +1,39 @@
+---
+title: "Intro: Testsigma for Salesforce Testing"
+description: "Salesforce Testing with Testsigma helps reduce average test authoring time by 50%, and test case execution will be 2X faster with a user-friendly interface"
+sidebar:
+  order: 28.1
+---
+
+---
+
+Salesforce is a cloud-based Customer Relationship Management (CRM) platform that is the backbone for many businesses worldwide. However, testing applications built on Salesforce can be difficult because of complex workflows, frequent updates, and complex DOM structures. Testsigma revolutionizes Salesforce test automation by reducing average test authoring time by 50%, ensuring reliability, speeding up test case execution (up to 2X faster), and providing a user-friendly interface with a minimal learning curve. 
+
+---
+
+## **Setup**
+
+- For setup, refer to the [documentation on creating a connected app](https://testsigma.com/docs/salesforce-testing/connected-app/) and [documentation on configuring Metadata Connection](https://testsigma.com/docs/salesforce-testing/metadata-connections/).
+
+---
+
+## **Getting Started**
+
+- [Documentation on creating Salesforce projects](https://testsigma.com/docs/salesforce-testing/create-sf-project/)
+
+- [Documentation on adding user connections](https://testsigma.com/docs/salesforce-testing/user-connections/)
+
+- [Documentation on building test cases (Manual+Live)](https://testsigma.com/docs/salesforce-testing/sf-test-cases/)
+
+- [Documentation on element repositories](https://testsigma.com/docs/salesforce-testing/element-repos/)
+
+- [Documentation on list of special NLPs](https://testsigma.com/docs/salesforce-testing/special-nlps/)
+
+---
+
+
+## **Getting Help**
+
+- For inquiries or help, reach out to Testsigma support at **support@testsigma.com**.
+
+---

@@ -1,0 +1,107 @@
+---
+title: "Install Testsigma Recorder Extension: Firefox"
+description: "Effortlessly start installing the Testsigma Recorder Extension in Firefox. Follow simple steps to record interactions for efficient testing. Learn more now."
+sidebar:
+  order: 7.12
+---
+
+---
+
+Testsigma Recorder extensions in Firefox allow you to record end-to-end interactions with your web applications effortlessly. The extensions capture and store these interactions as actions in simple English sentences using predefined NLPs.
+
+---
+
+## **Add Testsigma Recorder Extension to Firefox**
+
+1. Open your **Firefox** browser and navigate to <a href="https://addons.mozilla.org/en-US/firefox/" rel="nofollow">Testsigma Recorder</a>.
+2. Click on **Add to Firefox**.
+3. Click **Add** when prompted for permission.
+
+:::note[NOTE]
+Check the box that says **Allow this extension to run in Private Windows** to enable this extension to work in **Private Windows**.
+:::
+
+
+---
+
+
+## **Testsigma Recorder Extension Options**
+
+
+1. Navigate to **Extensions > Extension Settings > Manage Extensions**. 
+   ![Manage Extensions](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Firefox_Extensions.png)
+
+
+2. On **Testsigma Recorder Extension Details**, click **Meatballs** icon and select **Preferences**.
+   ![Recorder Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/FF_Extension_Preferences.png)
+
+
+3. You can see the following options:
+   
+   - Enable Inspect Popover on Elements
+   
+   - Disable Recording Mouse Scroll
+   
+   - Enable Developer Mode 
+
+![All Options](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Recorder_Options_Firefox.png)
+
+
+### **a. Enable Inspect Popover on Elements** 
+
+This option highlights elements with a green rectangular box during web recording, which helps you with visual guidance for accurate element selection. 
+
+
+### **b. Disable Recording Mouse Scroll**
+
+This option will prevent the automatic addition of scroll NLPs in test cases, which helps you create clean test cases, especially for static applications without infinite loading.
+
+:::note[NOTE]
+The above two options will be selected by default.
+:::
+
+
+### **c. Enable Developer Mode**
+
+Activates Browser Developer Mode for advanced debugging, enabling element inspection, troubleshooting locators, and gaining deeper insights into application behavior.
+
+
+---
+
+## **Enable Access Permissions in Firefox**
+
+After installing the extension, configure it as follows:
+
+### **Allow Extension to Access Data**
+
+1. Click the **Extension** icon in the top right corner.
+   ![Extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_1.1.png)
+
+2. Navigate to **Manage extensions**.
+   ![manage extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_2.1.png)
+
+3. In the **Testsigma Recorder** extension and click on the **Menu** icon, then select **Manage**.
+   ![manage](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_3.png)
+
+4. Under **Testsigma Recorder** details, go to the **Permission** tab and toggle on **Access your data for all websites**. 
+   ![Permission](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_4.png)
+
+### **Privacy & Security Settings** 
+
+1. Click the **Menu** icon and select **Settings**.
+   ![Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_5.png)
+
+2. Go to **Privacy & Security** and choose **Custom** in **Enhanced Tracking Protection**.
+   ![Custom](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_6.png)
+
+3. In the **Custom settings**, select **Cookies from unvisited websites** from the dropdown next to Cookies. 
+   ![Custom settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_firefox_7.png)
+
+4. Click **Reload All Tabs** to apply the changes in the browser.
+
+:::note[NOTE]
+This enables Testsigma Recorder to access all websites within the browser to record interactions. 
+:::
+
+---
+

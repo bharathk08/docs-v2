@@ -1,0 +1,142 @@
+---
+title: "Integrate Testsigma with your CI/CD using REST API (Generic)"
+description: "Integrate Testsigma with your CI/CD tool via a generic REST API. You can trigger test plans using API and check status of the execution using the API details"
+sidebar:
+  order: 13.12
+---
+
+---
+
+
+You can integrate Testsigma with your CI/CD tool and trigger test plans and check execution status using REST APIs. This article discusses how to make requests to Testsigma to trigger test plans and check status using CURL & API requests.  
+
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on managing test plans](https://testsigma.com/docs/test-plans/overview/).
+> - [Documentation on generating API keys](https://testsigma.com/docs/configuration/api-keys/).
+> - [Documentation on getting test plan details](https://testsigma.com/docs/continuous-integration/get-test-plan-details/). 
+
+
+---
+
+
+## **Trigger Test Plans Using API**
+
+1. Go to the specific **Test Plan Details** page in the Testsigma application (for the Test Plan that you want to include in your CI/CD Pipeline) 
+
+2. Go to the **CI/CD Integrations** section on the **Test Plan Details** page.
+
+3. You will see the CURL request under the **REST API to integrate with other tools > REST API call to start Test Plan**. 
+
+### **Trigger Tests through CURL request:**
+
+```
+
+curl -X POST -H "Content-type: application/json" 
+-H "Accept:application/json" 
+-H "Authorization: Bearer <API_KEY>" https://app.testsigma.com/api/v1/execution_results 
+-d "{\"executionId\": \"301\", \"environmentId\": \"<ENVIRONMENT_ID>\"}"
+
+```
+
+You can execute this CURL command in your computer's command-line interface (CLI). 
+
+### The same can be done using any other REST API client with the following details:
+
+
+| **Request Type**  | POST                                                       |
+|-------------------|------------------------------------------------------------|
+| **Request URL**   | <a href="https://app.testsigma.com/api/v1/execution_results" rel="nofollow">https://app.testsigma.com/api/v1/execution_results</a>       | 
+| **Authorization** | Bearer <API\_KEY>                                         |
+| **Content-type**  | application/json                                         |
+| **Accept**        | application/json                                         |
+| **Request Body**  | { <br> "executionId": "<TEST\_PLAN\_ID>", <br> "buildNo": "<BUILD\_NO>" <br> "environmentId": <ENVIRONMENT\_ID> } |
+
+
+ - The **<TEST\_PLAN\_ID>** is used to identify the Test Plan which is to be triggered. This can be obtained from the corresponding test plan details page. Refer to the [documentation on getting test plan details](https://testsigma.com/docs/continuous-integration/get-test-plan-details/).
+
+ - The **<API\_KEY>** is used to authenticate your user in Testsigma API. This can be obtained from the **Settings > API Keys** by creating a new API key. Refer to the  [documentation on generating API keys](https://testsigma.com/docs/configuration/api-keys/).
+
+- The **<BUILD\_NO>** is the Build number/Version for your corresponding Application Build against which you are running the Tests. This can be obtained from the Dev team or Build Stage in the CI/CD Pipeline.
+
+---
+
+## **Check the Status of Test Plan Execution Using API**
+ 
+This API can be used to check the status of the Test Plan using GET method once the Test Plan execution is triggered successfully. Make sure to get RUN_ID for the triggered Test Plan.
+
+`PERL`
+
+```
+curl -X GET -H \"Content-type: application/json\" \\
+-H \"Accept:application/json\" \\
+-H \"Authorization: Bearer <API_KEY>\" \\
+https://app.testsigma.com/api/v1/execution_results/<RUN_ID>";
+```
+
+You can execute this CURL command in your computer's command-line interface (CLI). 
+
+
+### The same can be done using any other REST API client with the following details:
+
+
+| **Request Type**  | GET                                                                   |
+|-------------------|-----------------------------------------------------------------------|
+| **Request URL**   | <a href="https://app.testsigma.com/api/v1/execution_results/<RUN\_ID>" rel="nofollow">https://app.testsigma.com/api/v1/execution_results/<RUN\_ID></a>         | 
+| **Authorization** | Bearer <API\_KEY>                                                    |
+| **Content-type**  | application/json                                                    |
+| **Accept**        | application/json                                                    |
+
+ 
+- The **<RUN_ID>** can be obtained as the value of the key 'id' in the JSON response for the previous API.
+- The **<API_KEY>** can be obtained from the **Settings > API_Keys** by creating a new API Key.
+
+---
+
+## **Executing Tests Plans in Different Environments**
+
+To execute a test plan with different Environments, you need to have an Environment ID. You can find the Environment ID by following the steps below. 
+
+### **Get Environment ID**
+
+1. Navigating to **Test Data > Environments**, and click on an **Environment**.
+
+
+2. On the Environment page, the <ENVIRONMENT\_ID> in the URL `https://app.testsigma.com/ui/td/88/environments/<ENVIRONMENT_ID>/details` is the ID of the environment. 
+
+![Environments](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_integ_restapi_1.png)
+
+- For Example, if the URL is `https://app.testsigma.com/ui/td/88/environments/10/details`, the **ID** is **10**. 
+
+### **Executing Tests Plans with Different Environments**
+
+1. Navigate to **Test Plans > Test Plan > CI/CD Integrations**, and copy **CURL request** under **REST API to integrate with other tools > REST API call to start Test Plan**.
+![CURL](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_integ_restapi_2.png)
+
+2. Provide the Environment ID in the request body. 
+
+```
+curl -X POST \
+-H "Content-type: application/json" \
+-H "Accept:application/json" \
+-H "Authorization: Bearer <API_KEY>" \
+https://app.testsigma.com/api/v1/execution_results \
+-d "{\"executionId\": \"301\", \"environmentId\": \"<ENVIRONMENT_ID>\"}"
+```
+
+You can execute this CURL command in your computer's command-line interface (CLI) to trigger test plan with the environment specific to the given ID. 
+
+---
+
+## **Script Method**
+
+If you want to start the Execution and then check the execution status in regular intervals you can make use of a generic Shell Script for integrating with any CI/CD tool. Refer to the [documentation on generic Shell script](https://testsigma.com/docs/continuous-integration/shell-script/).
+ 
+That's all we need to automate Test Execution when a successful build is triggered using the CI server.
+
+---

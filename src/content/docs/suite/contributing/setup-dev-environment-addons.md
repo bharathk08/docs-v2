@@ -1,0 +1,52 @@
+---
+title: "Testsigma Development Environment (Addons)"
+description: "How to setup Testsigma  Development Environment to contribute"
+sidebar:
+  order: 23.4
+---
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - macOS / Linux /Windows
+> - JDK 11
+> - Intellij IDE Editor <a href="https://www.jetbrains.com/idea/download" rel="nofollow">https://www.jetbrains.com/idea/download</a>
+> - Create an Add-on in Testsigma application which will download a sample Java project for add-on. For more information on creating an add-on, refer to the [documentation on creating an Add-on](https://testsigma.com/docs/addons/create/). 
+> - JAVA_HOME variable is set to JAVA 11
+
+## Setup Instructions:
+
+ 1. Open IDE and create an empty project
+
+ ![Creating a new empty project in IntelliJ IDE](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-new-project.png)
+	
+2. Enter Project name and location to save the project
+![Giving name for new IntelliJ project](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-project-details.png)
+
+ 3. Set Project SDK to Java 11
+ 
+![Selecting project SDK in IntelliJ project settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-project-sdk.png)
+
+ 3. Import the downloaded Testsigma Add-on bundle as Maven/Gradle module
+
+![Documentation on importing a new module within existing IntelliJ project](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-import-module.png)
+
+
+![Documentation on selecting the addon folder to import the addon from](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-addon-folder.png)
+ 
+![Documentation on importing module as a Maven project](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-meven-import.png)
+
+![Documentation on selecting module settings in IntelliJ module settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-module-settings.png)
+
+![Documentation on selecting module SDK in IntelliJ module settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-module-sdk.png)
+
+![Documentation on project xxplorer view in IntelliJ for an Addon](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/intellij-project-explorer.png)
+
+4. Add your own test Actions, zip and upload to Testsigma Add-ons
+
+## Contributors
+
+Please join <a href="https://discord.gg/CB5aFkngeG" rel="nofollow">here</a>. 

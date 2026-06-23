@@ -1,0 +1,759 @@
+---
+/**
+ * Custom Testsigma header — replaces Starlight's default Header.
+ * Contains: logo lockup · product switcher · search · Ask · Login · CTA
+ *           + nav tabs: Docs / API reference / Changelog
+ *
+ * Pixel values and icon paths sourced directly from the prototype (support.js).
+ */
+import Search from 'virtual:starlight/components/Search';
+
+const pathname  = Astro.url.pathname;
+const isArcus   = pathname.includes('/arcus/');
+const product   = isArcus ? 'arcus' : 'suite';
+const isApiRef  = pathname.includes('/api-reference') || pathname.includes('/suite/api/');
+const isChangelog = pathname.includes('/changelog');
+const activeTab = isApiRef ? 'api' : isChangelog ? 'changelog' : 'docs';
+const base      = import.meta.env.BASE_URL; // '/docs/'
+
+---
+
+{/* Inline script — sets data-product BEFORE first paint to avoid flash */}
+<script is:inline>
+  (function () {
+    var fromUrl = location.pathname.includes('/arcus/') ? 'arcus'
+                : location.pathname.includes('/suite/')  ? 'suite'
+                : null;
+    var p = fromUrl || localStorage.getItem('ts-product') || 'suite';
+    document.documentElement.setAttribute('data-product', p);
+    if (fromUrl) localStorage.setItem('ts-product', fromUrl);
+  })();
+</script>
+
+<div class="ts-header">
+
+  {/* ── Header bar (74 px) ── */}
+  <div class="ts-header-bar">
+
+    {/* Left: logo + product switcher */}
+    <div class="ts-header-left">
+      <a class="ts-logo-lockup" href="/docs/">
+        {/* Combined logo — mark + wordmark pre-aligned in one SVG at 28px height */}
+        <img src={`${base}testsigma-logo.svg`} alt="Testsigma" class="ts-logo-combined" />
+        <span class="ts-docs-tag">DOCS</span>
+      </a>
+
+      {/* ── Product switcher ── */}
+      <div class="ts-switcher" id="ts-switcher">
+
+        {/* Chip button — border turns accent when open */}
+        <button class="ts-chip" id="ts-chip" aria-haspopup="listbox" aria-expanded="false">
+          {/* 23 × 23 gradient tile with glyph */}
+          <span class="ts-chip-tile" id="ts-chip-tile">
+            {/* Suite glyph (settings / gear — Lucide `settings` path) */}
+            <svg class="ts-glyph-suite" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            {/* Arcus glyph (AI/neural network icon — from prototype pGlyph) */}
+            <svg class="ts-glyph-arcus" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+              <rect x="9.6" y="10.5" width="2.8" height="2.8" rx="0.4"/>
+              <path d="M12.4 7h2.2l1.6-1.6"/>
+              <circle cx="17.8" cy="5" r="1.4"/>
+              <path d="M12.4 10.8h4"/>
+              <circle cx="17.8" cy="10.8" r="1.4"/>
+              <path d="M12.4 13.4h4"/>
+              <circle cx="17.8" cy="13.4" r="1.4"/>
+              <path d="M12.4 17h2.2l1.6 1.6"/>
+              <circle cx="17.8" cy="19" r="1.4"/>
+            </svg>
+          </span>
+          <span class="ts-chip-name" id="ts-chip-name">Suite</span>
+          <svg class="ts-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        {/* Click-outside backdrop */}
+        <div class="ts-backdrop" id="ts-backdrop" hidden></div>
+
+        {/* Dropdown */}
+        <div class="ts-dropdown" id="ts-dropdown" role="listbox" aria-label="Switch product" hidden>
+          <div class="ts-dropdown-header">SWITCH PRODUCT</div>
+
+          {/* Suite row */}
+          <button class="ts-product-row" data-product="suite" role="option" id="ts-row-suite">
+            <span class="ts-row-tile ts-tile-suite">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </span>
+            <span class="ts-row-info">
+              <span class="ts-row-name-line">
+                <span class="ts-row-name">Suite</span>
+                <span class="ts-current-badge ts-badge-suite" id="ts-badge-suite">CURRENT</span>
+              </span>
+              <span class="ts-row-sub">Docs, API &amp; Changelog</span>
+            </span>
+            <svg class="ts-check ts-check-suite" id="ts-check-suite" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+
+          {/* Arcus row */}
+          <button class="ts-product-row" data-product="arcus" role="option" id="ts-row-arcus">
+            <span class="ts-row-tile ts-tile-arcus">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+                <rect x="9.6" y="10.5" width="2.8" height="2.8" rx="0.4"/>
+                <path d="M12.4 7h2.2l1.6-1.6"/>
+                <circle cx="17.8" cy="5" r="1.4"/>
+                <path d="M12.4 10.8h4"/>
+                <circle cx="17.8" cy="10.8" r="1.4"/>
+                <path d="M12.4 13.4h4"/>
+                <circle cx="17.8" cy="13.4" r="1.4"/>
+                <path d="M12.4 17h2.2l1.6 1.6"/>
+                <circle cx="17.8" cy="19" r="1.4"/>
+              </svg>
+            </span>
+            <span class="ts-row-info">
+              <span class="ts-row-name-line">
+                <span class="ts-row-name">Arcus</span>
+                <span class="ts-current-badge ts-badge-arcus" id="ts-badge-arcus" style="display:none">CURRENT</span>
+              </span>
+              <span class="ts-row-sub">Docs, API &amp; Changelog</span>
+            </span>
+            <svg class="ts-check ts-check-arcus" id="ts-check-arcus" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {/* Center: search + Ask */}
+    <div class="ts-header-center">
+      <button class="ts-search-trigger" id="ts-search-trigger" aria-label="Search documentation (⌘K)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ts-search-icon" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+        <span class="ts-search-placeholder">Search...</span>
+        <span class="ts-kbd-hint" aria-hidden="true">
+          <kbd>⌘</kbd><kbd>K</kbd>
+        </span>
+      </button>
+
+      {/* Ask button — AI docs search */}
+      <button class="ts-ask-btn" id="ts-ask-btn" aria-label="Ask AI assistant">
+        <span class="ts-ask-icon" id="ts-ask-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="6" width="18" height="14" rx="3.5"/>
+            <line x1="12" y1="3" x2="12" y2="6"/>
+            <circle cx="12" cy="2.5" r="1"/>
+            <rect x="1" y="10" width="2" height="5" rx="1"/>
+            <rect x="21" y="10" width="2" height="5" rx="1"/>
+            <circle cx="9"  cy="12" r="1.6" fill="#fff" stroke="none"/>
+            <circle cx="15" cy="12" r="1.6" fill="#fff" stroke="none"/>
+            <path d="M9 16.5 Q12 18.5 15 16.5" stroke-width="1.4"/>
+          </svg>
+        </span>
+        Ask
+      </button>
+
+      {/* Hidden Starlight/Pagefind search — provides the dialog */}
+      <div class="ts-search-hidden" aria-hidden="true">
+        <Search />
+      </div>
+    </div>
+
+    {/* Right: Login + CTA */}
+    <div class="ts-header-right">
+      <a class="ts-btn-outline" href="https://app.testsigma.com/login" rel="noopener noreferrer">Login</a>
+      <a class="ts-btn-cta" href="https://testsigma.com/book-a-demo" rel="noopener noreferrer">Book a demo</a>
+    </div>
+  </div>
+
+  {/* ── Nav tabs (48 px) ── */}
+  <nav class="ts-nav-tabs" aria-label="Site sections">
+    <a
+      id="ts-tab-docs"
+      class:list={['ts-tab', { 'ts-tab--active': activeTab === 'docs' }]}
+      href={`/docs/${product}/`}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
+      Docs
+    </a>
+    <a
+      id="ts-tab-api"
+      class:list={['ts-tab', { 'ts-tab--active': activeTab === 'api' }]}
+      href={product === 'suite' ? '/docs/suite/api/overview/' : '/docs/arcus/api-reference/overview/'}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/>
+        <path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/>
+      </svg>
+      API reference
+    </a>
+    <a
+      id="ts-tab-changelog"
+      class:list={['ts-tab', { 'ts-tab--active': activeTab === 'changelog' }]}
+      href={`/docs/${product}/changelog/`}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3l1.9 5.5L19.5 10l-5.6 1.5L12 17l-1.9-5.5L4.5 10l5.6-1.5z"/>
+      </svg>
+      Changelog
+    </a>
+  </nav>
+</div>
+
+{/* ── Client JS ── */}
+<script>
+  // Product data (mirrors prototype PRODUCTS)
+  const PRODUCTS: Record<string, { accent: string; soft: string }> = {
+    suite: { accent: '#00B2BD', soft: '#E4F7F8' },
+    arcus: { accent: '#5C27F5', soft: '#EEE9FF' },
+  };
+
+  const chip        = document.getElementById('ts-chip')       as HTMLButtonElement | null;
+  const dropdown    = document.getElementById('ts-dropdown');
+  const backdrop    = document.getElementById('ts-backdrop');
+  const chipName    = document.getElementById('ts-chip-name');
+  const chipTile    = document.getElementById('ts-chip-tile');
+  const badgeSuite  = document.getElementById('ts-badge-suite');
+  const badgeArcus  = document.getElementById('ts-badge-arcus');
+  const checkSuite  = document.getElementById('ts-check-suite');
+  const checkArcus  = document.getElementById('ts-check-arcus');
+  const rowSuite    = document.getElementById('ts-row-suite');
+  const rowArcus    = document.getElementById('ts-row-arcus');
+  const tabDocs     = document.getElementById('ts-tab-docs')      as HTMLAnchorElement | null;
+  const tabApi      = document.getElementById('ts-tab-api')       as HTMLAnchorElement | null;
+  const tabChangelog= document.getElementById('ts-tab-changelog') as HTMLAnchorElement | null;
+  const askIcon     = document.getElementById('ts-ask-icon');
+
+  function getProduct(): string {
+    return document.documentElement.getAttribute('data-product') || 'suite';
+  }
+
+  function setDropdownOpen(open: boolean) {
+    if (!chip || !dropdown || !backdrop) return;
+    chip.setAttribute('aria-expanded', open ? 'true' : 'false');
+    dropdown.hidden = !open;
+    backdrop.hidden = !open;
+    const p = PRODUCTS[getProduct()];
+    // Chip border: accent when open, borderStrong when closed
+    chip.style.borderColor = open ? p.accent : '';
+  }
+
+  function applyProduct(p: string) {
+    document.documentElement.setAttribute('data-product', p);
+    localStorage.setItem('ts-product', p);
+
+    const pd = PRODUCTS[p];
+
+    // Chip name
+    if (chipName) chipName.textContent = p === 'arcus' ? 'Arcus' : 'Suite';
+    // Chip tile gradient (inline to match the current product)
+    if (chipTile) {
+      chipTile.style.background = p === 'arcus'
+        ? 'linear-gradient(90deg,#E58086 0%,#9F57C0 100%)'
+        : 'linear-gradient(90deg,#00B2BD 0%,#07C0A1 100%)';
+    }
+    // Ask icon gradient
+    if (askIcon) {
+      askIcon.style.background = p === 'arcus'
+        ? 'linear-gradient(135deg,#E58086 0%,#9F57C0 100%)'
+        : 'linear-gradient(135deg,#00B2BD 0%,#07C0A1 100%)';
+    }
+
+    // Dropdown rows
+    const isSuite = p === 'suite';
+    if (badgeSuite) badgeSuite.style.display  = isSuite ? '' : 'none';
+    if (badgeArcus) badgeArcus.style.display  = isSuite ? 'none' : '';
+    if (checkSuite) { checkSuite.style.display = isSuite ? '' : 'none'; (checkSuite as SVGElement).style.stroke = PRODUCTS.suite.accent; }
+    if (checkArcus) { checkArcus.style.display = isSuite ? 'none' : ''; (checkArcus as SVGElement).style.stroke = PRODUCTS.arcus.accent; }
+
+    if (rowSuite) {
+      rowSuite.style.background = isSuite ? PRODUCTS.suite.soft : '';
+    }
+    if (rowArcus) {
+      rowArcus.style.background = isSuite ? '' : PRODUCTS.arcus.soft;
+    }
+
+    // Update badge colors to match the specific product accent
+    if (badgeSuite) {
+      (badgeSuite as HTMLElement).style.color  = PRODUCTS.suite.accent;
+      (badgeSuite as HTMLElement).style.background = PRODUCTS.suite.soft;
+      (badgeSuite as HTMLElement).style.borderColor = PRODUCTS.suite.accent + '40';
+    }
+    if (badgeArcus) {
+      (badgeArcus as HTMLElement).style.color  = PRODUCTS.arcus.accent;
+      (badgeArcus as HTMLElement).style.background = PRODUCTS.arcus.soft;
+      (badgeArcus as HTMLElement).style.borderColor = PRODUCTS.arcus.accent + '40';
+    }
+
+    // Tab hrefs
+    const base = '/docs/' + p;
+    if (tabDocs)       tabDocs.href       = base + '/';
+    if (tabApi)        tabApi.href        = p === 'suite' ? base + '/api/overview/' : base + '/api-reference/overview/';
+    if (tabChangelog)  tabChangelog.href  = base + '/changelog/';
+  }
+
+  // Initialise on load
+  applyProduct(getProduct());
+
+  // Toggle dropdown
+  chip?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = dropdown && !dropdown.hidden;
+    setDropdownOpen(!isOpen);
+  });
+
+  // Close on backdrop click
+  backdrop?.addEventListener('click', () => setDropdownOpen(false));
+
+  // Product row clicks
+  document.querySelectorAll<HTMLElement>('.ts-product-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      const p = row.dataset.product || 'suite';
+      applyProduct(p);
+      setDropdownOpen(false);
+      window.location.href = '/docs/' + p + '/';
+    });
+    // Hover background (only when not active)
+    row.addEventListener('mouseenter', () => {
+      const p2 = row.dataset.product || 'suite';
+      if (getProduct() !== p2) row.style.background = '#F4F5F7';
+    });
+    row.addEventListener('mouseleave', () => {
+      const p2 = row.dataset.product || 'suite';
+      if (getProduct() !== p2) row.style.background = '';
+    });
+  });
+
+  // ── Search forwarding ──
+  function openSearch() {
+    const btn = document.querySelector<HTMLButtonElement>('button[data-open-modal]');
+    btn?.click();
+  }
+  document.getElementById('ts-search-trigger')?.addEventListener('click', openSearch);
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  });
+
+
+</script>
+
+<style>
+  /* ── Outer wrapper fills the fixed Starlight header slot ── */
+  .ts-header {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0;
+    background: #fff;
+  }
+
+  /* ── Header bar (74 px) ── */
+  .ts-header-bar {
+    height: 74px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--ts-header-rule);
+    flex-shrink: 0;
+  }
+
+  /* ─── Logo lockup ─── */
+  .ts-logo-lockup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .ts-logo-combined {
+    height: 28px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ts-docs-tag {
+    padding-left: 10px;
+    border-left: 1px solid var(--ts-border-strong);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ts-label-grey);
+  }
+
+  /* ─── Left column ─── */
+  .ts-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-self: start;
+  }
+
+  /* ─── Product switcher chip ─── */
+  .ts-switcher { position: relative; }
+
+  .ts-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 40px;
+    padding: 0 10px;
+    background: #fff;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 9px;
+    cursor: pointer;
+    font-family: var(--sl-font);
+    box-shadow: 0 0.8px 1.8px rgba(0,0,0,.10);
+    transition: border-color .15s;
+  }
+  .ts-chip:hover { box-shadow: 0 2px 6px rgba(0,0,0,.14); }
+
+  /* 23×23 gradient tile in chip */
+  .ts-chip-tile {
+    width: 23px;
+    height: 23px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* gradient set by JS on init; CSS default for Suite */
+    background: linear-gradient(90deg, #00B2BD 0%, #07C0A1 100%);
+  }
+
+  /* Show/hide glyphs per product */
+  .ts-glyph-suite { display: block; }
+  .ts-glyph-arcus { display: none;  }
+  :root[data-product='arcus'] .ts-glyph-suite { display: none;  }
+  :root[data-product='arcus'] .ts-glyph-arcus { display: block; }
+
+  .ts-chip-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ts-text-primary);
+  }
+  .ts-chevron {
+    color: var(--ts-text-tertiary);
+    transition: transform .15s;
+    flex-shrink: 0;
+  }
+  .ts-chip[aria-expanded='true'] .ts-chevron { transform: rotate(180deg); }
+
+  /* ─── Click-outside backdrop ─── */
+  .ts-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+  }
+  .ts-backdrop[hidden] { display: none; }
+
+  /* ─── Dropdown ─── */
+  .ts-dropdown {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    width: 300px;
+    background: #fff;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 13px;
+    box-shadow: 0 12px 32px rgba(9,30,66,.18);
+    padding: 7px;
+    z-index: 80;
+  }
+  .ts-dropdown[hidden] { display: none; }
+
+  .ts-dropdown-header {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: #97A0AF;
+    padding: 7px 11px 8px;
+    text-transform: uppercase;
+  }
+
+  /* Product rows */
+  .ts-product-row {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sl-font);
+    text-align: left;
+    transition: background .1s;
+  }
+
+  /* 30×30 gradient tile in dropdown */
+  .ts-row-tile {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ts-tile-suite { background: linear-gradient(90deg, #00B2BD 0%, #07C0A1 100%); }
+  .ts-tile-arcus { background: linear-gradient(90deg, #E58086 0%, #9F57C0 100%); }
+
+  .ts-row-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .ts-row-name-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .ts-row-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ts-text-primary);
+  }
+
+  /* CURRENT badge — inline with product name */
+  .ts-current-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 5px;
+    padding: 1px 6px;
+    border: 1px solid;
+    /* Colors set by JS per product */
+  }
+
+  .ts-row-sub {
+    display: block;
+    font-size: 12px;
+    color: var(--ts-text-tertiary);
+    margin-top: 2px;
+  }
+
+  /* Checkmark on far right (shown only for active product) */
+  .ts-check {
+    margin-top: 8px;
+    flex-shrink: 0;
+    /* stroke color set by JS per product */
+  }
+
+  /* ─── Header center ─── */
+  .ts-header-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ─── Search trigger ─── */
+  .ts-search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 440px;
+    height: 44px;
+    padding: 0 14px;
+    background: #fff;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: var(--sl-font);
+    font-size: 15px;
+    color: var(--ts-text-tertiary);
+    transition: border-color .15s, box-shadow .15s;
+    text-align: left;
+  }
+  .ts-search-trigger:hover { border-color: #b0b8c8; }
+  .ts-search-trigger:focus-visible {
+    outline: none;
+    border-color: var(--ts-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ts-accent) 20%, transparent);
+  }
+  .ts-search-icon { flex-shrink: 0; color: var(--ts-text-tertiary); }
+  .ts-search-placeholder { flex: 1; }
+
+  .ts-kbd-hint {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+  }
+  .ts-kbd-hint kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    background: var(--ts-hover-row);
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ts-text-tertiary);
+    font-family: var(--sl-font);
+  }
+
+  /* Hidden Pagefind container (dialog still shows as overlay) */
+  .ts-search-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* ─── Ask button ─── */
+  .ts-ask-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 16px;
+    background: transparent;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 10px;
+    font-family: var(--sl-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ts-text-primary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .ts-ask-btn:hover { background: var(--ts-hover-row); }
+
+  /* 21×21 gradient icon tile inside Ask */
+  .ts-ask-icon {
+    width: 21px;
+    height: 21px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* gradient set by JS on init; CSS default for Suite */
+    background: linear-gradient(135deg, #00B2BD 0%, #07C0A1 100%);
+  }
+
+  /* ─── Right column ─── */
+  .ts-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+  }
+  .ts-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 18px;
+    background: transparent;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 9px;
+    font-family: var(--sl-font);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ts-text-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .12s, border-color .12s;
+  }
+  .ts-btn-outline:hover { background: var(--ts-hover-row); border-color: #b0b8c8; }
+
+  .ts-btn-cta {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 18px;
+    background: var(--ts-accent-gradient);
+    border-radius: 9px;
+    font-family: var(--sl-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity .15s;
+  }
+  .ts-btn-cta:hover { opacity: .9; }
+
+  /* ── Nav tabs (48 px) ── */
+  .ts-nav-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 30px;
+    flex: 1 0 48px;
+    max-height: 48px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--ts-header-rule);
+    background: #fff;
+  }
+
+  .ts-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ts-label-grey);
+    text-decoration: none;
+    position: relative;
+    margin-bottom: -1px;
+    transition: color .14s;
+    white-space: nowrap;
+  }
+  .ts-tab:hover { color: var(--ts-text-primary); }
+
+  .ts-tab--active { color: var(--ts-accent); }
+
+  /* Gradient underline on active tab */
+  .ts-tab--active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2.5px;
+    background: var(--ts-accent-gradient);
+    border-radius: 2px 2px 0 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 72rem) {
+    .ts-search-trigger { width: 300px; }
+  }
+  @media (max-width: 64rem) {
+    .ts-header-bar { padding: 0 20px; gap: 16px; }
+    .ts-nav-tabs   { padding: 0 20px; gap: 20px; }
+    .ts-search-trigger { width: 220px; }
+    .ts-btn-outline, .ts-btn-cta { padding: 0 12px; font-size: 13px; }
+  }
+  @media (max-width: 56rem) {
+    .ts-search-trigger { width: 160px; }
+    .ts-kbd-hint       { display: none; }
+    /* shrink the combined logo on very small screens */
+    .ts-logo-combined  { height: 22px; }
+  }
+</style>

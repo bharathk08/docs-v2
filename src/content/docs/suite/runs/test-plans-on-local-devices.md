@@ -1,0 +1,56 @@
+---
+title: "Test Plan Local Executions"
+description: "Local execution is preferred for testing apps that are only available locally, for security purposes. How to perform test plan executions on local devices in Testsigma."
+sidebar:
+  order: 9.42
+---
+
+
+---
+
+You can execute your test plans on your local devices using Testsigma. Local execution is preferred for testing applications only available locally, for security or other purposes.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on setting up Testsigma agent](https://testsigma.com/docs/agent/setup-on-windows-mac-linux/).
+> - [Documentation on creating test plans](https://testsigma.com/docs/test-plans/overview/).
+
+
+---
+
+## **Steps for Test Plan Local Executions**
+
+
+1. Create a **Test Plan**, go to **Add Test Suites & Link Machine Profiles**, and click on **Machine** highlighted to add **Test Machines**.
+![Machines](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_tp_local_execution_1.png)
+
+
+
+2. On **Select test machine profiles** overlay, click on **Add Machine**. 
+![Add Machine](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_tp_local_execution_2.png)
+
+
+
+3. On **Add test machine/device profile** overlay, enter **Name**, select **Local Devices** as **Test lab**, and choose **Connected Machine** and a **Browser** in which you want to execute the test plan. 
+![Select Local Machine](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_tp_local_execution_3.png)
+
+
+
+4. Click on **Create Profile**.
+![Profile](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_tp_local_execution_6.png)
+
+
+
+5. Make necessary changes in the **Test Plan Settings** page and click **Create**.
+![Create Test plan](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_tp_local_execution_4.png)
+
+
+
+6. Click on **Run Now** to execute the **Test Plan**.
+![Run Now](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_tp_local_execution_5.png)
+
+
+---

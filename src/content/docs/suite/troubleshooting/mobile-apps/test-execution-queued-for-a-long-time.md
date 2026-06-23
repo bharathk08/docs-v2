@@ -1,0 +1,42 @@
+---
+title: "Why Test Execution State is Queued for a Long Time?"
+description: "Understand why your test execution state may be stuck in Queued state for an extended period | Know the possible reasons why  your test execution is Queued"
+sidebar:
+  order: 24.63
+---
+
+---
+
+
+If the execution status for your tests has been in the state **Queued** for a long time then, one of the possible reasons is that the number of total parallel runs allowed on your license are already in use. 
+
+
+---
+
+## **Steps to Troubleshoot the Issue**
+
+1. On **Dashboard**, click on **Usage details**.
+
+![Dashboard](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_queue_1.png)
+
+2. Check the number of **Parallel Tests**.
+
+![Parallel Tests](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_queue_2.png)
+
+
+Here, we have a license for 2 parallel executions and 3 allowed queues. We can set up a maximum of 2 test runs to run in parallel, which means executing up to 2 tests simultaneously. In addition to the 2 tests running in parallel, you can have up to 3 tests in the queue. The queued tests will execute once the ongoing parallel executions are complete.
+
+In the above example, we have **Parallel Tests 2/2**, which means 2 tests are running in parallel, and 2 is the maximum number of parallel runs allowed at a time.
+
+We also have **Queue 3/3**, which means 3 tests are currently in the queue, and 3 is the maximum number of queued runs allowed.
+
+3. Suppose the number of parallel runs is equal to the number of parallel licenses for your Testsigma account. In that case, the tests in the queue will remain in the same status until the parallel test runs are completed. 
+
+
+**You can take the following actions to fix the issue:**  
+
+- You can wait for other tests to complete execution. 
+
+- You can connect with Testsigma support (**support@testsigma.com**) to increase the number of parallel runs allowed on your license.
+
+---

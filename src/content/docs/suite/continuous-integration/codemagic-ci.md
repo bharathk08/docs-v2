@@ -1,0 +1,110 @@
+---
+title: "Integrate Testsigma with Codemagic"
+description: "Integrate Testsigma with Codemagic for seamless test automation | Trigger Testsigma test runs from your CI/CD pipeline using a shell script in GitHub."
+sidebar:
+  order: 13.26
+---
+
+---
+
+You can integrate Codemagic with your version control system to automate test execution using a shell script that triggers Testsigma tests via CI/CD. This article discusses configuring Codemagic with a repository and executing test automation workflows using a codemagic.yaml file.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure you have:
+>   - A repository on a supported version control system (e.g., **GitHub**).
+>   - A **Codemagic** account.
+>   - A shell script in your repository that triggers Testsigma test execution.
+
+---
+
+## **Sign Up and Authorize Codemagic**
+
+1. Navigate to <a href="https://codemagic.io" rel="nofollow">Codemagic</a>. 
+
+2. Sign up using your version control system (We’re using **GitHub**).
+
+3. After signing in, authorize Codemagic by clicking **Authorize Codemagic CI/CD**.
+<img src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.1.png" style="width: 400px;" />
+
+4. On the **How will you be using Codemagic?** page, select the preferred option.
+![codemagic 4](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.2.png)
+
+5. On the **Welcome Onboard** page, under **Connect Code**, choose your version control provider (e.g., **GitHub**).
+![codemagic 5](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.3.png)
+
+:::note[NOTE]
+-  If your repositories do not appear, click **Click here**, then select **Install and Authorize** to refresh the connection.
+:::
+
+---
+
+## **Select and Configure Your Repository**
+
+1. Under **Select repository**, choose the appropriate repository from the dropdown menu and click **Select repository**.
+![codemagic 6](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.4.png)
+
+2. Enter the relative path to your project in the **Project path** field.
+
+3. Click **Retry** to allow Codemagic to scan the repository.
+
+Alternatively, click **Set Type Manually** to specify the project type.
+![codemagic 7](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.5.png)
+
+4. Select the project type and click **Create Application**.
+![codemagic 8](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.6.png)
+
+---
+
+## **Configure the YAML Workflow**
+
+1. On the workflow screen, click **Switch to YAML configuration**.
+![codemagic 9](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_2.3.png)
+
+2. In the **Update Settings** dialog, select the **codemagic.yaml** radio button and click **Save changes**.
+![odemagic 10](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_2.4.png)
+
+---
+
+## **Add the YAML Configuration File**
+
+1. In your repository, create a new file named **codemagic.yaml** at the root directory.
+
+2. Add the following YAML script:
+
+```
+workflows:
+  run-testsigma:
+    name: Run Testsigma Shell Script
+    scripts:
+      - name: Trigger Testsigma
+        script: |
+          chmod +x ./magictrigger.sh
+          ./magictrigger.sh
+```
+![codemagic 11](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_1.8.png)
+
+3. Commit and push the file to your repository.
+
+4. **(Optional)** Configure **Environment Variables**, **Webhooks**, and other settings in **Codemagic** if necessary.
+
+:::note[NOTE]
+- Ensure the **magictrigger.sh** file is present in the same repository and marked as executable. For information on the generic shell script, see [Shell Script](https://testsigma.com/docs/continuous-integration/shell-script/).
+- Ensure you have an **API key** and a **Test Plan ID**. For more information, see [API Keys](https://testsigma.com/docs/configuration/api-keys/) and <a href="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/get-test-plan-id.png" rel="nofollow">Get Test Plan ID</a>. 
+![shell script for Azure DevOps](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/shell-script-azure-devops.png)
+:::
+
+---
+
+## **Trigger the Workflow**
+
+1. Navigate to **Codemagic**.
+
+2. Click **Start new build**.
+![codemagic 13](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Codemagic_2.1.png)
+
+Codemagic will detect the **codemagic.yaml** file and initiate the workflow. After the build completes, you can view the execution logs and test results.
+
+---

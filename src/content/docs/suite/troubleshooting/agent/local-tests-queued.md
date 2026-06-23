@@ -1,0 +1,28 @@
+---
+title: "Tests Permanently Queued in Local Executions"
+description: "Know the possible reasons why tests in local executions are permanently marked queued and learn steps to fix the issue by following the troubleshooting steps"
+sidebar:
+  order: 24.34
+---
+
+---
+
+If the execution status for your tests has been in the state Queued for a long time in local executions, there might be incorrect or incomplete configuration in the Testsigma Account or the local machine. This article discusses how to troubleshoot the test executions in a Queued state permanently. 
+
+---
+
+## **Troubleshooting Steps**
+
+1. Check if **Testsigma Agent** is active by navigating to **Agents**.
+
+![Agent](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ts_agent_1.png)
+
+If the agent is not running, you will see that the last request time was not recent. If the agent is running, the request time will be less than 1 minute ago. 
+
+
+2. If registered properly, check the **Test Plans/Dry Runs** tab from the **Usage details** page and confirm there are no queued tests in **Test Plans & Dry Runs** tab. If there are queued tests, wait for them to finish or stop them for your new tests to run.
+
+
+If there are no queued tests, please contact **support@testsigma.com** with latest Testsigma Agent logs. For more information, refer to the [documentation on sending agent logs](https://testsigma.com/docs/agent/troubleshooting/how-to-configure-agent-logs/). 
+
+---

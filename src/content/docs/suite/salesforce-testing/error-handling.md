@@ -1,0 +1,91 @@
+---
+title: "Error Handling Post Metadata Refresh"
+description: "On refreshing metadata, Testsigma identifies potential errors in test cases, step groups and elements linked to updates in the Salesforce organization structure"
+sidebar:
+  order: 28.94
+---
+
+---
+
+On metadata refresh, Testsigma identifies potential causes of test case failures due to Salesforce organization structure updates, such as removing a field. This article discusses steps to identify errors due to metadata refresh on test cases, step groups, and the element repository.
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that you have referred to:
+> - [Documentation on Salesforce Connected App](https://testsigma.com/docs/salesforce-testing/connected-app/).
+> - [Documentation on Salesforce Metadata](https://testsigma.com/docs/salesforce-testing/metadata-connections/) connected to Testsigma.
+> - [Documentation on refreshing Metadata](https://testsigma.com/docs/salesforce-testing/metadata-connections/#steps-to-refresh-metadata-connection).
+
+---
+
+
+## **Steps to Check Errors on Test Case List**
+
+1. From the **Dashboard**, navigate to **Create Tests > Test Cases**.
+  
+   ![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ehtcsnavg.png)
+
+2. You can find the impacted test cases highlighted on the **Test Cases** page with a Warning. 
+
+   ![Warning](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ehallerrorsotcp.png)
+
+3. Click on **View All** to filter only the deprecated test cases.
+
+   ![View All](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ehtcrpva.png)
+
+4. Alternatively, select the highlighted filter to display test cases that contain errors.
+
+   ![Filter](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ehfilter.png)
+
+---
+
+## **Steps to Resolve Errors in Test Case**
+
+1. Select the deprecated test case to view the errors.
+   
+   ![Erorrs](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/eheitcpage.png)
+
+2. Hover over to the highlighted step to check the error.
+   
+   ![Highligted](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/eheielemonts.png)
+
+3. Hover over the element and click on **View/Edit element**.
+   
+   ![View/Edit Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ehvoeelm.png)
+
+4. This will open the **Element details** overlay where you can find the details of deprecated elements. 
+   
+   ![Element Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ehelemerroverl.png)
+
+5. To resolve the error, replace them with new elements or disable/remove the test step as needed.
+
+
+:::note[NOTE]
+This feature is also available at the **Step Group** level. 
+:::
+
+---
+
+## **Handling Deprecated Elements**
+
+When you select **Metadata Refresh**, Testsigma downloads the metadata from your organization and identifies any fields that are no longer available due to customization.
+
+To resolve this, you need to:
+
+- **Disable** the step associated with the deprecated element.
+  
+  ![Disable Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Disable_Deprecated_Element.png)
+
+- Create a new element in the same context and replace the deprecated one by using the **Change Element** option.
+
+   ![Change Elemennt](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Change_Deprecated_Element.png)
+
+This ensures that tests continue to execute without issues.
+
+
+*For more information on creating elements for Salesforce apps, refer to the [documentation on creating elements while creating test steps](https://testsigma.com/docs/salesforce-testing/element-repos/#creating-elements-while-creating-test-steps).*
+
+---

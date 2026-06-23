@@ -1,0 +1,73 @@
+---
+title: "Run Browser in Incognito/Private mode"
+description: "Execute browser tests in incognito/private mode with Testsigma for secure and confidential testing environments, safeguarding your web application's privacy."
+search_keyword: ""
+sidebar:
+  order: 16.97
+---
+
+---
+Desired Capabilities allow you to customise the test environment by adding browser extensions, setting geographical locations, and bypassing alerts. Testsigma enables you to run tests in Incognito/Private mode to ensure a clean testing space. This guide helps you easily configure your testing environment for this mode.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#create-test-case).
+> - [Documentation on creating test plans](https://testsigma.com/docs/test-plans/overview/).
+> - [Documentation on managing Ad-Hoc runs](https://testsigma.com/docs/runs/adhoc-runs/).
+> - [Documentation on creating test machines](https://testsigma.com/docs/test-plans/manage-test-machines/) in Testsigma.
+
+---
+
+## **Desired Capabilities for Incognito or Private Browser**
+
+Use the following Desired Capabilities to enable Incognito or Private mode:
+
+|Capability - Key|Data Type|Value|Function|
+|---|---|---|---|
+|testsigma.privateBrowsing|Boolean|True|The selected browser will be launched in **incognito** or **private mode**|
+|testsigma.privateBrowsing|Boolean|False|The selected browser will be launched in **Normal mode**|
+|No Capability|Boolean|False|The selected browser will be launched in **Normal mode**| 
+
+:::note[NOTE]
+**Google Chrome**, **Mozilla Firefox**, and **Microsoft Edge** support the desired capabilities for Incognito/Private Tab Browsers.
+:::
+
+---
+
+## **Adding Desired Capabilities in Test Case**
+
+1. Click **Run** at the top right corner of the Test Case details page.
+![Run](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_1.png)
+
+2. In the **Ad-hoc Run** screen, you should select **Test Lab** and **Test Machine**. Then, you can click on **Desired Capabilities (Optional)**.
+![Desired Capabilities](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_2.png)
+
+3. Enter **testsigma.privateBrowsing** in the key. Select **Boolean** as the data type and enter **true** for the value in the Desired Capabilities field.
+![Enter the desired capability](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_3.png)
+
+4. Click **Run Now** to execute the Incognito/Private tab test steps. 
+![Add capabilities in Test Case](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_4.png)
+
+---
+
+## **Adding Desired Capabilities in Test Plan**
+
+1. Navigate to the **Test Machines & Suites Selection** tab on the **Create** or **Edit Test Plan** page.
+![Edit Test Plan](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_5.png)
+
+2. Clicking **Add Machine**/**Device** allows you to add a test machine. You can edit existing machines by clicking **Test Machine Settings**.
+![Test Machine Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_6.png)
+
+3. On the **Add** or **Edit test machine/device profile** screen, enter the **machine's name**, select a **lab**, and select a **machine** from the drop-down list. Click on **Desired Capabilities (Optional)**.
+![Desired Capabilities](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_7.png)
+
+4. Enter **testsigma.privateBrowsing** in the key. Select **Boolean** as the data type and enter **true** for the value in the Desired Capabilities field. Then click **Create**/ **Update** profile to save the configuration.
+![Enter the desired capability](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_8.png)
+
+5. Click **Create/Update Profile** to save and update the test plan. 
+![Add capabilities in Test Plan](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dc_9.png)
+
+---

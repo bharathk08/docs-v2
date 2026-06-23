@@ -1,0 +1,95 @@
+---
+title: "Manage Test Machines in Test Plans"
+description: "Easily manage test machines in Test Plans, which helps allocate tests to specific machines. Learn how to allot test machines for test plans in Testsigma."
+sidebar:
+  order: 8.22
+---
+
+
+---
+
+While creating a test plan, you must add at least one test machine to a test suite to develop it successfully. This article discusses how to manage test machines in test plans.
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test plan](https://testsigma.com/docs/test-plans/overview/).
+> - [Documentation on creating test suite](https://testsigma.com/docs/test-suites/overview/). 
+
+---
+
+## **Adding a Test Machine to an Existing Test Plan**
+
+1. Navigate to **Test Plans** and click on an existing test plan.
+
+![Test Plans](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_1.png)
+
+2. On the **Test Plan Details** page, click on **Add Machine**.
+
+![Add Machine](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_2.png)
+
+3. On **Add test machine/device profile** overlay, add **Name** and click on **Add/Remove Test Suites**.
+
+![Add Profile](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_3.png)
+
+4. Select test suites and click on **Add to Plan**.
+
+![Add to Plan](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_4.png)
+
+5. Click on **Create Machine**.
+
+![Create Machine](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_5.png)
+
+6. A New machine will be added to the test plan. 
+
+![Machine Added](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_6.png)
+
+Alternatively, you can also add new machines from the edit test plan page. 
+
+---
+
+## **Adding a Test Machine From Edit Test Plan Page**
+
+1. Navigate to **Test Plan** and click on an existing test plan.
+
+![Test Plans](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_1.png)
+
+2. On the test plan details page, click on **Edit**.
+
+![Edit](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_7.png)
+
+3. Go to **Add Test Suites & Link Machine Profiles** and click on **Test Machine**. 
+
+![Add Test Suites & Link Machines](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_8.png)
+
+4. From **Select test machine profiles** overlay, select test machines and click on **Save selections**. 
+
+![Select Test Machines](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_9.png)
+
+5. Go to **Test Plan Settings** and click on **Update**.
+
+![Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_10.png)
+
+6. Selected machines will be added to the test plan.
+
+---
+
+## **Delete Test Machine**
+
+1. Navigate to **Test Plan** and click on an existing test plan.
+
+![Test Plans](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_1.png)
+
+2. On the test plan details page, click on **Kebab Menu** and click on **Delete**.
+
+![Kebab Menu](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_11.png)
+
+3. On the **Delete Test Machine?** prompt, enter **DELETE** and click on **I understand, delete this Test Machine**.
+
+![Delete](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_manage_test_plans_12.png)
+
+
+---

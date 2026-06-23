@@ -1,0 +1,53 @@
+---
+title: "Creating a Windows Project & Application"
+description: "Testsigma supports various apps, including Web, Mobile Web, Android, iOS, Salesforce, Windows, & APIs | This article discusses how to create a Windows Advanced app"
+sidebar:
+  order: 33.2
+---
+
+---
+
+Creating a **Windows (Advanced)** application in Testsigma is simple!
+
+Go to one of your existing projects and create a new Windows (Advanced) application, or create a new project and add a Windows (Advanced) application to it. Testsigma supports various applications, including Web, Mobile Web, Android, iOS, Salesforce, Windows (Lite), and APIs.
+
+This article discusses creating a project and adding a Windows (Advanced) application to the project in Testsigma. 
+
+ℹ️ For more information, refer to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/) and [documentation on creating applications](https://testsigma.com/docs/projects/applications/). 
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> - Before you begin, ensure you have a licensed version of UFT One and a Windows machine with Testsigma Agent. 
+
+
+---
+
+## **Steps to Create a Windows (Advanced) Project and Application**
+
+1. Navigate to **Project** on the left-nav bar, and click on **New Project**.
+
+2. On the **New project** page,
+
+   - Enter **Project name** and choose **Windows (Advanced)** from the **Application type** dropdown.
+
+   - Enter **Application name**, **Version** and click on **Create**.
+
+:::note[NOTE]
+**Windows (Advanced)** allows you to create scriptless test cases to automate Window based applications. It uses Unified Functional Testing (UFT) tool to learn elements.
+:::
+
+3. You’ll be redirected to the **Agents** page of the project.
+
+:::note[NOTE]
+- You can also add a **Windows (Advanced)** application to an existing project by navigating to **Project > Project Settings > Applications > New Application**. 
+- Ensure the Allow Multiple Applications option is enabled before proceeding with creating a new application. 
+:::
+
+
+Here’s a quick GIF demonstrating how to create Windows applications in Testsigma.
+
+![Workflow of Project Creation](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/createwindowsapp.gif)
+
+---

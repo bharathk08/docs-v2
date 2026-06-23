@@ -1,0 +1,45 @@
+---
+title: "Bypass the Missing SSL Certificate Error?"
+description: "How to bypass the missing SSL certificate error while automating browser tests using Testsigma"
+sidebar:
+  order: 9.83
+---
+
+---
+
+During the active development of a website, the dev environment might not always have an SSL certificate. It is okay to ignore this error and bypass the issue temporarily during test execution since the application is not used in production and the application data is not relevant.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on configuring desired capabilities](https://testsigma.com/docs/desired-capabilities/overview/).
+
+---
+
+## **Applying Desired Capabilities**
+In this case, we can use Desired Capabilities to bypass certificate errors. Here are the few desired capabilities for the specific browsers to overcome certificate errors:
+
+|Browser|Capability Name(Key)|Format|Value|
+|:-----|:-------|:-------|:-------|
+|**Google Chrome**|**acceptInsecureCerts**|**Boolean**|**True**|
+|**Mozilla Firefox**|**accept_untrusted_certs**|**Boolean**|**True**|
+|**IE and Safari**|**capabilityType.ACCEPT_SSL_CERTS**|**Boolean**|**True**|
+
+The image below shows how to add desired capabilities for the Chrome browser in a Test Plan Run in Testsigma.
+![Bypass SSL Capability](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_bypass_1.png)
+
+---
+
+## **Bypassing Manually**
+
+1. Navigate to the SSL issue website and click on **Advanced**. 
+   ![Not Private Error](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ssl1.png)
+   
+2. Click on **Proceed to < website-url > (unsafe)** link
+   ![Not Private Error Advanced](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ssl2.png)
+
+You will be directed to the original website.
+
+---

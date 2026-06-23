@@ -1,0 +1,184 @@
+---
+title: "StringFunctions Function Type"
+pagetitle: "Transform Text Easily with StringFunctions"
+description: "StringFunctions in Testsigma enable dynamic string manipulation, including concatenation and variable substitution, which is ideal for flexible data generation."
+sidebar:
+  order: 5.53
+---
+
+---
+
+StringFunctions allow you to manipulate and transform text strings effortlessly. These functions enable you to combine strings and perform dynamic substitutions of placeholders with actual values, supporting various testing and data generation needs.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#create-test-case).
+> - [Documentation on creating test steps](https://testsigma.com/docs/test-cases/create-test-steps/overview/).
+> - [Documentation on adding data generators](https://testsigma.com/docs/test-data/types/data-generator/#add-data-generators-in-test-steps) in test steps.
+> - [Documentation on adding parameters](https://testsigma.com/docs/test-data/types/parameter/).
+> - [Documentation on adding runtime](https://testsigma.com/docs/test-data/types/runtime/).
+> - [Documentation on creaing environments](https://testsigma.com/docs/test-data/types/environment/).
+
+---
+
+## **Selecting StringFunctions as a Function Type for Data Generator**
+
+1. From the left navigation bar, go to **Create Tests > Test Cases** and create a new test case.
+   ![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_address_1.png)
+
+2. Use **NLP** to create a **new step** in the test case and include a placeholder for **test data**.
+   ![NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_stringfunction_1.png)
+
+3. Click on the **test data** placeholder. From the **Test Data Types** dropdown menu, select the **! Data Generator** option.
+   ![Data Generator](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_stringfunction_2.png)
+
+4. On the **! Data Generators** overlay screen, select the **Type** to **Default**. This will enable you to use a collection of built-in test data generators.
+   ![Default](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_stringfunction_3.png)
+
+5. Select **StringFunctions** from the **Function Type** dropdown list. 
+   ![select stringfunctions function type from data generators](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_stringfunction_4.png)
+
+:::note[NOTE]
+This action will display a list of built-in functions associated with the StringFunctions function type, enabling you to select the appropriate function based on your requirements.
+:::
+
+---
+
+## **Concat**
+
+- Enables you to concatenate multiple strings or data fields into a single string output, allowing you to combine strings to form composite data inputs.
+
+<style>
+  .example-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #f9f9f9;
+  }
+  .example-title {
+    color: #2d572c;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+  }
+  .example-title span {
+    margin-right: 0.5em;
+  }
+  .example-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .example-table th, .example-table td {
+    border: 1px solid #ddd;
+    padding: 0.75em;
+    text-align: left;
+    word-break: break-all; /* Ensures long words are wrapped */
+  }
+  .example-table th {
+    background-color: #f2f2f2;
+  }
+</style>
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <table class="example-table">
+    <tr>
+      <th>Inputs</th>
+      <th>Outputs</th>
+    </tr>
+    <tr>
+      <td><b>Test Data 1</b>: Hello<br><b>Test Data 2</b>: World</td>
+      <td>HelloWorld</td>
+    </tr>
+    <tr>
+      <td><b>Test Data 1</b>: @ User1</td>
+      <td>User123</td>
+    </tr>
+    <tr>
+      <td><b>Test Data 1</b>: $ Data</td>
+      <td>DataGeneration</td>
+    </tr>
+    <tr>
+      <td><b>Test Data 1</b>: * Travel</td>
+      <td>https://simply-travel.testsigma.com/</td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## **Param Substituter**
+
+- Allows you to replace placeholders in the input string with their respective values. 
+- It supports Parameters, Runtime Variables, and Environment Variables, enabling dynamic substitution of variables into predefined strings for flexible data generation.
+
+<style>
+  .example-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #f9f9f9;
+  }
+  .example-title {
+    color: #2d572c;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+  }
+  .example-title span {
+    margin-right: 0.5em;
+  }
+  .example-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .example-table th, .example-table td {
+    border: 1px solid #ddd;
+    padding: 0.75em;
+    text-align: left;
+    word-break: break-all; /* Ensures long words are wrapped */
+  }
+  .example-table th {
+    background-color: #f2f2f2;
+  }
+</style>
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <table class="example-table">
+    <tr>
+      <th>Inputs</th>
+      <th>Outputs</th>
+    </tr>
+    <tr>
+      <td><b>String</b>: I am @|name|. Born on *|dob| at $|place|</td>
+      <td>I am John. Born on 01/01/1990 at New York</td>
+    </tr>
+    <tr>
+      <td><b>String</b>: Welcome, @|username|! Today is *|date|.</td>
+      <td>"Welcome, User123! Today is 2024-07-18."</td>
+    </tr>
+    <tr>
+      <td><b>String</b>: Order ID: #|orderId|, Status: *|status|"</td>
+      <td>Order ID: #5678, Status: Shipped</td>
+    </tr>
+    <tr>
+      <td><b>String</b>: Hello @|firstName|, your appointment is on *|appointmentDate|</td>
+      <td>Hello Alice, your appointment is on 2024-07-25</td>
+    </tr>
+  </table>
+</div>
+
+
+---
+
+

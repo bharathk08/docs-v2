@@ -1,0 +1,79 @@
+---
+/**
+ * Custom Sidebar — replaces Starlight's default.
+ * - Unwraps the top-level Suite/Arcus group so sections appear directly
+ * - Adds "Welcome to X Docs" pill at the top
+ */
+import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import SidebarSublist from './SidebarSublist.astro';
+
+const { sidebar } = Astro.locals.starlightRoute;
+const pathname = Astro.url.pathname;
+const isArcus = pathname.includes('/arcus/');
+const productLabel = isArcus ? 'Arcus' : 'Suite';
+
+// True when the current page lives in the API reference section
+const isApiPage = pathname.includes('/arcus/api-reference/') || pathname.includes('/suite/api/');
+
+function extractProductSections(entries: any[]): any[] {
+  const group = entries.find(
+    (e: any) => e.type === 'group' && e.label.toLowerCase() === productLabel.toLowerCase()
+  );
+  return group ? group.entries : entries;
+}
+
+const allSections = extractProductSections(sidebar);
+
+// On API pages: show only the API Reference section.
+// On doc pages: hide API Reference (it lives under the API tab).
+// (The Changelog tab uses a splash layout with no sidebar.)
+const sections = isApiPage
+  ? (() => {
+      const apiEntry = allSections.find(
+        (e: any) => e.type === 'group' && e.label === 'API Reference'
+      );
+      return apiEntry ? [apiEntry] : allSections;
+    })()
+  : allSections.filter(
+      (e: any) => !(e.type === 'group' && e.label === 'API Reference')
+    );
+---
+
+{!isApiPage && (
+  <div class="ts-sidebar-welcome-wrap">
+    <a class="ts-sidebar-welcome" href={`/docs/${productLabel.toLowerCase()}/`}>Welcome to {productLabel} Docs</a>
+  </div>
+)}
+
+<SidebarPersister>
+  <SidebarSublist sublist={sections} />
+</SidebarPersister>
+
+<div class="md:sl-hidden">
+  <MobileMenuFooter />
+</div>
+
+<style>
+  .ts-sidebar-welcome-wrap {
+    padding: 14px 12px 0;
+  }
+  .ts-sidebar-welcome {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ts-text-primary) !important;
+    text-decoration: none !important;
+    background: #ffffff;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: left;
+    letter-spacing: -0.01em;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .ts-sidebar-welcome:hover {
+    background: var(--ts-hover-row);
+    border-color: var(--ts-accent);
+  }
+</style>

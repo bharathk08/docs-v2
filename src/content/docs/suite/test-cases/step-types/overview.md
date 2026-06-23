@@ -1,0 +1,51 @@
+---
+title: "Test Step Types - Overview"
+pagetitle: "Test Step Types"
+description: "There are test step types that logically simulate user interactions on a web/android/iOS screen. This article discusses test step types available in Testsigma"
+sidebar:
+  order: 4.32
+---
+
+---
+
+An automated test case is a step-by-step logic that simulates user interactions on a web browser/android/iOS screen or in the back end as an API. The step-by-step logic is implemented via test steps in Testsigma. This article gives an overview of the different types of test steps that can be created in Testsigma.
+
+---
+
+<p id="prerequisites">Prerequisites</p>
+
+- You should have Testsigma account.
+
+
+---
+
+## **Steps to Add Test Step Types**
+
+1. From the left navigation bar, go to **Create Tests > Test Cases** and create a new test case. 
+
+![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_step_type_1.png)
+
+2. In the Test Case Details page, click on the option on the left side of the test step.
+
+![Option](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_step_type_2.png)
+
+3. This will open a side panel from where you can choose different test steps.
+
+![Side Panel](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_step_type_3.png)
+
+You can choose the type of test step you want to add to your test case from the panel. Read more about the different test steps and how to create them in the links below:
+
+- [Documentation on using natural language](https://testsigma.com/docs/test-cases/step-types/natural-language/).
+
+- [Documentation on using REST API](https://testsigma.com/docs/test-cases/step-types/rest-api/).
+
+- [Documentation on using step groups](https://testsigma.com/docs/test-cases/step-types/step-group/).
+
+- [Documentation on using For Loop](https://testsigma.com/docs/test-cases/step-types/for-loop/).
+
+- [Documentation on using While Loop](https://testsigma.com/docs/test-cases/step-types/while-loop/).
+
+- [Documentation on using If Condition](https://testsigma.com/docs/test-cases/step-types/if-condition/).
+
+
+---

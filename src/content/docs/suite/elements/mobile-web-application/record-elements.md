@@ -1,0 +1,62 @@
+---
+title: "Record Multiple Elements Using Recorder"
+description: "Element path or locators plays an important role in Automation Testsing. Learn how to record elements for a mobile web application in Testsigma"
+sidebar:
+  order: 6.61
+---
+
+---
+
+Quickly capture elements for mobile web applications! 📱
+
+Using the **Testsigma Recorder**, you can swiftly capture elements in mobile web applications using Chrome Developer Tools 🛠️. This article discusses how to capture elements for mobile web applications. 
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+>
+> Before you begin, ensure that:
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - You have referred to the [documentation on creating applications](https://testsigma.com/docs/projects/applications/).  
+> - You have installed the Testsigma Chrome Extension. For more information on installing Testsigma Chrome Extension, refer to the [documentation on Testsigma Chrome Extension](https://testsigma.com/docs/test-step-recorder/install-chrome-extension/). 
+> - You have a mobile web application that is available for testing.
+
+
+---
+
+## **Steps to Record Elements for Mobile Web Apps**
+
+1. From the left navigation bar, go to **Create Tests > Elements**, and click **Record**.
+![Elements](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_mw_1.png)
+
+2. This will open a new window. Enter the URL from which you want to capture the elements. The **Testsigma Recorder** will appear and be ready to start recording. In this case, we are recording elements for the 1mg website.
+![New Window](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mwaelmcdt.png)
+
+3. Press **F12** to open **Chrome Developer Tools** and dock the tools to the right side of the window for a better experience.
+![Dev Tools](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mwaelmcdo.png)
+
+:::note[NOTE]
+Make sure you have selected **Companion Mode** located in the action bar at the top.
+![Companion Mode](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/compmode.png)
+:::
+
+4. Click on **>>** and select **Testsigma Recorder** from the dropdown menu. 
+![Testsigma Recorder](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mwaelmstsrec.png)
+
+5. This will open **Testsigma Recorder** on the **Developer Tools** screen.
+![Recorder on Dev Tools](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mwaelmtsrecodt.png)
+
+:::note[NOTE]
+Select the dimension from pre-defined devices on which you want to record the elements. If the device required for your testing is not listed, you can add a custom device by selecting **Edit** from the **Dimensions** dropdown menu and clicking **Add custom device**.
+
+![Add Custom Device](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mwatccd.png)
+Some devices might have unique characteristics that will affect element display and interaction, and adding a custom device required for your testing is necessary to identify and resolve these issues.
+:::
+
+
+6. Once the dimension is selected, click directly on the elements to capture them, and click **Stop** when you are done capturing the required elements.
+![Record Elements](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mwaelmrelms.png)
+
+---

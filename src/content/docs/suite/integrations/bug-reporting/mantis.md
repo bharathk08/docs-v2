@@ -1,0 +1,58 @@
+---
+title: "Mantis Bug Reporting Integration"
+description: "Mantis Bug Reporting integration helps you in creating issues in Mantis from the Testsigma. Learn how to integrate Testsigma with Mantis for real-time bug reporting"
+sidebar:
+  order: 17.34
+---
+
+---
+
+Testsigma Mantis integration lets you create issues in Mantis directly from the Testsigma app. With just one click, you can push annotated issues to a project of your choice, assign them to a teammate, and attach screenshots, all while in the middle of a test session in Testsigma. This article discusses how to integrate Mantis with Testsigma account.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that: 
+> - To integrate Mantis with Testsigma, we need the following information from your Mantis Account
+>    - **Account URL**: Your organization’s Mantis account URL
+>    - **API Key**: <a href="https://mantisbt.org/documentation.php" rel="nofollow">Mantis API Token</a>
+> - You have referred to the [documentation on creating test plan runs and results](https://testsigma.com/docs/runs/test-plan-executions/).
+
+---
+
+
+## **Integrating Mantis with Testsigma**
+
+1. Navigate to **Settings > Integrations**.
+   ![Integrations](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mstinav.png)
+
+2. Enable toggle on **Mantis** widget.
+   ![Mantis Widget](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_mantis_2.png)
+
+3. On the **Mantis Bug Tracker details** prompt, **Account URL**, **API Key** and click on **Save & Enable**.
+   ![Mantis Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_mantis_3.png)
+
+
+---
+
+## **Creating a Bug**
+
+1. Navigate to **Run Results > Test Case Result**, where you want to add a bug.
+   ![Run Results](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tcresultyt.png)
+
+2. Click on **Report Bug**.
+   ![Report Bug](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/reportbugyt.png)
+
+3. On the **Report** overlay, click the **Mantis** icon.
+  ![Sample Task reported from Testsigma Bug Reporting Integration in Test Results pag](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_mantis_4.png)
+
+4. On the **Report** overlay, click **Report Bug**.
+   ![Report bug](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_mantis_5.png)
+
+:::note[NOTE]
+- If you want to link to an existing issue on **Mantis**, click on the **Link to Issue** button, search for a current issue in the search field, and click on Link Issue to add a link to an existing Issue on **Mantis**. Otherwise, enter the bug details in the form as required.
+- When the bug is created, some additional details regarding the Test Result, such as the test execution video and step screenshots, are added automatically by Testsigma. This helps the developer who checks the issue in **Mantis** better understand the issue/bug with more context.
+:::
+
+---

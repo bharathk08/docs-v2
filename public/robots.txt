@@ -1,0 +1,13 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  STAGING robots.txt — blocks search engines from indexing the preview site.
+#
+#  WHY: while this is a staging deploy (e.g. on *.netlify.app or *.vercel.app),
+#  you do NOT want Google to index it. If it gets indexed it competes with your
+#  live docs for the same content and can hurt rankings.
+#
+#  ⚠️  AT LAUNCH (when this becomes the real testsigma.com/docs): DELETE the two
+#  lines below (or replace with your real robots rules) so the site CAN be
+#  indexed. This is the single most important toggle on cutover day.
+# ─────────────────────────────────────────────────────────────────────────────
+User-agent: *
+Disallow: /

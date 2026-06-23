@@ -1,0 +1,297 @@
+---
+export interface Props {
+  product: 'suite' | 'arcus';
+}
+const { product } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// ── Suite sections (matches screenshots exactly) ───────────────────────────
+const SUITE_SECTIONS = [
+  {
+    heading: 'Get started',
+    cols: 2,
+    cards: [
+      { title: 'Introduction to Testsigma', desc: 'Set up your account, learn the core concepts, and run your first automated test in minutes.', href: `${base}suite/getting-started/introduction-cloud/`,     icon: 'book',     color: '#00B2BD' },
+      { title: 'Atto AI Coworker',          desc: 'Meet Atto — the AI coworker that plans, generates, and continuously maintains your test suite.',      href: `${base}suite/atto/generative-ai/overview/`,            icon: 'sparkles', color: '#5C27F5' },
+    ],
+  },
+  {
+    heading: 'AI Agents',
+    cols: 3,
+    cards: [
+      { title: 'Generator Agent',  desc: 'Converts Jira stories, requirements, and Figma designs into complete test cases automatically.', href: `${base}suite/ai-agents/generator/`,    icon: 'sparkles', color: '#00B2BD' },
+      { title: 'Analyzer Agent',   desc: 'Identifies coverage gaps and surfaces actionable insights after every run.',                     href: `${base}suite/ai-agents/analyzer/`,    icon: 'chart',    color: '#E58086' },
+      { title: 'Auto-Healing',     desc: 'Detects and repairs broken locators automatically whenever your application changes.',           href: `${base}suite/auto-healing/intro/`,    icon: 'pulse',    color: '#1F8A5B' },
+    ],
+  },
+  {
+    heading: 'Test Authoring',
+    cols: 3,
+    cards: [
+      { title: 'Test Cases', desc: 'Create and manage test steps using natural language, the recorder, or step groups.',         href: `${base}suite/test-cases/create-test-cases/features-and-scenarios/`, icon: 'checks',   color: '#2684FF' },
+      { title: 'Elements',   desc: 'Capture, manage, and reuse UI elements and locators across your entire test suite.',         href: `${base}suite/elements/overview/`,                                   icon: 'target',   color: '#D9730D' },
+      { title: 'Test Data',  desc: 'Drive tests with parameters, runtime values, data profiles, and built-in data generators.', href: `${base}suite/test-data/folder-structure-for-test-data-profiles/`,  icon: 'database', color: '#7A5AF8' },
+    ],
+  },
+  {
+    heading: 'Execution & Integration',
+    cols: 3,
+    cards: [
+      { title: 'Runs & Reports',    desc: 'Trigger ad-hoc runs, schedule test plans, and analyze results with rich dashboards.',                    href: `${base}suite/runs/adhoc-runs/`,         icon: 'play',   color: '#0E9F6E' },
+      { title: 'Integrations',      desc: 'Connect Testsigma to Jira, Slack, GitHub, CI/CD pipelines, and your device labs.',                       href: `${base}suite/integrations/overview/`,   icon: 'plug',   color: '#FF6B57' },
+      { title: 'Testsigma Agent',   desc: 'Run tests on local machines and physical devices with the lightweight Testsigma Agent.',                  href: `${base}suite/agent/overview/`,          icon: 'server', color: '#42526E' },
+    ],
+  },
+];
+
+// ── Arcus sections ─────────────────────────────────────────────────────────
+const ARCUS_SECTIONS = [
+  {
+    heading: 'Get started',
+    cols: 2,
+    cards: [
+      { title: 'Overview',         desc: 'Understand what Arcus is and how test management fits with the rest of Testsigma.', href: `${base}arcus/introduction/overview/`,        icon: 'book',   color: '#5C27F5' },
+      { title: 'Getting Started',  desc: 'Create a project, add your first test cases, and run a test plan in minutes.',      href: `${base}arcus/introduction/getting-started/`, icon: 'rocket', color: '#00B2BD' },
+    ],
+  },
+  {
+    heading: 'Projects & Test Cases',
+    cols: 3,
+    cards: [
+      { title: 'Manage Projects',   desc: 'Organize work into projects, each with its own cases, suites, and members.',          href: `${base}arcus/projects/manage-projects/`,    icon: 'grid',     color: '#2684FF' },
+      { title: 'Manage Test Cases', desc: 'Create, clone, label, and version manual and automated test cases.',                   href: `${base}arcus/test-cases/manage-test-cases/`, icon: 'checks',   color: '#0E9F6E' },
+      { title: 'Folders & Versions',desc: 'Structure your library and keep tests aligned with every release.',                   href: `${base}arcus/test-cases/folders/`,           icon: 'folder',   color: '#D9730D' },
+    ],
+  },
+  {
+    heading: 'Atto (Agentic AI)',
+    cols: 3,
+    cards: [
+      { title: 'Generator Agent', desc: 'Turn Jira, Azure DevOps, ClickUp, and Confluence into ready-to-run test cases.',          href: `${base}arcus/atto/generator-agent/generate-tests-with-prompts/`,  icon: 'sparkles', color: '#5C27F5' },
+      { title: 'Sprint Planner',  desc: 'Map your sprint to coverage and generate tests for any gaps in one click.',               href: `${base}arcus/atto/sprint-planner/manage-sprints/`,                icon: 'target',   color: '#E58086' },
+      { title: 'Bug Reporter',    desc: 'File richly-detailed bugs from failed runs straight into your tracker.',                  href: `${base}arcus/atto/bug-reporter-agent/report-bugs/`,              icon: 'file',     color: '#1F8A5B' },
+    ],
+  },
+  {
+    heading: 'Execution & Integration',
+    cols: 3,
+    cards: [
+      { title: 'Test Runs & Plans', desc: 'Execute manually or automated, schedule plans, and track every result.',          href: `${base}arcus/test-runs/create-test-runs/`,  icon: 'play',   color: '#0E9F6E' },
+      { title: 'Integrations',      desc: 'Connect Jira, Azure DevOps, and ClickUp for two-way traceability.',              href: `${base}arcus/integrations/jira/`,           icon: 'plug',   color: '#FF6B57' },
+      { title: 'API Keys',          desc: 'Authenticate the Arcus REST API and trigger plans from CI/CD.',                   href: `${base}arcus/settings/api-keys/`,           icon: 'shield', color: '#42526E' },
+    ],
+  },
+];
+
+// ── Icon paths (Lucide 24×24) ─────────────────────────────────────────────
+const ICONS: Record<string, string> = {
+  book:     '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  sparkles: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+  chart:    '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  pulse:    '<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
+  checks:   '<path d="M20 6 9 17l-5-5"/>',
+  target:   '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
+  play:     '<polygon points="5 3 19 12 5 21 5 3"/>',
+  plug:     '<path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8H6a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2"/>',
+  server:   '<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>',
+  rocket:   '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>',
+  grid:     '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  folder:   '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  file:     '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>',
+  shield:   '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+};
+
+// Arrow SVG (used in card footer)
+const ARROW = '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>';
+
+const sections = product === 'arcus' ? ARCUS_SECTIONS : SUITE_SECTIONS;
+---
+
+<div class="ts-home">
+  {sections.map(section => (
+    <section class="ts-section">
+      <h2 class="ts-section-heading">{section.heading}</h2>
+      <div class={`ts-grid ts-grid--${section.cols}`}>
+        {section.cards.map(card => (
+          <a href={card.href} class="ts-card" style={`--cc:${card.color}`}>
+            {/* Colored header zone with decorative circles */}
+            <div class="ts-card-header">
+              <span class="ts-circle ts-circle-lg" aria-hidden="true"></span>
+              <span class="ts-circle ts-circle-md" aria-hidden="true"></span>
+              <span class="ts-circle ts-circle-sm" aria-hidden="true"></span>
+              {/* Floating white icon box */}
+              <span class="ts-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true"
+                     set:html={ICONS[card.icon] ?? ICONS.file} />
+              </span>
+            </div>
+            {/* White content zone */}
+            <div class="ts-card-body">
+              <div class="ts-card-title-row">
+                <span class="ts-card-title">{card.title}</span>
+                <svg class="ts-card-arrow" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true" set:html={ARROW} />
+              </div>
+              <p class="ts-card-desc">{card.desc}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+</div>
+
+<style>
+  /* ── Page wrapper ── */
+  .ts-home {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+    padding-bottom: 80px;
+  }
+
+  /* ── Section heading ── */
+  .ts-section-heading {
+    font-size: 22px;
+    font-weight: 700;
+    color: #091E42;
+    margin: 0 0 20px;
+    padding: 0;
+    border: none;
+    line-height: 1.2;
+  }
+
+  /* ── Grid ── */
+  .ts-grid {
+    display: grid;
+    gap: 24px;
+  }
+  .ts-grid--2 { grid-template-columns: 1fr 1fr; }
+  .ts-grid--3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  /* ── Card shell ── */
+  .ts-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    border: 1px solid #DFE1E6;
+    border-top: 2.5px solid var(--cc);
+    overflow: hidden;
+    text-decoration: none;
+    background: #fff;
+    transition: box-shadow 0.18s;
+  }
+  .ts-card:hover {
+    box-shadow: 0 6px 24px rgba(9,30,66,0.14);
+  }
+
+  /* ── Colored header zone ── */
+  .ts-card-header {
+    position: relative;
+    height: 196px;
+    background: color-mix(in srgb, var(--cc) 9%, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Decorative circles */
+  .ts-circle {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .ts-circle-lg {
+    width: 152px;
+    height: 152px;
+    top: -28px;
+    left: -28px;
+    background: color-mix(in srgb, var(--cc) 20%, transparent);
+  }
+  .ts-circle-md {
+    width: 88px;
+    height: 88px;
+    bottom: 18px;
+    left: 52px;
+    background: color-mix(in srgb, var(--cc) 15%, transparent);
+  }
+  .ts-circle-sm {
+    width: 28px;
+    height: 28px;
+    bottom: 20px;
+    right: 24px;
+    background: color-mix(in srgb, var(--cc) 28%, transparent);
+  }
+
+  /* Floating white icon box */
+  .ts-icon-box {
+    position: relative;
+    z-index: 1;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 2px 16px rgba(9,30,66,0.13);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cc);
+    flex-shrink: 0;
+  }
+
+  /* ── White content zone ── */
+  .ts-card-body {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .ts-card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .ts-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #091E42;
+    line-height: 1.3;
+  }
+
+  .ts-card-arrow {
+    color: var(--cc);
+    flex-shrink: 0;
+    opacity: 0.85;
+    transition: transform 0.15s;
+  }
+  .ts-card:hover .ts-card-arrow {
+    transform: translateX(3px);
+  }
+
+  .ts-card-desc {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #42526E;
+    margin: 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 64rem) {
+    .ts-grid--3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 44rem) {
+    .ts-grid--2,
+    .ts-grid--3 { grid-template-columns: 1fr; }
+    .ts-card-header { height: 160px; }
+  }
+</style>

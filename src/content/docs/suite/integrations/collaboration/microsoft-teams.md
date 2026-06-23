@@ -1,0 +1,58 @@
+---
+title: "Integrating MS Team with Testsigma"
+metsdesc: "Configure Microsoft Teams channel to receive notifications about Test Results in real-time from Testsigma Application | Testsigms Integration with MS Team"
+sidebar:
+  order: 17.22
+---
+
+---
+
+Integrating Testsigma with Microsoft Teams is similar to integrating with other collaboration tools like Google Chat and Slack.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that:
+> - You have a valid <a href="https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook" rel="nofollow">Microsoft Teams Connector</a> 
+> - You have referred to the [documentation on creating test plans](https://testsigma.com/docs/test-plans/overview/#steps-to-create-a-test-plan).
+
+---
+
+## **Steps to Integrate Microsoft Teams with Testsigma**
+
+
+1. Navigate to **Settings > Integrations**.
+   ![Integrations](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/mstinav.png)
+
+2. Enable toggle on **MS Teams** widget.
+   ![MS Teams Toggle](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_teams_1.png)
+
+3. On the **MS Teams details** prompt, enter **Name**, **Connector URL** and click on **Save & Enable**.
+   ![Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_teams_2.png)
+
+
+---
+
+## **Enabling MS Teams Notifications in Test Plan**
+
+
+Once the MS Teams integration is added, you can enable the MS Teams notifications for your test plans while editing any existing ones or creating a new one.
+
+
+1. On **Create Test Plan/Edit Test Plan** page, click on **Test Plan Settings**. 
+   ![TP Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_teams_3.png)
+
+2. Enable **Send Notification** toggle.
+![Send Notification](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_teams_4.png)
+
+3. Under the **Notify On** section, select the status for which you want to be notified. You can select multiple statuses from the list.
+![Status](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_teams_5.png)
+
+4. Under the **Also send messages to** dropdown, select **MS Teams**.
+![MS Teams](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_teams_6.png)
+
+Here’s what the notification looks like on MS Teams:
+![MS Teams notification for Test Results](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ms-teams-testsigma-notifications.png)
+
+---

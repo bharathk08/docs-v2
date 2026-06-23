@@ -1,0 +1,102 @@
+---
+title: "Install Testsigma Recorder Extension: Chrome"
+description: "To record test steps in chrome, you need to install Testsigma Recorder Chrome Extension | This article discusses how to download and install Testsigma chrome extension"
+sidebar:
+  order: 7.11
+---
+
+---
+
+With Testsigma's Chrome extension, users can quickly record test steps by capturing user interactions, such as clicking buttons, entering text, navigating through pages, etc. The extension will also help users create elements interacting with the application during testing. This article explains how to install Testsigma's Chrome extension. 
+
+---
+
+## **Steps to Install Chrome Extension**
+
+1. Go to <a href="https://chrome.google.com/webstore/detail/testsigma-recorder/epmomlhdjfgdobefcpocockpjihaabdp" rel="nofollow">Testsigma Recorder</a>.
+
+2. Click on **Add to Chrome**.
+   ![Add to Chrome](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_1.png)
+
+3. On the permission prompt, click on **Add extension**.
+   ![Add Extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_2.png)
+
+4. On successful installation, the following message will appear:
+   ![Message](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_3.png)
+
+*For more information on creating test steps using recorder, refer to the [documentation on recording test steps](https://testsigma.com/docs/test-cases/create-test-steps/overview/#creating-test-steps-using-test-recorder).*
+
+
+---
+
+## **Testsigma Recorder Extension Options**
+
+
+1. Navigate to **Extensions > Manage Extensions**. 
+   ![Manage Extensions](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Manage_Extensions_Chrome.png)
+
+
+2. Click **Details** on the **Testsigma Widget**.
+   ![Recorder Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Recorder_Extension_Details.png)
+
+
+3. On the **Testsigma Recorder** menu, click **Extension Options**.
+   ![Extension Options](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Extension_Options_Recorder.png)
+
+
+4. You can see the following options:
+   
+   - Enable Inspect Popover on Elements
+   
+   - Disable Recording Mouse Scroll
+   
+   - Enable Developer Mode 
+
+![All Options](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Extension_Options_TSRecorder.png)
+
+
+### **a. Enable Inspect Popover on Elements** 
+
+This option highlights elements with a green rectangular box during web recording, which helps you with visual guidance for accurate element selection. 
+![Popover](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/PopOver_Option.png)
+
+### **b. Disable Recording Mouse Scroll**
+
+This option will prevent the automatic addition of scroll NLPs in test cases, which helps you create clean test cases, especially for static applications without infinite loading.
+![Mouse Scroll NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Scroll_NLP_Step.png)
+
+:::note[NOTE]
+The above two options will be selected by default.
+:::
+
+
+### **c. Enable Developer Mode**
+
+Activates Browser Developer Mode for advanced debugging, enabling element inspection, troubleshooting locators, and gaining deeper insights into application behavior.
+
+
+---
+
+## **Record Steps in Incognito Mode**
+
+You can record steps in incognito mode by enabling the "Allow in Incognito" option in the Testsigma manage extension. This feature lets you record steps privately without storing browsing history or cookies. Follow the steps below to enable the “Allow in Incognito” option in the Testsigma extension in Chrome browser.
+
+---
+
+### **Extension Settings for Incognito Mode**
+
+
+**1. Open the Testsigma Extension:** Right-click the Testsigma Extension icon in the browser toolbar.
+
+   ![Testsigma Icon](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_4.png)
+
+
+**2. Access Extension Settings:** From the extension menu, select **Manage extension**.
+
+   ![Manage Extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_5.png)
+
+**3. Enable Allow in Incognito:** Toggle on **Allow in Incognito** option.
+
+   ![Enable Toggle](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_6.png)
+
+---

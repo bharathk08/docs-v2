@@ -1,0 +1,51 @@
+---
+title: "Automate Add Chrome Extension Functionality"
+description: "Learn how to add Chrome extension to one of your test sessions in Testsigma Application | Add a Chrome Extension to your Automation Session in 2 simple steps"
+search_keyword: ""
+sidebar:
+  order: 16.9
+---
+
+
+---
+
+
+You can add a Chrome Extension to your automation session in 2 simple steps:
+
+1. Obtain the CRX/CRX3 file for the extension/s and get the path.
+
+2. Specify the Extensions path in the Desired Capabilities.
+
+
+---
+
+
+## **Obtaining the CRX file for the extension**
+
+1. If you already have the CRX file, you can skip to the next step.
+
+2. If you have the chrome extension folder(uncompressed) in your local machine, you can compile it to CRX format by using the Google Chrome Browser installed in your machines. See **<a href="https://support.testsigma.com/support/solutions/articles/32000027752-compiling-chrome-extension-folder-to-crx-crx3-format" rel="nofollow">Compiling chrome extension folder to CRX/CRX3 format</a>**.
+
+3. If you don't have the chrome extension URL from Chrome Web Store, you can use <a href="https://chrome.google.com/webstore/detail/testsigma/epmomlhdjfgdobefcpocockpjihaabdp" rel="nofollow">https://chrome-extension-downloader.com/</a> to download the file. Search for the extension, open the extension details page and copy the page URL.
+
+---
+
+## **Specify the Extensions path in the Desired Capabilities**
+
+Add an execution configuration in Testsigma and add the following desired capability:
+
+|Name|Data Type|Value|
+|---|---|---|
+|goog:chromeOptions|String|{"extensions":["path/to/extension.crx"]}|
+
+To add more than one extension, give the value in the format:
+
+**{"extensions":["path/to/extension1.crx"],["path/to/extension2.crx"]}**
+
+That's all we need to do in order to add an extension to an Automation Session in Testsigma using Desired Capabilities.
+
+Once the execution starts, it will automatically take the file and install it to the Browser. 
+
+
+
+---

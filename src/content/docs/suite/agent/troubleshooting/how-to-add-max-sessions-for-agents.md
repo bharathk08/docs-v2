@@ -1,0 +1,32 @@
+---
+title: "How to Add Max Sessions for Agents?"
+description: "Specify the maximum number of sessions for the local machine while setting up the local agent. This helps limit parallel executions & avoids slowing down of machine"
+search_keyword: "how-to-add-max-sessions-for-agents-?"
+sidebar:
+  order: 12.94
+---
+
+---
+
+When adding the Testsigma agent, you can specify the maximum number of sessions for the local machine. This helps limit parallel executions and avoids slowing down the machine. This article discusses how to specify the number of sessions for the local machine.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that you have referred to:
+> - [Documentation on registering agents](https://testsigma.com/docs/agent/setup-on-windows-mac-linux/#register-the-testsigma-agent). Please Contact Testsigma support to  enable this feature. 
+
+---
+
+## **Steps to Add Max Sessions for Agents**
+
+1. Set up the agent and click on **Register**. This action will open the **Add New Agent** dialog.
+
+2. On the **Add New Agent** dialog, you'll find the **Max sessions for this machine** field. Enter the number of maximum sessions for the registering machine in the provided text box.
+
+:::note[NOTE]
+The specified number should not exceed available parallels for the account.
+:::
+
+---

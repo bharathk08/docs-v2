@@ -1,0 +1,42 @@
+---
+title: "RESTful API Testing - Overview"
+description: "RESTful APIs allow you to access resources using uniform methods & protocols | This article discusses RESTful API Testing in Testsigma"
+search_keyword: ""
+sidebar:
+  order: 4.71
+---
+
+---
+Testsigma supports Restful APIs Testing. RESTful APIs allow you to access resources using uniform methods and protocols. This makes it easier for you to create and maintain applications. You can also create a REST API standalone testing project. While creating web or mobile application test cases, you can also include RESTful APIs in the test steps.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#create-test-case).
+> - [Documentation on adding Rest API to a test steps](https://testsigma.com/docs/test-cases/step-types/rest-api/#add-restful-api-in-test-steps).
+
+---
+
+## **Resources**
+
+We will use the following **API Endpoints** and **JSON object** for our examples:
+
+<a href="https://jsonplaceholder.typicode.com/" rel="nofollow">https://jsonplaceholder.typicode.com/</a>
+
+<a href="https://jsonplaceholder.typicode.com/posts/" rel="nofollow">https://jsonplaceholder.typicode.com/posts/</a>
+
+<a href="https://jsonplaceholder.typicode.com/?name=Joel&email=abcxyz@mail.com" rel="nofollow">https://jsonplaceholder.typicode.com/?name=Joel&email=abcxyz@mail.com</a>
+
+
+    {
+    "userId": 1,
+    "id": 1,
+    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+    }
+
+These are provided by <a href="https://jsonplaceholder.typicode.com/" rel="nofollow">JSONPlaceholder</a>, a free API Service available online for RESTful API testing purposes.
+
+---

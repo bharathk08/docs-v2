@@ -1,0 +1,58 @@
+---
+title: "Missing Elements in the Recorder"
+description: "There might be instances where you miss elements on the recorder screen while recording | This article discusses troubleshooting steps for missing elements "
+sidebar:
+  order: 24.54
+---
+
+---
+
+While recording test steps, you may encounter situations where the recorder displays a blank screen, preventing you from interacting with the expected elements. You can follow the steps below to troubleshoot the issue.
+
+---
+
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that:
+> - You have installed the Testsigma Chrome Extension. For more information on installing Testsigma Chrome Extension, refer to the [documentation on installing Testsigma Chrome Extension](https://testsigma.com/docs/test-step-recorder/install-chrome-extension/).
+
+
+---
+
+## **Troubleshooting Steps**
+
+**1. Navigate to Chrome Settings**
+
+- Open **Google Chrome**.
+
+- Click on the three vertical dots in the top-right corner to access the menu.
+
+- Select **Settings**.
+
+![Chrome Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tvdcset.png)
+
+
+**2. Privacy and Security**
+
+- In the left sidebar, choose **Privacy and security**.
+
+![Privacy & Security](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/prasetcs.png)
+
+
+**3. Third-party cookies**
+
+- Scroll down to find the **Third-party cookies** section.
+
+- Click on it to expand the options.
+
+![Third Party Cookies](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tpccset.png)
+
+
+**4. Block Third-Party Cookies in Incognito**
+
+- Enable the option to **Block third-party cookies in Incognito mode**.
+
+![Block TP Cookies](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/btpckscs.png)
+
+---

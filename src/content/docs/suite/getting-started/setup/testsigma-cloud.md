@@ -1,0 +1,50 @@
+---
+title: "Deploy to Testsigma Cloud "
+description: "How to create and run your first tests on Testsigma Cloud"
+sidebar:
+  order: 1.31
+---
+
+---
+
+With **Testsigma Cloud**, you can create projects, applications, tests and view results and reports. This article walks you through creating an account and using Testsigma Cloud. 
+
+---
+
+<p id="prerequisites">Prerequisites</p>
+
+- You should have a Testsigma account. Go to [Testsigma signup](https://testsigma.com/signup) page to create an account.
+
+---
+
+## **Creating Projects, Tests, and Reports**
+
+- To create and manage projects, refer to [projects](https://testsigma.com/docs/projects/overview/).
+- To create and manage test cases, refer to [manage test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/).
+- To add test steps, refer to [create test steps](https://testsigma.com/docs/test-cases/create-test-steps/overview/).
+- To run tests, refer to [test runs](https://testsigma.com/docs/runs/adhoc-runs/).
+- To view results & debug errors, refer to <a href="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/view-results-and-debug-errors.png" rel="nofollow">view reports and debug errors</a>
+  
+---
+
+## **Troubleshooting**
+
+- Connect with product experts on the team and in the Community on our <a href="https://discord.com/invite/5caWS7R6QX/" rel="nofollow">Discord</a>
+
+- Troubleshooting problems? Report bugs as <a href="https://github.com/testsigmahq/testsigma/discussions" rel="nofollow">Github issues</a>
+
+- Reach out to us at [support@testsigma.com](mailto:support@testsigma.com)
+
+- Refer to our [FAQ](https://testsigma.com/docs/getting-started/faqs/) section for answers to commonly asked questions.
+
+---
+
+## **Next Steps**
+
+- [Take the complete course](https://testsigma.com/tutorials/): Learn how to use Testsigma end-to-end, using our tutorials. 
+
+- [Create your own add-ons](https://testsigma.com/docs/addons/what-is-an-addon/): Cover more test scenarios by creating add ons in Testsigma.
+
+- [Integrate with your CI/CD pipeline](https://testsigma.com/docs/continuous-integration/jenkins/): Enable continuous testing by integrating with your CI/CD tools. 
+
+---

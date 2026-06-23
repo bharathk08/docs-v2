@@ -1,0 +1,57 @@
+---
+title: " Integrate Testsigma with Bitbucket CI"
+description: "How to integrate Testsigma with Bitbucket CI"
+sidebar:
+  order: 13.22
+---
+---
+
+You can trigger tests automatically with Bitbucket integration with Testsigma. This article explains how to integrate Bitbucket with Testsigma for CI/CD purposes.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that you have referred to:
+> - [Documentation on generating API keys](https://testsigma.com/docs/configuration/api-keys/).
+> - [Documentation on getting test plan ID](https://testsigma.com/docs/continuous-integration/get-test-plan-details/).
+
+---
+
+## **Steps to Integrate Bitbucket with Testsigma**
+1. On your project, navigate to **Repository > Pipelines**.
+![Bitbucket Project](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bbprojet.png)
+
+2. Click on **Create your first pipeline** and select **Starter pipeline**.
+![Create First Pipeline](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/plbb.png)
+
+3. Create a job using the below YML sample.
+
+```
+pipelines:
+  default:
+    - parallel:
+      - step:
+          name: 'Build and Test'
+          script:
+            - echo "Your build and test goes here..."
+            - echo "Calling Shell Script of testsigma"
+            - chmod a+x testsigma-cicd.sh
+            - ./testsigma-cicd.sh
+```
+
+:::note[NOTE]
+Refer to the Shell Script to get the sh script, which contains the command that triggers the test plan and fetches the run result. You can place the sh script in the same project, call the file inside the YML file, or obtain it from any external sources by providing the appropriate path.<br> <br>
+Any bash runner can work with the provided YML file. For instance, if you are using the docker runner, you can use the YML file as it is. However, if you have a different runner like powershell, you must modify the YML file to make it executable in the powershell runner. Additionally, ensure that powershell is version seven or above.
+:::
+
+4. In the shell script, provide the **Test Plan ID** and **API Key**. 
+![Test Plan In Shell Script](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tsssbb.png)
+
+5. Once you have created the YML script, click on **Commit** to run the job.
+![Commit](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/firstplbb.png)
+
+6. Once the job is completed you can see the execution report as an XML report based on the path you have shared on the shell script.
+![Report](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/buildbb.png)
+
+---

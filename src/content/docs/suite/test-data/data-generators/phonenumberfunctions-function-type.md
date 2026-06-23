@@ -1,0 +1,136 @@
+---
+title: "PhoneNumberFunctions Function Type"
+pagetitle: "Generate and Validate OTP with PhoneNumberFunctions"
+description: "PhoneNumberFunctions enables you to generate OTPs for phone numbers and validate them during registration or login, ensuring secure and accurate verification."
+sidebar:
+  order: 5.50
+---
+
+---
+
+Phone Number Function Type in data generators allows you to generate valid phone numbers for testing applications, forms, or databases that require phone number fields. It helps ensure that they validate user interactions that require phone numbers.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#create-test-case).
+> - [Documentation on creating test steps](https://testsigma.com/docs/test-cases/create-test-steps/overview/).
+> - [Documentation on adding data generators](https://testsigma.com/docs/test-data/types/data-generator/#add-data-generators-in-test-steps) in test steps.
+
+---
+
+## **Selecting PhoneNumberFunctions as a Function Type for Data Generator**
+
+1. From the left navigation bar, go to **Create Tests > Test Cases** and create a new test case.
+![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_randomtext_1.png) 
+
+2. Use **NLP** to create a **new step** in the test case and include a placeholder for **test data**.
+![NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_phonenumber_1.png)
+
+3. Click on the **test data** placeholder. From the **Test Data Types** dropdown menu, select the **! Data Generator** option.
+![Data Generators](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_phonenumber_2.png)
+
+4. On the **! Data Generators** overlay, select the **Type** to **Default**. This will enable you to use a collection of built-in test data generators.
+![Default](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_phonenumber_3.png)
+
+5. Select **PhoneNumberFunctions** from the **Function Type** dropdown list.
+![PhonenumberFunctions](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_phonenumber_4.png)
+
+:::note[NOTE]
+This action will display a list of built-in functions associated with the PhoneNumberFunctions function type, enabling you to select the appropriate function based on your requirements.
+:::
+
+---
+
+## **Get OTP**
+
+- Enables you to get an OTP for phone numbers matching a specified regular expression within a set timeout. 
+- It is useful when you verify phone numbers during registration or login.
+
+<style>
+  .example-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #f9f9f9;
+  }
+  .example-title {
+    color: #2d572c;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+  }
+  .example-title span {
+    margin-right: 0.5em;
+  }
+  .example-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .example-table th, .example-table td {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+    text-align: left;
+  }
+  .example-table th {
+    background-color: #f2f2f2;
+  }
+</style>
+
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Examples:
+  </div>
+  <table class="example-table">
+    <thead>
+      <tr>
+        <th>Input</th>
+        <th>Output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Example 1 -->
+      <tr>
+        <td>
+          <b>Regex</b>: \d{4}<br>
+          <b>Select Phone Number</b><br>
+          <b>Timeout</b>: 30
+        </td>
+        <td>1234</td>
+      </tr>
+      <!-- Example 2 -->
+      <tr>
+        <td>
+          <b>Regex</b>: \d{6}<br>
+          <b>Select Phone Number</b><br>
+          <b>Timeout</b>: 600
+        </td>
+        <td>654321</td>
+      </tr>
+      <!-- Example 3 -->
+      <tr>
+        <td>
+          <b>Regex</b>: \d{4,6}<br>
+          <b>Select Phone Number</b><br>
+          <b>Timeout</b>: 120
+        </td>
+        <td>4982, 789012</td>
+      </tr>
+      <!-- Example 4 -->
+      <tr>
+        <td>
+          <b>Regex</b>: \d{5}<br>
+          <b>Select Phone Number</b><br>
+          <b>Timeout</b>: 45
+        </td>
+        <td>45178</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+----

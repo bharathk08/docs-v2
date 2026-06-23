@@ -1,0 +1,263 @@
+---
+title: "Test Data Type: Mail Box"
+description: "Learn how to use Mail Box Test Data Types in Testsigma to verify OTP, validate email content and improve your testing efficiency with this guide."
+sidebar:
+  order: 5.119
+---
+
+---
+
+Testsigma provides a digital inbox called Mail Box to verify OTP accuracy, check for received emails, open and read them, process them, validate email content in various languages, and test the speed at which a user can read a promotional email during testing. This guide will help you access and manage the Mail Box.
+
+:::note[NOTE]
+Testsigma designed the Mail Box feature to retrieve relevant details from the first email, including content, OTP, and subject information.
+:::
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#creating-a-test-case).
+> - [Documentation on managing test steps](https://testsigma.com/docs/test-cases/step-types/natural-language/).
+> - [Documentation on creating test data types](https://testsigma.com/docs/test-data/types/overview/).
+> - [Documentation on data generators](https://testsigma.com/docs/test-data/types/data-generator/). 
+> - <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" rel="nofollow">Documentation on regular expressions</a> if necessary. 
+
+:::note[NOTE]
+- You can enable Mail Box for your account by contacting **support@testsigma.com** or using the **instant chat** option.
+- You can now access the Mail Box & Phone Numbers outside of test executions. This allows you to retrieve messages, OTPs, and authentication codes when you enable the toggle. 
+- For test executions, the toggle does not affect the execution. The test will continue to run regardless of whether the toggle is enabled or not.
+:::
+
+---
+
+## **Adding Mail Box in a Test Step**
+
+Follow these steps to include an email address provided by Testsigma using the Mailbox test data type in a Test Step:
+
+1. Use **NLP** to create a **new step** in the **Test Case** and include a placeholder for **test data**.
+   ![NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_1.png)
+2. Click the **test data** placeholder to replace it, and then select the **& Mail Box** from the **Test Data Types** dropdown menu.
+   ![Test Data](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_2.png)
+3. Select the **Email** from the right-side panel. 
+   ![Add MailBox in Test Step](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_3.png)
+
+---
+
+## **Fetching OTP from Mail Box** 
+
+Follow these steps to retrieve OTP or any data from the selected Mailbox using Test Data Generators in Testsigma:
+
+1. Use **NLP** to create a **new step** in the **Test Case** that adds a placeholder for **test data** and an **element** for entering the OTP code in the **OTP** field.
+   ![NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_4.png)
+2. Click the **test data** placeholder to replace it, and then select the **! Data Generator** from the **Test Data Types** dropdown menu.
+   ![Test Data](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_5.png)
+3. On the right sidebar, select **Data Generator** type as the **default**, Function type as **MailBoxFunctions**, and choose the function as **Get Email OTP** from the dropdown menu.
+   ![Get Email OTP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_6.png)
+4. Configure the Test Step by providing the necessary details for the function:
+    - **Regex**: A search pattern is created by a sequence of characters. For instance, **\d{4}** matches four consecutive digits **(0-9)**.
+    -  **MailBox**: Select **Mail Box** from the drop-down list. It stores incoming email messages.
+    -  **Timeout**: Set the time for how long a program or system should wait for a specific task to finish. In this example, we will wait for **30** seconds.
+    ![Configure](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_7.png)
+5. Click **Save** to store the provided arguments in the data generator for this test step.
+   ![Save](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_8.png)
+
+
+:::note[NOTE]
+Ensure that you have referred to:
+- [Documentation on adding Mail Box in a test step](https://testsigma.com/docs/test-data/types/mailbox/#add-mailbox-in-test-step). 
+- [Documentation on fetching OTP from Mail Box for two-factor authentication](https://testsigma.com/docs/test-data/types/mailbox/#fetch-otp-from-mailbox).
+:::
+
+
+---
+
+## **Store Data as a Runtime Variable from Mail Box**
+
+Follow the below steps to save the data obtained from the Mailbox as a runtime variable to use later in the test case using Test Data Generators in Testsigma.
+
+1. Create a **new step** in the **Test Case** using **NLP** that adds **two** placeholders for **test data** to store data as runtime variables.
+   ![Test Case](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_9.png)
+
+2. Click the **test data1** placeholder to replace it, and then select the **! Data Generator** from the **Test Data Types** dropdown menu.
+   ![Test Data](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_10.png)
+  
+3. On the right sidebar, select **Data Generator** type as the **default**, **Function type** as **MailBoxFunction**, and choose the **Function** as **Content Verification** from the dropdown menu.
+   ![Content verification](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_11.png)
+
+4. Configure the Test Step by providing the necessary details for the function:
+    - **Regex**: A search pattern is created by a sequence of characters. For instance, **\d{4}** matches four consecutive digits **(0-9)**.
+    -  **MailBox**: Select **Mail Box** from the drop-down list. It stores incoming email messages.
+    -  **Compare String**: Provide the CompareString function, which compares two strings and determines if they are identical.
+    -  **Timeout**: Set the time for how long a program or system should wait for a specific task to finish. In this example, we will wait for **30** seconds.
+    ![Configure](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_12.png)
+
+5. Click **Save** to store the provided arguments in the data generator for this test step.
+   ![Save](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_13.png)
+
+6. Substitute specific **text** for the **testdata2** placeholder and create a step to generate a runtime variable that stores the value in that **text**.
+   ![Test Data 2](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_14.png)
+
+
+:::note[NOTE]
+You can store the subject by selecting the Test Data Generator function: **! MailBoxFunctions :: subjectVerification**.
+:::
+
+---
+
+## **Create Mail Box Alias in Test Step**
+
+During a test step, you can create a mailbox alias that connects an additional email address to your primary email account. This allows you to generate multiple email addresses that all direct to the same inbox. When you execute the test, it generates a unique mailbox for each alias.
+
+1. Create a **new step** in the **Test Case** using **NLP** that adds **two** placeholders for **test data** to create a mailbox alias.
+   ![NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_15.png)
+
+2. Click the **test data1** placeholder to replace it, and then select the **! Data Generator** from the **Test Data Types** dropdown menu.
+   ![Data Generator](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_16.png)
+
+3. On the right sidebar, select **Data Generator** type as **Default**, **Function type** as **MailBoxAliasFunction**, and choose the **Function** as **Generate MailBox Alias** from the dropdown menu.
+   ![Data Generator](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_17.png)
+
+4. Select Linked Mail Box to create a unique mailbox every time and click **Save**.
+   ![Save](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_18.png)
+
+5. Substitute specific **text** for the **testdata2** placeholder and click **Create Step** to save the test step. It stores the **mailbox** within the **text** as a runtime variable.
+   ![testdata2](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_19.png)
+
+:::note[NOTE]
+For example, we store the email in a runtime variable named **email1**. You can use it in the Test Case by selecting **$ Runtime** from the test data types.
+:::
+
+---
+
+## **Generate Mail Box Alias for Test Cases Execution**
+
+With Testsigma, you can generate new mailbox aliases every time during test case execution, improving efficiency and reusability by making it easy to use in many test steps or test cases. If you have only a few email addresses but need to test functions related to emails for various new accounts, Testsigma can help.
+
+
+|**Data Generators**|**Actions**|**Inputs**|
+|---|---|---|
+|**! MailBoxAliasFunctions :: getEmailContent**|This will get the entire email's content into a variable.|<li>Runtime Variable</li><li>Timeout in seconds</li>*For Example: Runtime Variable - content, Timeout - 30*|
+|**! MailBoxAliasFunctions :: getEmailSubject**|This will get the entire email's subject into a variable.|<li>Runtime Variable</li><li>Timeout in seconds</li>*For Example: Runtime Variable - subject, Timeout - 30*|
+|**! MailBoxAliasFunctions :: getOTP**|This will fetch the OTP sent to the email box into a variable.|<li>Regex</li><li>Runtime Variable</li><li>Timeout in seconds</li>*For Example: Regex - \d{4,6}, Runtime Variable - otp, Timeout - 30*|
+|**! MailBoxAliasFunctions :: urlWithText**|This will fetch the URL that contains some required text.|<li>Text</li><li>Runtime Variable</li><li>Timeout in seconds</li>*For Example: Text - randomtext, Runtime Variable - url, Timeout - 30*|
+|**! MailBoxAliasFunctions :: urlWhichContains**|This will fetch the URL that contains some required parameters.|<li>Substring</li><li>Runtime Variable</li><li>Timeout in seconds</li>*For Example: Substring - example, Runtime Variable - random_text, Timeout - 30*|
+|**! MailBoxAliasFunctions :: urlMatchingRegex**|This will fetch the URL that contains a URL matching the required regex.|<li>Regex</li><li>Runtime Variable</li><li>Timeout in seconds</li>*For Example: Regex - r'<a href="https://\w+\.com/\w+" rel="nofollow">https://\w+\.com/\w+</a>', Runtime Variable - path, Timeout - 30*| 
+
+
+Below is a screenshot showing a test case generating a mailbox alias and getting content from the email.
+![A test case displaying how to generate unique email address and how to use it](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_20.png)
+
+
+
+---
+
+
+## **Sample Test Case for 2FA using Mailbox**
+
+Two-factor authentication provides additional protection for your application. With Testsigma, you can easily set up Mailbox, retrieve OTP using mailbox functions, and perform tests securely. This article discusses testing 2FA for MailBox. 
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that: 
+> - You have referred to the [documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#create-test-case).
+> - You have referred to the [documentation on creating mailbox](https://testsigma.com/docs/test-data/types/mailbox/) &
+> - You have referred to the [documentation on creating data generator](https://testsigma.com/docs/test-data/types/data-generator/). 
+> - Also, you need to have a dedicated Mailbox for your account. Contact **support@testsigma.com** for more information.
+
+---
+
+## **Creating Test Case for 2FA Using MailBox**
+
+1. Navigate to **Create Tests > Test Cases**, and click on **Create Test Case**.
+
+   ![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_21.png)
+
+2. On the **Test Case details** page, create test steps manually or using the recorder.  
+
+![Test Steps](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_22.png)
+
+  - For Step 4, we use **& Mailbox** and enter the email linked to the account in the email input field. 
+  ![& Mailbox](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_23.png)
+    
+  
+  - In Step 5, we click on the **! Data Generator**. This will open **! Data Generator** overlay. 
+  ![! Data Generator](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_24.png)
+
+  
+  - On the **! Data Generator** overlay, select **Type**, **Function Type**, **Function**, **Enter Regex**, **Runtime Variable**, **Timeout** and click on **Save**. Here, we add regex [0 - 9]+, which extracts the first encountered series of numbers. The extracted data, which is OTP, will be stored in the runtime variable. For more information on examples of regex, refer to <a href="https://regex101.com/" rel="nofollow">https://regex101.com/</a>. 
+  ![Data Generator Overlay](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_25.png)
+
+  - This will help fetch OTP and enter it in the input element.
+  ![Fetch OTP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_26.png)
+
+3. Click on **Run** to execute the test case. 
+![Run TC](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_type_mailbox_27.png)
+
+---
+
+## **Setup the Email Forwarding for Automation Mailbox**
+
+In some cases, app restrictions will prevent the delivery of OTPs to the Testsigma Mailbox. In this case, you can use the Testsigma SMS Forwarder App, which forwards messages to a designated mailbox and allows you to retrieve OTPs conveniently. 
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that: 
+> - You have the <a href="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/smsforward.apk" rel="nofollow">Testsigma SMS Forwarder</a> application. 
+> - You have referred to the [documentation on creating mailbox](https://testsigma.com/docs/test-data/types/mailbox/) &
+> - You have referred to the [documentation on creating data generator](https://testsigma.com/docs/test-data/types/data-generator/). 
+> - Also, you need to have a dedicated Mailbox for your account. Contact **support@testsigma.com** for more information.
+
+---
+
+### **Setting Up Forwarding Rules (Gmail)**
+
+**Access Gmail Settings**
+
+- Open your **Gmail account**.
+
+- Click on the gear icon in the upper-right corner.
+
+- Select **See all settings**.
+
+![All Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/gmsgear.png)
+
+
+**Navigate to Filters and Blocked Addresses**
+
+- From the settings, click on the **Filters and Blocked Addresses** tab.
+
+- Create a filter to forward emails with specific content or subject. In this case, we can have text that is constant and is present in all emails that we want to forward. 
+
+![Filters & Blocked Addresses](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/fabgmstgs.png)
+
+**Create a New Filter**
+
+- Click on **Create a new filter**.
+- Specify the criteria for the filter:
+      - **Subject:** Define the subject of the email that you wish to forward.
+      - **Has the words/Doesn’t have words:** Include text that is present in all emails you want to forward.
+
+![New Filter](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/hwsetgsa.png)
+
+
+**Configure Forwarding Address**
+
+- After creating the filter, click on **Add forwarding address** on **When a message is an exact match for your search criteria** overlay. 
+
+- Click on **Add Forwarding address** and add the designated automation email ID.
+
+- Complete the setup by entering the OTP.
+
+![Add Forwarding Address](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/afeagmstgs.png)
+
+
+:::note[NOTE]
+- You can contact the support team for OTP retrieval, which involves fetching data from the backend.
+- For a sample test case associated with the Testsigma SMS Forwarder app, refer to the [documentation on setup & use message forwarding](https://testsigma.com/docs/test-data/types/phone-number/#set-up-and-use-message-forwarding).
+:::
+
+---

@@ -1,0 +1,539 @@
+---
+// ─────────────────────────────────────────────────────────────────────────────
+//  <AskOverlay /> — the "Ask Assistant" right-side drawer.
+//
+//  Calls /api/ask (SSE) → streams a Claude-generated answer → shows source links.
+//  Falls back to Pagefind keyword search if the API is unavailable.
+//  Mounted globally through Footer.astro.
+// ─────────────────────────────────────────────────────────────────────────────
+---
+
+<div id="ts-ask-overlay" class="ts-ask-overlay" hidden>
+  <div class="ts-ask-backdrop" data-ask-close></div>
+
+  <aside class="ts-ask-panel" role="dialog" aria-modal="true" aria-label="Ask Assistant">
+    <header class="ts-ask-head">
+      <span class="ts-ask-head-icon" aria-hidden="true">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="6" width="18" height="14" rx="3.5"/>
+          <line x1="12" y1="3" x2="12" y2="6"/><circle cx="12" cy="2.5" r="1"/>
+          <rect x="1" y="10" width="2" height="5" rx="1"/><rect x="21" y="10" width="2" height="5" rx="1"/>
+          <circle cx="9" cy="12" r="1.6" fill="#fff" stroke="none"/><circle cx="15" cy="12" r="1.6" fill="#fff" stroke="none"/>
+          <path d="M9 16.5 Q12 18.5 15 16.5" stroke-width="1.4"/>
+        </svg>
+      </span>
+      <div class="ts-ask-head-text">
+        <div class="ts-ask-head-title">Ask Assistant</div>
+        <div class="ts-ask-head-sub">Answers from Testsigma docs</div>
+      </div>
+      <button class="ts-ask-close" data-ask-close aria-label="Close Ask Assistant">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </header>
+
+    <div class="ts-ask-body" id="ts-ask-body">
+      {/* Default view: hero + suggested questions */}
+      <div class="ts-ask-intro" id="ts-ask-intro">
+        <div class="ts-ask-hero">
+          <svg class="ts-ask-hero-icon" width="62" height="62" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <circle cx="20" cy="20" r="12.5" stroke="var(--ts-text-primary)" stroke-width="2.4"/>
+            <line x1="29.5" y1="29.5" x2="40" y2="40" stroke="var(--ts-text-primary)" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M37 6 l1.6 4.4 4.4 1.6 -4.4 1.6 -1.6 4.4 -1.6 -4.4 -4.4 -1.6 4.4 -1.6 z" fill="#5b23d6"/>
+          </svg>
+          <div class="ts-ask-hero-title">Search documentation. <span class="ts-ask-hero-accent">Get answers.</span></div>
+          <div class="ts-ask-poweredby">
+            <span>POWERED BY</span>
+            <img src="/docs/testsigma-logo.svg" alt="Testsigma" height="16" />
+          </div>
+        </div>
+        <div class="ts-ask-suggestions" id="ts-ask-suggestions"></div>
+      </div>
+
+      {/* Search results view */}
+      <div class="ts-ask-results" id="ts-ask-results" hidden></div>
+    </div>
+
+    <footer class="ts-ask-foot">
+      <form class="ts-ask-inputwrap" id="ts-ask-form">
+        <textarea
+          class="ts-ask-input"
+          id="ts-ask-input"
+          rows="1"
+          placeholder="Ask anything about the docs…"
+          autocomplete="off"
+        ></textarea>
+        <div class="ts-ask-input-row">
+          <span class="ts-ask-context">
+            <span class="ts-ask-context-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="6" width="18" height="14" rx="3.5"/><line x1="12" y1="3" x2="12" y2="6"/><circle cx="12" cy="2.5" r="1"/>
+                <circle cx="9" cy="12" r="1.6" fill="#fff" stroke="none"/><circle cx="15" cy="12" r="1.6" fill="#fff" stroke="none"/><path d="M9 16.5 Q12 18.5 15 16.5" stroke-width="1.4"/>
+              </svg>
+            </span>
+            <strong>AI</strong>
+            <span class="ts-ask-context-sub">Based on your context</span>
+          </span>
+          <button type="submit" class="ts-ask-send">Send</button>
+        </div>
+      </form>
+    </footer>
+  </aside>
+</div>
+
+<script>
+  // ── Suggested questions, per product ──────────────────────────────────────
+  const SUGGESTIONS: Record<string, string[]> = {
+    suite: [
+      'How do I create a test case?',
+      'What is Auto-Healing and how does it work?',
+      'How do I trigger a Test Plan via API?',
+      'How does Atto generate tests from Jira stories?',
+      'How do I set up test data profiles?',
+    ],
+    arcus: [
+      'How do I create a test case?',
+      'How do I create a test run?',
+      'How do I invite users and assign roles?',
+      'How do I set up custom fields?',
+      'How do I configure notifications?',
+    ],
+  };
+
+  // Change this to '/.netlify/functions/ask' for Netlify deployments,
+  // or to the full URL when hosting on testsigma.com.
+  const ASK_API_URL = '/api/ask';
+
+  const overlay = document.getElementById('ts-ask-overlay');
+  if (overlay) {
+    if (overlay.parentElement !== document.body) document.body.appendChild(overlay);
+
+    const intro   = document.getElementById('ts-ask-intro')!;
+    const results = document.getElementById('ts-ask-results')!;
+    const sugWrap = document.getElementById('ts-ask-suggestions')!;
+    const form    = document.getElementById('ts-ask-form') as HTMLFormElement;
+    const input   = document.getElementById('ts-ask-input') as HTMLTextAreaElement;
+
+    const product = () =>
+      document.documentElement.getAttribute('data-product') === 'arcus' ? 'arcus' : 'suite';
+
+    function renderSuggestions() {
+      const list = SUGGESTIONS[product()] ?? SUGGESTIONS.suite;
+      sugWrap.innerHTML = '';
+      for (const q of list) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ts-ask-suggestion';
+        b.textContent = q;
+        b.addEventListener('click', () => { input.value = q; ask(q); });
+        sugWrap.appendChild(b);
+      }
+    }
+
+    let lastFocus: HTMLElement | null = null;
+    function open() {
+      lastFocus = document.activeElement as HTMLElement;
+      renderSuggestions();
+      overlay!.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      requestAnimationFrame(() => overlay!.classList.add('ts-ask-open'));
+      setTimeout(() => input.focus(), 60);
+    }
+    function close() {
+      overlay!.classList.remove('ts-ask-open');
+      document.documentElement.style.overflow = '';
+      setTimeout(() => { overlay!.hidden = true; }, 220);
+      lastFocus?.focus?.();
+    }
+    function showResults() { intro.hidden = true; results.hidden = false; }
+    function resetToIntro() {
+      results.hidden = true;
+      results.innerHTML = '';
+      intro.hidden = false;
+      input.value = '';
+      input.focus();
+    }
+
+    document.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('#ts-ask-btn'))        { e.preventDefault(); open(); }
+      else if (t.closest('[data-ask-close]')) { close(); }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !overlay!.hidden) close();
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (q) ask(q);
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+    });
+
+    // ── AI answer via SSE ────────────────────────────────────────────────────
+    async function ask(query: string) {
+      showResults();
+      results.innerHTML = `
+        <div class=”ts-ask-thinking” id=”ts-ask-thinking”>
+          <span class=”ts-ask-spinner”></span>
+          <span id=”ts-ask-status-text”>Finding relevant docs…</span>
+        </div>
+        <div class=”ts-ask-answer” id=”ts-ask-answer”></div>
+        <div class=”ts-ask-sources” id=”ts-ask-sources” hidden></div>
+      `;
+
+      const thinkingEl = document.getElementById('ts-ask-thinking')!;
+      const statusEl   = document.getElementById('ts-ask-status-text')!;
+      const answerEl   = document.getElementById('ts-ask-answer')!;
+      const sourcesEl  = document.getElementById('ts-ask-sources')!;
+      let   answerMd   = '';
+
+      try {
+        const resp = await fetch(ASK_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: query, product: product() }),
+        });
+
+        if (!resp.ok) throw new Error(`API responded ${resp.status}`);
+
+        const reader  = resp.body!.getReader();
+        const decoder = new TextDecoder();
+        let   buf     = '';
+        let   evt     = '';
+        let   data    = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+
+          const lines = buf.split('\n');
+          buf = lines.pop() ?? '';
+
+          for (const line of lines) {
+            if (line.startsWith('event: ')) {
+              evt = line.slice(7).trim();
+            } else if (line.startsWith('data: ')) {
+              data = line.slice(6);
+            } else if (line === '' && evt) {
+              try {
+                const payload = JSON.parse(data);
+                if (evt === 'status') {
+                  statusEl.textContent = payload.text;
+                } else if (evt === 'delta') {
+                  thinkingEl.hidden = true;
+                  answerMd += payload.text;
+                  answerEl.innerHTML = renderMarkdown(answerMd);
+                } else if (evt === 'sources') {
+                  const srcs = payload as { url: string; title: string }[];
+                  if (srcs.length) {
+                    sourcesEl.innerHTML =
+                      '<div class=”ts-ask-sources-head”>Related documentation</div>' +
+                      srcs.map(s =>
+                        `<a class=”ts-ask-result” href=”${escapeHtml(s.url)}”>
+                          <div class=”ts-ask-result-title”>${escapeHtml(s.title || s.url)}</div>
+                        </a>`
+                      ).join('');
+                    sourcesEl.hidden = false;
+                  }
+                } else if (evt === 'error') {
+                  throw new Error(payload.message);
+                }
+              } catch (parseErr) { /* malformed SSE line — skip */ }
+              evt = ''; data = '';
+            }
+          }
+        }
+
+        // “Ask another question” link at the bottom
+        const resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.className = 'ts-ask-reset';
+        resetBtn.textContent = 'Ask another question';
+        resetBtn.addEventListener('click', resetToIntro);
+        results.appendChild(resetBtn);
+
+      } catch (err: any) {
+        console.warn('Ask Assistant API unavailable, falling back to keyword search:', err.message);
+        await keywordSearch(query);
+      }
+    }
+
+    // ── Minimal markdown renderer for the answer ─────────────────────────────
+    function renderMarkdown(md: string): string {
+      // Work paragraph-by-paragraph so we don't mangle inline elements
+      return md
+        .split(/\n\n+/)
+        .map(block => {
+          const inner = block
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+            .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+            .replace(/\[(\d+)\]/g, '<sup class=”ts-ask-cite”>[$1]</sup>')
+            .replace(/\n/g, '<br>');
+          return `<p>${inner}</p>`;
+        })
+        .join('');
+    }
+
+    // ── Pagefind keyword search (fallback) ───────────────────────────────────
+    let pf: any = null;
+    let pfTried = false;
+    async function loadPagefind() {
+      if (pf || pfTried) return pf;
+      pfTried = true;
+      try {
+        // Indirect through a variable so Rollup leaves it as a runtime import
+        // (Pagefind only exists in the built site, not in the source tree).
+        const pfUrl = '/docs/pagefind/pagefind.js';
+        pf = await import(/* @vite-ignore */ pfUrl);
+        await pf.options?.({ excerptLength: 24 });
+      } catch { pf = null; }
+      return pf;
+    }
+
+    async function keywordSearch(query: string) {
+      results.innerHTML = '<div class=”ts-ask-status”>Searching the docs…</div>';
+      const engine = await loadPagefind();
+      if (!engine) {
+        results.innerHTML =
+          '<div class=”ts-ask-status”>Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
+        return;
+      }
+      const prefix = `/docs/${product()}/`;
+      const search = await engine.search(query);
+      const raw    = await Promise.all(search.results.slice(0, 12).map((r: any) => r.data()));
+      const hits   = raw.filter((d: any) => (d.url || '').includes(prefix)).slice(0, 6);
+
+      if (!hits.length) {
+        results.innerHTML = `<div class=”ts-ask-status”>No results for “${escapeHtml(query)}” in ${product()} docs.</div>`;
+        return;
+      }
+      results.innerHTML =
+        `<div class=”ts-ask-results-head”>Results for “${escapeHtml(query)}”</div>` +
+        hits.map((d: any) =>
+          `<a class=”ts-ask-result” href=”${d.url}”>
+            <div class=”ts-ask-result-title”>${escapeHtml(d.meta?.title || d.url)}</div>
+            <div class=”ts-ask-result-excerpt”>${d.excerpt || ''}</div>
+          </a>`
+        ).join('');
+    }
+
+    function escapeHtml(s: string): string {
+      return s.replace(/[&<>”]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '”': '&quot;' }[c] as string));
+    }
+  }
+</script>
+
+<style is:global>
+  /* Global (not scoped): the suggestions, results, and AI answer are injected
+     via JS/innerHTML, so they don't carry Astro's scope class. All selectors are
+     uniquely `ts-ask-*` prefixed, so global styling is safe and self-contained. */
+  .ts-ask-overlay[hidden] { display: none; }
+  .ts-ask-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+  }
+  .ts-ask-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(9, 30, 66, 0.18);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .ts-ask-overlay.ts-ask-open .ts-ask-backdrop { opacity: 1; }
+
+  .ts-ask-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(440px, 100vw);
+    background: #fff;
+    box-shadow: -8px 0 40px rgba(9, 30, 66, 0.16);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ts-ask-overlay.ts-ask-open .ts-ask-panel { transform: translateX(0); }
+
+  /* Header */
+  .ts-ask-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--ts-border);
+    flex-shrink: 0;
+  }
+  .ts-ask-head-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--ts-accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ts-ask-head-text { flex: 1; min-width: 0; }
+  .ts-ask-head-title { font-size: 15px; font-weight: 700; color: var(--ts-text-primary); line-height: 1.2; }
+  .ts-ask-head-sub { font-size: 12px; color: var(--ts-text-tertiary); margin-top: 1px; }
+  .ts-ask-close {
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; border-radius: 7px;
+    color: var(--ts-text-tertiary); cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+  .ts-ask-close:hover { background: var(--ts-hover-row); color: var(--ts-text-primary); }
+
+  /* Body (scrolls) */
+  .ts-ask-body { flex: 1; overflow-y: auto; padding: 22px 18px; }
+
+  /* Hero */
+  .ts-ask-hero { text-align: center; padding: 26px 0 28px; }
+  .ts-ask-hero-icon { display: inline-block; }
+  .ts-ask-hero-title {
+    font-size: 21px; font-weight: 700; color: var(--ts-text-primary);
+    letter-spacing: -0.02em; margin-top: 14px; line-height: 1.3;
+  }
+  .ts-ask-hero-accent { color: #5b23d6; }
+  .ts-ask-poweredby {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    margin-top: 12px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--ts-text-tertiary);
+  }
+  .ts-ask-poweredby img { display: block; }
+
+  /* Suggestions */
+  .ts-ask-suggestions { display: flex; flex-direction: column; gap: 10px; }
+  .ts-ask-suggestion {
+    width: 100%; text-align: left;
+    padding: 13px 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--ts-hover-row);
+    font-size: 14px; color: var(--ts-text-primary);
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .ts-ask-suggestion:hover {
+    background: #fff;
+    border-color: var(--ts-accent);
+  }
+
+  /* Results */
+  .ts-ask-results-head {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ts-text-tertiary); margin: 0 0 12px;
+  }
+  .ts-ask-result {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--ts-border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ts-ask-result:hover { border-color: var(--ts-accent); background: var(--ts-hover-row); }
+  .ts-ask-result-title { font-size: 14px; font-weight: 600; color: var(--ts-accent-text); margin-bottom: 3px; }
+  .ts-ask-result-excerpt { font-size: 12.5px; line-height: 1.5; color: var(--ts-text-secondary); }
+  .ts-ask-result-excerpt :global(mark) { background: var(--ts-accent-low); color: inherit; padding: 0 2px; border-radius: 3px; }
+  .ts-ask-status { font-size: 13.5px; line-height: 1.6; color: var(--ts-text-secondary); padding: 8px 2px; }
+  .ts-ask-status :global(code) { background: var(--ts-hover-row); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  /* Footer input */
+  .ts-ask-foot { padding: 14px 18px 18px; border-top: 1px solid var(--ts-border); flex-shrink: 0; }
+  .ts-ask-inputwrap {
+    border: 1.5px solid var(--ts-border);
+    border-radius: 12px;
+    padding: 12px 14px 10px;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .ts-ask-inputwrap:focus-within {
+    border-color: var(--ts-accent);
+    box-shadow: 0 0 0 3px var(--ts-accent-low);
+  }
+  .ts-ask-input {
+    width: 100%; border: none; outline: none; resize: none;
+    font-family: inherit; font-size: 14px; color: var(--ts-text-primary);
+    background: transparent; line-height: 1.5; max-height: 120px;
+  }
+  .ts-ask-input::placeholder { color: var(--ts-text-tertiary); }
+  .ts-ask-input-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 8px; gap: 10px;
+  }
+  .ts-ask-context { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ts-text-tertiary); min-width: 0; }
+  .ts-ask-context strong { color: var(--ts-text-secondary); font-weight: 700; }
+  .ts-ask-context-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ts-ask-context-icon {
+    width: 18px; height: 18px; border-radius: 5px; background: var(--ts-accent);
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .ts-ask-send {
+    border: none; background: transparent;
+    color: var(--ts-accent-text); font-weight: 700; font-size: 14px;
+    font-family: inherit; cursor: pointer; padding: 4px 6px; flex-shrink: 0;
+  }
+  .ts-ask-send:hover { text-decoration: underline; }
+
+  /* AI answer ─────────────────────────────────── */
+  .ts-ask-thinking {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13.5px; color: var(--ts-text-secondary);
+    padding: 4px 0 16px;
+  }
+  .ts-ask-spinner {
+    display: inline-block;
+    width: 14px; height: 14px; flex-shrink: 0;
+    border: 2px solid var(--ts-border);
+    border-top-color: var(--ts-accent);
+    border-radius: 50%;
+    animation: ts-spin 0.7s linear infinite;
+  }
+  @keyframes ts-spin { to { transform: rotate(360deg); } }
+
+  .ts-ask-answer {
+    font-size: 14px; line-height: 1.7; color: var(--ts-text-primary);
+    margin-bottom: 20px;
+  }
+  .ts-ask-answer p { margin: 0 0 0.9em; }
+  .ts-ask-answer p:last-child { margin-bottom: 0; }
+  .ts-ask-answer strong { font-weight: 700; }
+  .ts-ask-answer code {
+    font-size: 12.5px; background: var(--ts-hover-row);
+    padding: 1px 5px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;
+  }
+  .ts-ask-cite {
+    font-size: 10px; color: var(--ts-accent-text);
+    font-weight: 700; vertical-align: super; line-height: 1;
+  }
+
+  /* Sources ───────────────────────────────────── */
+  .ts-ask-sources { margin-top: 8px; }
+  .ts-ask-sources-head {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--ts-text-tertiary); margin-bottom: 10px;
+  }
+
+  /* Ask another question button ───────────────── */
+  .ts-ask-reset {
+    display: block; width: 100%; text-align: center;
+    margin-top: 20px; padding: 10px;
+    border: 1.5px dashed var(--ts-border); border-radius: 10px;
+    background: transparent; font-size: 13.5px; color: var(--ts-text-secondary);
+    font-family: inherit; cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .ts-ask-reset:hover { border-color: var(--ts-accent); color: var(--ts-accent-text); }
+
+  @media (max-width: 30rem) {
+    .ts-ask-panel { width: 100vw; }
+  }
+</style>

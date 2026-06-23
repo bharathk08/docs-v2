@@ -1,0 +1,40 @@
+---
+title: "Why am I Facing Permission Error During Local Test Execution?"
+description: "You may face permission issues during local test runs on real devices. | Learn how to resolve them by enabling the required settings for your device brand."
+sidebar:
+  order: 25.23
+---
+
+---
+
+When running tests locally on real mobile devices, you might face permission-related issues that prevent tests from executing successfully. These issues usually occur due to certain device-level settings being disabled by default. This article explains how to resolve these issues by enabling the necessary device settings based on your device brand.
+
+<img src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Local_error_image.png" style="width: 400px;" />
+
+---
+
+## **Steps to Resolve Permission Issues**
+
+Enable the following settings on your device based on its brand:
+
+### **Realme & Oppo**
+
+  - Turn on **Developer Options**.
+  - Enable **USB Debugging**.
+  - Enable **Disable Permission Monitoring**.
+
+### **OnePlus**
+
+  - Turn on **Developer Options**.
+  - Enable **USB Debugging**.
+  - Enable **Disable Permission Monitoring**.
+  - Configure or disable **Battery Optimization** for the testing app
+ 
+### **Xiaomi**
+
+  - Turn on **Developer Options**.
+  - Enable **USB Debugging**.
+  - Enable **USB Debugging (Security Settings)**.
+  - Disable **MIUI Optimization**.
+
+---

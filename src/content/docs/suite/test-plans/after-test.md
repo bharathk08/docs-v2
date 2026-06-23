@@ -1,0 +1,56 @@
+---
+title: "AfterTest in Test Cases & Step Groups"
+description: "AfterTest in Testsigma lets you create a block of steps after the test case as well as add a step group. Learn about AfterTest block in Testsigma"
+sidebar:
+  order: 8.31
+---
+
+
+---
+
+AfterTest in Testsigma lets you create a block of steps after the test case as well as add a step group to execute irrespective of the result of the test case. Both test case and after test blocks execute independently. This article will discuss how to enable and use after test in test cases and step groups. 
+
+*For more information on test cases, refer to the [documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/).*
+
+
+---
+
+
+## **AfterTest in Test Cases**
+
+1. Navigate to **Create Tests > Test Cases**, and create a test case. 
+![Test Case](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_aftertest_1.png)
+
+2. Click on **Test Case settings** and enable **AfterTest Case** toggle.
+![Test Case Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_aftertest_2.png)
+
+3.  From **If AfterTest fails** dropdown menu, 
+![Dropdown Menu](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/attciatf.png)
+    - Select **Show Testcase Result** if you want to see the test case results.
+    - Select **Fail the test** if you want to fail the test case.
+
+4. For data-driven test cases, you can see the **When to execute AfterTest steps** dropdown menu. 
+![Data Driven Scenario](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/attcddtc.png)
+    - You can select **Run after all iterations** to run AfterTest after all iterations are executed.
+    - Or you can select **Run after each iteration** to execute the AfterTest for every iteration.
+
+
+:::note[NOTE]
+- You can also enable AfterTest for existing test cases by editing the existing test cases. *For information on how to edit a test case, refer to [edit test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#edit-test-case).*
+- Creating AfterTest for a step group is the same as creating AfterTest for a test case. For more information on creating a step group, refer to [step groups](https://testsigma.com/docs/test-cases/step-types/step-group/).
+:::
+
+
+
+---
+
+## **Available NLPs for After Test**
+
+![NLPs](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/attcnlps.png)
+
+
+1. You can use ***Test Case Result is Passed/Failed/Not Executed*** NLP to execute After Test block depending on the result of your Test Case.
+2. You can also use ***Test Case Iteration Result is Passed/Failed/Not Executed*** NLP to execute the After Test block depending on the result of iteration.
+
+
+---

@@ -1,0 +1,59 @@
+---
+title: "Biometric Authentication"
+description: "Learn how to use desired capabilities to set the Biometric Authentication for Android and iOS mobile app testing in Testsigma Application"
+search_keyword: ""
+sidebar:
+  order: 16.93
+---
+
+---
+
+With Testsigma, you can simulate biometric authentication while testing Android and iOS applications. This capability allows you to test the app's recognition and response to biometric events. This article discusses how to set biometric authentication desired capabilities on the Ad-Hoc Run page in Testsigma. 
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that:
+> - You have a mobile application to test.
+
+---
+
+## **How to Add Biometric Authentication Desired Capability?**
+In order to Add Biometric Authentication for Android and iOS apps, we can use the following desired capability:
+
+‘***testsigma.allowTouchIdEnroll=true***’
+
+|Name|Data Type|Value|
+|---|---|---|
+|testsigma.allowTouchIdEnroll|Boolean|True|
+
+
+
+---
+
+
+## **Using Biometric Authentication Desired Capability**
+
+1. Click on **Run** from the **Test Case Details** page. 
+![Run Test Case](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_biometric_1.png)
+
+
+2. On the **Ad-Hoc Run** overlay, click on **Desired Capabilities**.
+![Ad Hoc Run](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_biometric_2.png)
+
+
+3. Enter ***testsigma.allowTouchIdEnroll*** in the **Key** field, select ***Boolean*** as the **Data type**, and set the **Value** as ***True***.
+![Capability Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_biometric_3.png)
+
+
+4. Click on **Run Now** to execute the test case. 
+![Run Now](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_biometric_4.png)
+
+
+:::note[NOTE]
+This capability is available only in Testsigma Lab and is not supported in local execution.
+:::
+
+
+---

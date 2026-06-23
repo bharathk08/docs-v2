@@ -1,0 +1,47 @@
+---
+title: "Post Plan Hook"
+description: "Leverage Post Plan Hooks to enhance automation workflows. Customise actions after test plan execution. Boost efficiency seamlessly with robust automation tools."
+sidebar:
+  order: 8.31
+---
+
+---
+
+Testsigma allows you to create custom actions with add-ons using its powerful Post Plan Hooks feature. These actions will run automatically after finishing a test plan, regardless of whether it passes or fails. You can personalise these actions to meet your requirements and quickly enable them within the test plan settings.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to: 
+> - [Documentation on creating test plans](https://testsigma.com/docs/test-plans/overview/).
+> - [Documentation on managing add-ons](https://testsigma.com/docs/addons/create/).
+> - [Documentation on creating add-on](https://testsigma.com/docs/addons/create-a-post-plan-hook-add-on/). 
+
+---
+
+## **Enable Post Plan Hook in a test plan** 
+
+1. From the left navigation bar, go to **Test Plans** and create a new test plan or open an existing test plan.  
+![Test Plans](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_post_plan_1.png)
+
+2. Navigate to the **Test Plan Settings** tab on the **Create** or **Edit Test Plan** page.
+
+3. In the **Post Plan Hook** you can enable the Post Plan Hook by selecting supported add-ons from the dropdown list and entering the required details in the custom field based on your needs.
+![Post Plan Hook](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_post_plan_2.png)
+
+4. Once you enable the Post Plan Hook in the test plan settings, save the changes to the test plan by clicking **Create**/**Update**, then **Run** the test plan. ![Enable Post Plan Hook](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_post_plan_3.png)
+
+:::note[NOTE]
+Ensure that you publish add-ons before using them in a test plan. The test plan runs Post Plan Hooks automatically once execution is completed.
+:::
+
+---
+
+## **Viewing Post Plan Hook Status**
+
+1. After completing the test plan execution, click the **View Reports** button at the top right of the Test Plans details page to view the test plan and post-plan hook results.
+
+2. View the **Post Plan Hook** status on the **Run Result** page under the **Run Result Overview** section. 
+
+---

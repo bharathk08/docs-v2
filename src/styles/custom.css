@@ -1,0 +1,756 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Testsigma brand theming for Starlight — design tokens from §5 of README
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Base brand custom properties (always in scope) ── */
+:root {
+  /* Neutrals */
+  --ts-text-primary:    #091E42;
+  --ts-text-body:       #172B4D;
+  --ts-text-secondary:  #42526E;
+  --ts-text-tertiary:   #7A869A;
+  --ts-label-grey:      #5E6C84;
+  --ts-border:          #E8EAEE;
+  --ts-border-subtle:   #EEF0F3;
+  --ts-border-strong:   #DCDFE5;
+  --ts-header-rule:     #EBECF0;
+  --ts-panel:           #FCFCFD;
+  --ts-hover-row:       #F4F5F7;
+
+  /* Suite palette */
+  --ts-suite-teal:        #00B2BD;
+  --ts-suite-teal-text:   #0B7C84;
+  --ts-suite-gradient:    linear-gradient(90deg, #00B2BD, #07C0A1);
+  --ts-suite-selection:   #CFF1F3;
+  --ts-suite-accent-low:  #E0F7F9;
+
+  /* Arcus palette */
+  --ts-arcus-purple:        #5C27F5;
+  --ts-arcus-purple-text:   #5B23D6;
+  --ts-arcus-gradient:      linear-gradient(90deg, #E58086, #9F57C0);
+  --ts-arcus-selection:     #E8DFFE;
+  --ts-arcus-accent-low:    #EDE8FE;
+
+  /* Shared brand */
+  --ts-pink:    #E58086;
+  --ts-info:    #2684FF;
+  --ts-success: #1F8A5B;
+  --ts-warning: #D9730D;
+  --ts-danger:  #D64535;
+
+  /* Active-product tokens — default Suite, overridden per product below */
+  --ts-accent:          var(--ts-suite-teal);
+  --ts-accent-text:     var(--ts-suite-teal-text);
+  --ts-accent-gradient: var(--ts-suite-gradient);
+  --ts-accent-low:      var(--ts-suite-accent-low);
+  --ts-selection:       var(--ts-suite-selection);
+
+  /* Typography */
+  --sl-font:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', 'SF Mono', ui-monospace, 'Courier New', monospace;
+
+  /* Layout — 74 px header bar + 48 px nav tabs = 122 px total */
+  --sl-nav-height:         122px;
+  --sl-mobile-toc-height:  0rem !important;  /* disable mobile sticky TOC bar; we use a custom right-panel TOC */
+  --sl-nav-pad-y:          0px;
+  --sl-nav-pad-x:          0px;
+  --sl-sidebar-width:      312px;
+}
+
+/* ── Suite product theming ── */
+:root[data-product='suite'] {
+  --ts-accent:          var(--ts-suite-teal);
+  --ts-accent-text:     var(--ts-suite-teal-text);
+  --ts-accent-gradient: var(--ts-suite-gradient);
+  --ts-accent-low:      var(--ts-suite-accent-low);
+  --ts-selection:       var(--ts-suite-selection);
+}
+
+/* ── Arcus product theming ── */
+:root[data-product='arcus'] {
+  --ts-accent:          var(--ts-arcus-purple);
+  --ts-accent-text:     var(--ts-arcus-purple-text);
+  --ts-accent-gradient: var(--ts-arcus-gradient);
+  --ts-accent-low:      var(--ts-arcus-accent-low);
+  --ts-selection:       var(--ts-arcus-selection);
+}
+
+/* ── Starlight accent — light mode, Suite (default) ── */
+:root[data-theme='light'],
+:root[data-theme='light'][data-product='suite'] {
+  --sl-color-accent-low:    var(--ts-suite-accent-low);
+  --sl-color-accent:        var(--ts-suite-teal-text);
+  --sl-color-accent-high:   var(--ts-suite-teal);
+  --sl-color-text-accent:   var(--ts-suite-teal-text);
+  --sl-color-bg:            #FFFFFF;
+  --sl-color-bg-nav:        #FFFFFF;
+  --sl-color-bg-sidebar:    var(--ts-panel);
+  --sl-color-gray-1:        var(--ts-text-primary);
+  --sl-color-gray-2:        var(--ts-text-body);
+  --sl-color-gray-3:        var(--ts-text-secondary);
+  --sl-color-gray-4:        var(--ts-text-tertiary);
+  --sl-color-gray-5:        var(--ts-border);
+  --sl-color-gray-6:        var(--ts-hover-row);
+  --sl-color-hairline:      var(--ts-border);
+  --sl-color-hairline-shade: var(--ts-border-subtle);
+  --sl-color-white:         #FFFFFF;
+  --sl-color-black:         var(--ts-text-primary);
+}
+
+/* ── Starlight accent — light mode, Arcus ── */
+:root[data-theme='light'][data-product='arcus'] {
+  --sl-color-accent-low:    var(--ts-arcus-accent-low);
+  --sl-color-accent:        var(--ts-arcus-purple-text);
+  --sl-color-accent-high:   var(--ts-arcus-purple);
+  --sl-color-text-accent:   var(--ts-arcus-purple-text);
+}
+
+/* ── Starlight accent — dark mode, Suite ── */
+:root[data-theme='dark'],
+:root[data-theme='dark'][data-product='suite'] {
+  --sl-color-accent-low:    #07343a;
+  --sl-color-accent:        var(--ts-suite-teal);
+  --sl-color-accent-high:   #7fe0e6;
+}
+
+/* ── Starlight accent — dark mode, Arcus ── */
+:root[data-theme='dark'][data-product='arcus'] {
+  --sl-color-accent-low:    #2a1260;
+  --sl-color-accent:        #9B6DFF;
+  --sl-color-accent-high:   #d4c0ff;
+}
+
+/* ── Remove Starlight's header-wrapper border/padding (our Header owns its own layout) ── */
+.header {
+  border-bottom: none !important;
+  padding: 0 !important;
+}
+
+/* ── Sidebar: light background, white (not dark) ── */
+.sidebar-pane {
+  background-color: var(--ts-panel) !important;
+}
+.sidebar-content {
+  background-color: var(--ts-panel);
+}
+/* Remove the left border on deeply nested sidebar items (we use our own indent) */
+.sidebar-pane ul ul li {
+  border-inline-start: none !important;
+}
+
+/* ── ContentPanel: remove border and top spacing (our layouts own top padding) ── */
+.content-panel {
+  border-top: none !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+/* Remove bottom padding from the title panel so there's no gap before article content */
+main > .content-panel:first-child {
+  padding-bottom: 0 !important;
+}
+/* First <hr> = title divider, keep it with tight spacing */
+.sl-markdown-content > hr:first-child {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border-color: var(--ts-border);
+}
+/* All other <hr> = Gatsby section separators, hide them (H2 border-bottom handles section separation) */
+.sl-markdown-content hr:not(:first-child) {
+  display: none;
+}
+/* Starlight wraps headings in .sl-heading-wrapper — target the wrapper for spacing */
+.sl-markdown-content .sl-heading-wrapper.level-h2 { margin-top: 40px; }
+.sl-markdown-content .sl-heading-wrapper.level-h3 { margin-top: 28px; }
+.sl-markdown-content .sl-heading-wrapper.level-h4 { margin-top: 20px; }
+
+/* ── Homepage hero (splash template pages) ── */
+.ts-hero {
+  padding: 48px 0 40px;
+}
+.ts-hero-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #091E42;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0 0 14px;
+  border: none;
+}
+.ts-hero-sub {
+  font-size: 22px;
+  line-height: 1.6;
+  color: #42526E;
+  margin: 0;
+  /* max-width: 920px; */
+}
+
+/* ── Selection color ── */
+::selection {
+  background: var(--ts-selection);
+}
+
+/* ── Body text ── */
+body {
+  font-family: var(--sl-font);
+  color: var(--ts-text-secondary);
+}
+
+/* ── Article body text ── */
+.sl-markdown-content p,
+.sl-markdown-content li {
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--ts-text-secondary);
+}
+
+/* ── Code blocks (Expressive Code) ── */
+
+/* Terminal frame: macOS traffic-light dot colors */
+.expressive-code .frame.is-terminal .header::before {
+  /* Override the single-color mask with a colored SVG data URI */
+  background-color: transparent !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23FF5F57'/%3E%3Ccircle cx='30' cy='8' r='8' fill='%23FFBD2E'/%3E%3Ccircle cx='52' cy='8' r='8' fill='%2328C840'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 1 !important;
+}
+
+/* Copy button — match reference style */
+.expressive-code .copy button {
+  border-radius: 5px !important;
+  font-size: 12px !important;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.expressive-code .copy button:hover {
+  opacity: 1;
+}
+
+/* ── Inline code ── */
+:not(pre) > code {
+  font-size: 0.85em;
+  background: var(--ts-hover-row);
+  color: #9F3F1E;
+  border: 1px solid var(--ts-border-subtle);
+  border-radius: 5px;
+  padding: 2px 6px;
+}
+
+/* ── Article: page title area ── */
+.ts-page-title-wrap {
+  padding-top: 1.5rem;
+  padding-bottom: 8px;
+}
+
+/* ── Article headings ── */
+.sl-markdown-content :is(h2, h3, h4) {
+  color: var(--ts-text-primary);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.sl-markdown-content h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ts-border);
+}
+.sl-markdown-content h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+.sl-markdown-content h4 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+/* Heading anchor link (chain) icon — Starlight's default 0.8275em is too chunky
+   for our heading sizes; scale it down and nudge it 4px further from the text. */
+.sl-markdown-content .sl-heading-wrapper {
+  --sl-anchor-icon-size: 0.6em;
+  --sl-anchor-icon-gap: calc(0.25em + 4px);
+}
+/* Nudge the icon 2px down (added on top of Starlight's vertical-centering transform). */
+.sl-markdown-content .sl-anchor-icon > svg {
+  position: relative;
+  top: 2px;
+}
+
+/* Starlight's default link hover sets color to white (built for dark themes). On our
+   light content area that makes links — and the heading anchor (chain) icon, which is
+   also an <a> — vanish on hover. Keep them visible with a darker-accent hover instead. */
+.sl-markdown-content a:hover:not(:where(.not-content *)) {
+  color: var(--sl-color-accent-high);
+  text-decoration: underline;
+}
+/* The anchor (chain) link is an icon, not text — no underline on it. */
+.sl-markdown-content .sl-anchor-link:hover {
+  text-decoration: none;
+}
+
+/* ── Article: numbered steps with teal circles ── */
+.sl-markdown-content ol {
+  counter-reset: ts-step;
+  list-style: none;
+  padding-left: 0;
+  margin: 16px 0;
+}
+.sl-markdown-content ol > li {
+  counter-increment: ts-step;
+  position: relative;
+  padding-left: 42px;
+  margin-bottom: 28px;
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--ts-text-secondary);
+}
+/* Teal numbered circle — positioned absolutely so multi-block content stacks naturally */
+.sl-markdown-content ol > li::before {
+  content: counter(ts-step);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ts-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+/* Vertical connecting line between steps */
+.sl-markdown-content ol > li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 30px;
+  bottom: -28px;
+  width: 2px;
+  background: var(--ts-border);
+}
+
+/* ── Article: unordered list ── */
+.sl-markdown-content ul {
+  padding-left: 20px;
+  margin: 12px 0;
+}
+.sl-markdown-content ul > li {
+  margin-bottom: 6px;
+  list-style: disc;
+}
+
+/* ── Article: tables ── */
+.sl-markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 20px 0;
+}
+.sl-markdown-content th {
+  background: var(--ts-hover-row);
+  color: var(--ts-text-primary);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--ts-border);
+  font-size: 13px;
+}
+.sl-markdown-content td {
+  padding: 10px 14px;
+  border: 1px solid var(--ts-border);
+  color: var(--ts-text-secondary);
+  vertical-align: top;
+}
+.sl-markdown-content tr:nth-child(even) td {
+  background: var(--ts-hover-row);
+}
+
+/* ── Article: callout boxes (Starlight asides) ── */
+.sl-markdown-content .starlight-aside {
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 20px 0;
+  border-inline-start-width: 3px;
+}
+/* Note (blue) */
+.sl-markdown-content .starlight-aside--note {
+  background: #EFF5FF;
+  border-inline-start-color: var(--ts-info);
+}
+.sl-markdown-content .starlight-aside--note .starlight-aside__title {
+  color: #1055CC;
+}
+/* Tip / success (green) */
+.sl-markdown-content .starlight-aside--tip {
+  background: #EDFAF4;
+  border-inline-start-color: var(--ts-success);
+}
+.sl-markdown-content .starlight-aside--tip .starlight-aside__title {
+  color: var(--ts-success);
+}
+/* Caution / warning (orange) */
+.sl-markdown-content .starlight-aside--caution {
+  background: #FFF5EB;
+  border-inline-start-color: var(--ts-warning);
+}
+.sl-markdown-content .starlight-aside--caution .starlight-aside__title {
+  color: var(--ts-warning);
+}
+/* Danger (red) */
+.sl-markdown-content .starlight-aside--danger {
+  background: #FFF0EF;
+  border-inline-start-color: var(--ts-danger);
+}
+.sl-markdown-content .starlight-aside--danger .starlight-aside__title {
+  color: var(--ts-danger);
+}
+.sl-markdown-content .starlight-aside__title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-bottom: 4px;
+}
+
+/* ── Prerequisites callout (format: > <p id="prerequisites">...</p> + list) ── */
+.sl-markdown-content blockquote:has(> p#prerequisites) {
+  border: 1.5px solid #8CC9A6 !important;
+  border-inline-start: 1.5px solid #8CC9A6 !important;
+  padding-inline-start: 0 !important;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 0 !important;
+  margin: 20px 0;
+  background: #ffffff;
+}
+.sl-markdown-content blockquote:has(> p#prerequisites) > p#prerequisites {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin: 0;
+  background: #D4EFE1;
+  border-bottom: 1px solid #A8D9BE;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #155F40;
+  line-height: 1;
+  font-style: normal;
+}
+/* Checkbox icon before PREREQUISITES label */
+.sl-markdown-content blockquote:has(> p#prerequisites) > p#prerequisites::before {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23155F40' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Cpolyline points='9 11 12 14 22 4'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+/* Intro paragraph ("Before you begin...") — padding to match list indent */
+.sl-markdown-content blockquote:has(> p#prerequisites) > p:not(#prerequisites) {
+  padding: 10px 16px 0;
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ts-text-secondary);
+}
+/* List container — override the ol counter-reset */
+.sl-markdown-content blockquote:has(> p#prerequisites) :is(ol, ul) {
+  counter-reset: none;
+  list-style: none;
+  padding: 4px 16px 8px;
+  margin: 0;
+}
+/* List items — override the teal numbered circles */
+.sl-markdown-content blockquote:has(> p#prerequisites) :is(ol, ul) > li {
+  counter-increment: none;
+  list-style: none !important;
+  position: relative;
+  padding: 5px 0 5px 34px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ts-text-secondary);
+  margin-bottom: 0;
+}
+/* Suppress <p> margins inside li (loose-list parsing wraps content in <p>) */
+.sl-markdown-content blockquote:has(> p#prerequisites) :is(ol, ul) > li > p {
+  margin: 0;
+  padding: 0;
+}
+/* Green filled circle with white checkmark — absolutely positioned so inline text flows normally */
+.sl-markdown-content blockquote:has(> p#prerequisites) :is(ol, ul) > li::before {
+  content: '' !important;
+  position: absolute;
+  left: 0;
+  top: 8px;
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #25A068;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 0;
+  color: transparent;
+}
+
+/* ── Article: image captions (em directly after img) ── */
+.sl-markdown-content img + em,
+.sl-markdown-content p:has(img) + p > em:only-child {
+  display: block;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--ts-text-tertiary);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+.sl-markdown-content img {
+  border-radius: 8px;
+  border: 1px solid var(--ts-border);
+  max-width: 100%;
+  display: block;
+}
+/* Images inside steps get a bit of top breathing room */
+.sl-markdown-content ol > li img {
+  margin-top: 12px;
+}
+
+/* ── Article: pagination prev/next ── */
+/* Hide "Edit page" link — internal use only */
+footer .meta {
+  display: none;
+}
+.sl-markdown-content ~ nav .pagination-links,
+.pagination-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ts-border);
+}
+a[rel='prev'],
+a[rel='next'] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: 1px solid var(--ts-border);
+  border-radius: 10px;
+  text-decoration: none !important;
+  color: var(--ts-text-primary) !important;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  gap: 16px;
+  min-height: 80px;
+}
+a[rel='prev']:hover,
+a[rel='next']:hover {
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 3px var(--ts-accent-low);
+}
+/* Hide the SVG arrow — replaced by CSS chevron pseudo-elements */
+a[rel='prev'] > svg,
+a[rel='next'] > svg {
+  display: none;
+}
+/* Chevron on the outer edge of each card */
+a[rel='prev']::before {
+  content: "<";
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--ts-text-tertiary);
+  flex-shrink: 0;
+  line-height: 1;
+}
+a[rel='next']::after {
+  content: ">";
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--ts-text-tertiary);
+  flex-shrink: 0;
+  line-height: 1;
+}
+/* The span holds a text node ("Previous/Next") + <br> + <span.link-title>
+   font-size:0 suppresses the unstyled text node and <br> */
+a[rel='prev'] > span,
+a[rel='next'] > span {
+  font-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+a[rel='prev'] > span { text-align: right; }
+a[rel='next'] > span { text-align: left; }
+/* Re-inject "Previous" / "Next" label */
+a[rel='prev'] > span::before {
+  content: "Previous";
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ts-text-tertiary);
+}
+a[rel='next'] > span::before {
+  content: "Next";
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ts-text-tertiary);
+}
+/* Page title */
+a[rel='prev'] .link-title,
+a[rel='next'] .link-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ts-text-primary);
+}
+
+/* ── API Reference layout (used by Endpoint.astro) ── */
+.ts-method {
+  display: inline-block;
+  font-family: var(--sl-font-mono);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  color: #fff;
+}
+.ts-method[data-m='GET']    { background: #1f8a5b; }
+.ts-method[data-m='POST']   { background: var(--ts-suite-teal-text); }
+.ts-method[data-m='PUT'],
+.ts-method[data-m='PATCH']  { background: #9a6b12; }
+.ts-method[data-m='DELETE'] { background: #c9372c; }
+
+.ts-endpoint-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 0.25rem;
+}
+.ts-endpoint-line code {
+  font-family: var(--sl-font-mono);
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+.ts-baseurl {
+  font-size: 0.8rem;
+  color: var(--sl-color-gray-3);
+  margin-bottom: 1.25rem;
+}
+
+/* Attribute / parameter tables */
+.ts-attrs { margin: 1.25rem 0 2rem; }
+.ts-attrs h4 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sl-color-gray-3);
+  margin: 0 0 0.25rem;
+}
+.ts-attr-row {
+  display: flex;
+  gap: 1rem;
+  padding: 0.8rem 0.1rem;
+  border-top: 1px solid var(--sl-color-gray-5);
+}
+.ts-attr-row code {
+  flex: 0 0 11rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+.ts-attr-row span {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--sl-color-gray-2);
+}
+@media (max-width: 50rem) {
+  .ts-attr-row { flex-direction: column; gap: 0.2rem; }
+  .ts-attr-row code { flex-basis: auto; }
+}
+
+/* ── API reference sidebar badges — HTTP method chips ── */
+/* Override Starlight's default badge colors by variant */
+.sl-badge[style*="tip"],
+.sl-badge.tip {
+  background: #d4f5e9 !important;
+  color: #007a4d !important;
+  border-color: #a8e6cf !important;
+}
+/* POST — caution = amber */
+.sl-badge[style*="caution"],
+.sl-badge.caution {
+  background: #fff0d6 !important;
+  color: #8a5c00 !important;
+  border-color: #ffd280 !important;
+}
+/* PUT — note = blue */
+.sl-badge[style*="note"],
+.sl-badge.note {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-color: #93c5fd !important;
+}
+/* PATCH — default = purple */
+.sl-badge[style*="default"],
+.sl-badge.default {
+  background: #f3e8ff !important;
+  color: #7c3aed !important;
+  border-color: #c4b5fd !important;
+}
+/* DELETE — danger = red */
+.sl-badge[style*="danger"],
+.sl-badge.danger {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+  border-color: #fca5a5 !important;
+}
+
+/* Sidebar badges: smaller, pill shape, monospace font */
+.sidebar-item .sl-badge,
+nav .sl-badge {
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  letter-spacing: 0.03em !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+  flex-shrink: 0 !important;
+  text-transform: uppercase !important;
+}
+
+/* Ensure API page content has no extra Starlight padding interference */
+.ts-api-page + * { display: none; }
+
+/* ── API reference: reclaim the (empty) TOC column and widen the layout ──
+   API pages render an info column + a code column. Crammed into the default
+   45rem content width — minus the reserved TOC sidebar — the left column gets
+   starved (~260px) next to the code panel. API pages have no body headings, so
+   their TOC is empty: drop it and let the two-column layout use the full width.
+   Scoped to API pages only via :has(.ts-api-page). */
+@media (min-width: 72rem) {
+  /* Remove the empty TOC sidebar so its space is reclaimed */
+  .lg\:sl-flex:has(.ts-api-page) .right-sidebar-container { display: none; }
+
+  /* Let the content pane span the full width left by the dropped TOC … */
+  .main-pane:has(.ts-api-page) {
+    width: 100%;
+    --sl-content-margin-inline: auto;
+  }
+}
+
+/* … and raise the content-width cap so both columns have comfortable room. */
+.main-pane:has(.ts-api-page) { --sl-content-width: 58rem; }

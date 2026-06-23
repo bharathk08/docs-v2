@@ -1,0 +1,55 @@
+---
+title: "Element Learning (Using Test Recorder)"
+description: "To automate windows applications, you need to have elements captured from Test Recorder. This article discusses how to learn elements using Test Recorder in Testsigma"
+sidebar:
+  order: 31.3
+---
+
+
+---
+
+For applications built on UWP, WinForms, WPF, and Classic Windows, you can provide the app path and selectively capture elements using Test Recorder. This article discusses learning and capturing elements for Windows (Lite) applications in Testsigma.
+
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that:
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - You have referred to the [documentation on creating applications](https://testsigma.com/docs/projects/applications/).
+> - You have referred to the <a href="https://chromewebstore.google.com/detail/testsigma-recorder/epmomlhdjfgdobefcpocockpjihaabdp?hl=en-GB&utm_source=ext_sidebar" rel="nofollow">documentation on test recorder</a>. 
+> - You have referred to the [documentation on setting up Testsigma Agent](https://testsigma.com/docs/agent/setup-on-windows-mac-linux/) setup. 
+> - You have any Windows app to capture elements.
+
+---
+
+## **Steps to Learn Windows (Lite) Elements Using Test Recorder**
+
+1. From the left navigation bar, go to **Create Tests > Elements** and click **Record**.
+   
+   ![Record](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/WL_Element.png)
+
+2. On **Record Elements** overlay, select **Local Test Machine**, provide **App path** and click **Record**.
+
+   ![Record Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/WL_ElementRecord.png)
+
+3. Wait for the app to load fully.
+
+4. Once the app is loaded, click on the element you want to capture.
+   
+   ![Click Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/WL_WaitforApptoLoad.png)
+
+5. On the **Create Element** section, validate the **Name**, **Screen Name**, **Element Type**, and the **Value**.
+
+   ![Validate](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/WL_ValidateElement.png)
+
+6. Click **Create**.
+   
+   ![Create Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/WL_CreateElement.png)
+
+7. Stop the recorder to close the session.
+   
+   ![Stop Recorder](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/WL_Stop_Recorder.png)
+
+---

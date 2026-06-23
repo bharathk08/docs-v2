@@ -1,0 +1,77 @@
+---
+title: "Collecting HAR File for Support Tickets"
+description: "A HAR file will help in identifying and diagnosing product performance or latency issues in the application. This article discusses the collecting HAR file"
+sidebar:
+  order: 24.55
+---
+
+---
+
+To capture a HAR (HTTP Archive) file, you can use the developer tools available in web browsers. These tools track the network activities and help export this data as a HAR file. A HAR file is important in identifying and diagnosing product performance or latency issues. It is advisable to procure this data before raising a bug. This article discusses collecting the HAR file for a web page.
+
+---
+
+## **Steps to Collect HAR File**
+
+### **1. Access Developer Tools**
+- To **Open Developer Tools** in  **Google Chrome**: 
+    - **Windows/Linux:** Press F12 or Ctrl+Shift+I 
+    - **Mac:** Cmd+Option+I 
+      Alternatively, right-click on the page and select **Inspect**.
+
+- In **Mozilla Firefox:** Press F12 or Ctrl+Shift+I (Windows/Linux) or Cmd+Option+I (Mac) to open the **Developer Tools**. You can also right-click on the page and select **Inspect Element**.
+
+- In **Microsoft Edge:** Press F12 or Ctrl+Shift+I (Windows/Linux) or Cmd+Option+I (Mac) to open the **Developer Tools**. Alternatively, right-click on the page and select **Inspect**.
+![Inspect](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/HAR_file_1.png)
+
+### **2. Navigate to the Network Tab**
+
+- On the **Developer Tools,** click on **Network** to access network monitoring tools.
+  ![Network](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/HAR_file_2.png)
+
+- On the **Network** tab, reload the web page for which you want to capture network activity. This will start recording all network requests and responses.
+  ![Refresh](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/HAR_file_3.png)
+
+### **3. Export HAR File**
+- **Google Chrome:** Right-click anywhere within the **Network** tab and select **Save all as HAR with content**. You can also click the **Export HAR** icon in the Network panel toolbar.
+- **Mozilla Firefox:** Right-click anywhere within the **Network** tab and select **Save All as HAR**.
+- **Microsoft Edge:** Right-click anywhere within the **Network** tab and select **Save as HAR with Content**. You can also click the **Export HAR** icon in the Network panel toolbar.
+
+![Export](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/HAR_file_4.png)
+
+Save the HAR file to the desired location on your computer.
+
+---
+
+## **Required Files to Raise Support Ticket**
+
+Now that you're familiar with the process of procuring the HAR file, you can follow the steps below while collecting the HAR file to address the specific issue you're facing. This file is required to raise a support ticket in Testsigma. 
+
+### **In Case of Execution Failures:**
+
+1. **Sign out** of the application.
+
+2. Navigate to **Developers Tools > Network** tab to record all requests.
+
+3. **Sign in** to the application.
+
+4. Navigate to the execution that has encountered the error.
+
+5. Return to the **Network** tab, which will still be recording, and export the HAR file as mentioned in the above section.
+
+6. If you're using a Local Agent, **collect the logs** from the local agent.
+
+### **In Case of UI Functionality Issues:**
+
+1. **Sign out** of the application.
+
+2. Navigate to **Developers Tools > Network** tab to record all requests.
+
+3. **Sign in** to the application.
+
+4. Go to the page where the error or functionality glitch is present.
+
+5. Return to the **Network** tab, which will still be recording, and export the HAR file as mentioned in the above section.
+
+
+---

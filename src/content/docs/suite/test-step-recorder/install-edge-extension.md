@@ -1,0 +1,46 @@
+---
+title: "Install Testsigma Recorder Extension: Edge"
+description: "Effortlessly install the Testsigma Recorder Extension in Edge. This extension will help you record test steps for Web, Mobile & Mobile Web applications"
+sidebar:
+  order: 7.13
+---
+
+---
+
+With Testsigma's Edge Extension, users can quickly record test steps and create test cases by capturing UI interactions. The extension will also auto-learn elements that interact with the application during testing. This article discusses installing Testsigma's Extension in Edge.
+
+---
+
+## **Steps to Install Edge Extension**
+
+1. Go to <a href="https://microsoftedge.microsoft.com/addons/detail/testsigma-recorder/pdgdbfedjpffcnmgedicplikkejikhif" rel="nofollow">Testsigma Recorder</a>
+
+2. Click on **Get**.
+![Get](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_edge_1.png)
+
+3. On the permission prompt, click on **Add Extension**.
+![Add Extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_edge_2.png)
+
+4. On successful installation, the following message will appear:
+![Success Messaga](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_edge_3.png)
+
+---
+
+## **Record Steps in InPrivate Mode**
+
+You can record steps in private mode by enabling the Allow in InPrivate option in the Testsigma manage extension. This feature lets you record steps privately without storing browsing history or cookies. Follow the steps below to enable the “Allow in InPrivate” option in the Testsigma extension in Edge browser.
+
+---
+
+### **Extension Settings for InPrivate Mode**
+
+**1. Open the Testsigma Extension:** Go to **Extensions** and click the meatballs menu on Testsigma extension icon in the browser toolbar.
+![Go to Extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_edge_4.png)
+
+**2. Access Extension Settings:** From the extension menu, select **Manage Extension**.
+![Manage Extension](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_edge_5.png)
+
+**3. Enable Allow in InPrivate:** Toggle on **Allow in InPrivate** option. 
+![Enable InPrivate](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_chrome_extension_edge_6.png)
+
+---

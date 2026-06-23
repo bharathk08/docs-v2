@@ -1,0 +1,66 @@
+---
+title: "Record Multiple Elements Using Recorder"
+description: "Elements path play an important role in Automation Testsing. Learn how to record multiple elements for an android application project in Testsigma."
+sidebar:
+  order: 6.33
+---
+
+---
+
+When automating test cases for an android application, you can capture multiple elements from the application in one go. This article discusses how to capture multiple elements using recorder. 
+
+---
+
+
+> <p id="prerequisites">Prerequisites</p>
+>
+>
+> Before you begin, ensure that:
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - You have referred to the [documentation on creating applications](https://testsigma.com/docs/projects/applications/).  
+> - You have installed the Testsigma Chrome Extension. For more information on installing Testsigma Chrome Extension, refer to the [documentation on Testsigma Chrome Extension](https://testsigma.com/docs/test-step-recorder/install-chrome-extension/). 
+> - You have an android application that is available for testing.
+
+
+---
+
+## **Steps to Record Multiple Elements**
+
+1. From the left navigation bar, go to **Create Tests > Elements**.
+![Elements](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_android_1.png)
+
+
+2. Click **Record**.
+![Record](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_android_2.png)
+
+
+3. In the **Record Elements** overlay, select **Test Lab**, **Test Machine**, **Upload App Source** and click on **Record**.
+![Record](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_android_3.png)
+
+
+4. Wait for the app to load fully.
+
+
+5. Once the app is loaded, click on element you want to capture. 
+
+
+6. In the **Create Element** section, validate the **Name**, **Screen Name**, **Element Type**, and the **Value**. 
+![Create Element](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/andelmcelm.png)
+
+
+7. Click **Create**.
+![Create](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/andelmcocelm.png)
+
+
+8. The element will be saved in the elements list. 
+![Saved](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/andelmlist.png)
+
+
+9. Repeat steps 5 to 7 for every element you want to capture.
+
+10.  Once you have captured the elements, click  **Stop Recording**.  
+![Stop Recording](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/andelmall.png)
+
+11.  You'll be redirected to the **Elements** page, where you can see all recorded elements. 
+
+---

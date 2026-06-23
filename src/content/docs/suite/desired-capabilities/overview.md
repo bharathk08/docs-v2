@@ -1,0 +1,91 @@
+---
+title: "Desired Capabilities - Overview"
+description: "Desired Capabilities are used for customizing the Test Environment. Learn about desired capabilities in detail and how to add them to your test execution in Testsigma"
+search_keyword: ""
+sidebar:
+  order: 16.1
+---
+
+---
+
+Desired Capabilities are a set of properties used for customizing the Test Environment. The customization includes adding browser extensions to the automation sessions, setting Geographical locations for the test machine, bypassing browser alerts, etc. This article discusses adding desired capabilities for a test environment in Testsigma. 
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating Ad-Hoc runs](https://testsigma.com/docs/runs/adhoc-runs/).
+> - [Documentation on creating test plans](https://testsigma.com/docs/test-plans/overview/).
+
+---
+
+## **Desired Capabilities Format**
+Desired Capabilities are entered as **key-value** pairs. Enter the details for Desired Capabilities as specified below:
+- **Key:** Specific properties or attributes that can be set for the test environment. 
+- **Data Type:** The data type of the value of the specific Desired Capability.
+- **Value:** The value of the Desired Capability.
+
+For example, we can allow **invalid certificates** for a webpage using the ‘***acceptInsecureCerts***’ Capability.
+
+|Name|Data Type|Value|
+|---|---|---|
+|acceptInsecureCerts|boolean|True|
+
+---
+
+## **Adding Desired Capabilities in Ad Hoc Run**
+1. Navigate to **Create Tests > Test Cases**.
+![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_1.png)
+
+
+2. Create/select a test case in which you want to add the desired capabilities. 
+
+
+3. From the **Test Case** details page, click on **Run**. 
+![Run Test Case](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_2.png)
+
+
+4. On **Ad Hoc Run** overlay, click on **Desired Capabilities** to reveal the fields. 
+![Ad Hoc Run](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_3.png)
+
+
+5. Add the desired capabilities you want for an **Ad Hoc Run**. 
+
+
+:::note[NOTE]
+You can also delete the desired capabilities by clicking on the **Delete** button from the **Ad Hoc Run** overlay.
+:::
+
+
+
+*For more information on most commonly used desired capabilities, refer to [Common Desired Capabilities](https://testsigma.com/docs/desired-capabilities/most-common/).* 
+
+---
+
+## **Adding Desired Capabilities in a Test Plan**
+1. On **Dashboard**, click on **Test Plans**. 
+![Test Plans](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_4.png)
+
+
+2. Create/select a test plan in which you want to add the desired capabilities.
+
+
+3. From the **Edit Test Plan** page, click on **Add Test Suites & Link Machine Profiles**. 
+![Edit Test Plan](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_5.png)
+
+
+4. On **Test Machines**, select the machine in which you want to add desired capabilities and click on **Test machine settings**. 
+![Test Machines](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_6.png)
+
+5. On **Edit test machine/device profile** overlay, click on **Desired Capabilities** to reveal the fields. 
+![Edit Test Machine](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_desired_capabilities_7.png)
+
+6. Add the desired capabilities you want for a **Test Plan**. 
+
+:::note[NOTE]
+You can also delete the desired capabilities by clicking on the **Delete** button from the **Edit test machine/device profile** overlay. 
+:::
+
+
+---

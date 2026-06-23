@@ -1,0 +1,20 @@
+---
+title: "Restarting docker"
+description: "This article helps you understand why you're unable to start or access the application. The following command will help you restart the docker and troubleshoot the issue"
+sidebar:
+  order: 24.71
+---
+
+<br>
+
+If the application is not starting or you are unable to access the application, run the following command on the server:
+
+```
+docker update --restart unless-stopped $(docker ps -q)
+```
+
+With this command, you ensure that all running Docker containers will automatically restart if they are explicitly stopped.
+
+
+
+

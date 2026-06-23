@@ -1,0 +1,561 @@
+---
+interface SidebarLink {
+  type: 'link';
+  label: string;
+  href: string;
+  isCurrent: boolean;
+  badge?: { variant: string; class?: string; text: string } | undefined;
+  attrs: Record<string, any>;
+}
+interface SidebarGroup {
+  type: 'group';
+  label: string;
+  entries: SidebarEntry[];
+  collapsed: boolean;
+  badge?: { variant: string; class?: string; text: string } | undefined;
+}
+type SidebarEntry = SidebarLink | SidebarGroup;
+
+interface Props {
+  sublist: SidebarEntry[];
+  nested?: boolean;
+  depth?: number;
+  api?: boolean;
+  /** Render links with no leading icon/pill (used for the Changelog month list). */
+  plain?: boolean;
+}
+
+const { sublist, nested, depth = 0, api, plain } = Astro.props;
+
+function hasCurrentDescendant(entries: SidebarEntry[]): boolean {
+  for (const e of entries) {
+    if (e.type === 'link' && e.isCurrent) return true;
+    if (e.type === 'group' && hasCurrentDescendant(e.entries)) return true;
+  }
+  return false;
+}
+
+// ── Icon registry (Lucide 24×24, paths joined by ||) ─────────────────────────
+const ICONS: Record<string, string> = {
+  book:         'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z||M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z',
+  'book-open':  'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z||M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z',
+  grid:         'M3 3h7v7H3z||M14 3h7v7h-7z||M14 14h7v7h-7z||M3 14h7v7H3z',
+  file:         'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z||M14 2v6h6',
+  'file-text':  'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z||M14 2v6h6||M16 13H8||M16 17H8||M10 9H8',
+  help:         'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z||M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3||M12 17h.01',
+  sparkles:     'm12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z',
+  layers:       'M12 2 2 7l10 5 10-5-10-5z||M2 17l10 5 10-5||M2 12l10 5 10-5',
+  key:          'M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4',
+  shield:       'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+  target:       'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z||M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z||M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  'refresh-cw': 'M23 4v6h-6||M1 20v-6h6||M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15',
+  activity:     'M22 12h-4l-3 9L9 3l-3 9H2',
+  'bar-chart':  'M18 20V10||M12 20V4||M6 20v-6',
+  database:     'M12 8c4.418 0 8-1.343 8-3s-3.582-3-8-3-8 1.343-8 3 3.582 3 8 3z||M4 5v6c0 1.657 3.582 3 8 3s8-1.343 8-3V5||M4 11v6c0 1.657 3.582 3 8 3s8-1.343 8-3v-6',
+  globe:        'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z||M2 12h20||M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z',
+  code:         'M16 18l6-6-6-6||M8 6l-6 6 6 6',
+  monitor:      'M2 3h20v14H2z||M8 21h8||M12 17v4',
+  clipboard:    'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2||M8 2h8a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z',
+  settings:     'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z||M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+  play:         'M5 3l14 9-14 9V3z',
+  cpu:          'M9 3H5a2 2 0 0 0-2 2v4||M15 3h4a2 2 0 0 1 2 2v4||M9 21H5a2 2 0 0 1-2-2v-4||M15 21h4a2 2 0 0 0 2-2v-4||M9 9h6v6H9z',
+  tool:         'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z',
+  users:        'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2||M23 21v-2a4 4 0 0 0-3-3.87||M9 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0||M16 3.13a4 4 0 0 1 0 7.75',
+  wifi:         'M5 12.55a11 11 0 0 1 14.08 0||M1.42 9a16 16 0 0 1 21.16 0||M8.53 16.11a6 6 0 0 1 6.95 0||M12 20h.01',
+  upload:       'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4||M17 8l-5-5-5 5||M12 3v12',
+  download:     'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4||M7 10l5 5 5-5||M12 15V3',
+  link:         'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71||M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
+  package:      'M16.5 9.4 7.55 4.24||M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z||M3.27 6.96 12 12.01l8.73-5.05||M12 22.08V12',
+  terminal:     'M4 17l6-6-6-6||M12 19h8',
+  'git-branch': 'M6 3v12||M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z||M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z||M18 9a9 9 0 0 1-9 9',
+  zap:          'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
+  default:      'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z||M14 2v6h6',
+};
+
+// Icons are only used for sub-group triggers — not for individual page links.
+// Keys are the raw entry.label values from Starlight (directory slugs or explicit labels).
+function iconForLabel(label: string): string {
+  const l = label.toLowerCase().trim();
+
+  // Raw directory slugs (from autogenerate sub-dirs)
+  const slugs: Record<string, string> = {
+    // Getting Started
+    'setup':                        'settings',
+    // Atto / Generative AI
+    'generative-ai':                'sparkles',
+    'generate-tests':               'clipboard',
+    'copilot':                      'zap',
+    'byok':                         'key',
+    'supported-llms':               'database',
+    // Test Cases
+    'create-test-cases':            'clipboard',
+    'create-test-steps':            'clipboard',
+    'actions-and-options-manual':   'clipboard',
+    'actions-and-options-recorder': 'tool',
+    'create-steps-restapi':         'code',
+    'imports-and-exports':          'download',
+    'manage':                       'settings',
+    'step-types':                   'layers',
+    // Elements
+    'web-apps':                     'globe',
+    'android-apps':                 'monitor',
+    'ios-apps':                     'monitor',
+    'mobile-web-application':       'monitor',
+    'flutter-apps':                 'monitor',
+    'dynamic-elements':             'zap',
+    // Test Data
+    'data-generators':              'database',
+    'types':                        'layers',
+    // Runs
+    'env-config':                   'settings',
+    'mock-servers':                 'database',
+    // Reports
+    'custom-dashboard':             'bar-chart',
+    'export-reports':               'download',
+    'runs':                         'play',
+    // Integrations
+    'collaboration':                'users',
+    'bug-reporting':                'activity',
+    'test-labs':                    'monitor',
+    'test-management':              'clipboard',
+    // Projects
+    'settings':                     'settings',
+    // Configuration
+    'security':                     'shield',
+    // On-Premise
+    'pre-installation':             'tool',
+    'installation-process':         'tool',
+    'post-installation':            'tool',
+    // Add-ons
+    'faqs':                         'help',
+    'faq':                          'help',
+    // Troubleshooting sub-categories
+    'agent':                        'cpu',
+    'desktop-windows':              'monitor',
+    'mobile-apps':                  'monitor',
+    'nlps':                         'sparkles',
+    'on-prem':                      'tool',
+    'rest-api':                     'code',
+    'general':                      'help',
+    'salesforce-testing':           'tool',
+    // API
+    'examples':                     'code',
+    // Misc
+    'integrations':                 'link',
+    'troubleshooting':              'help',
+  };
+  if (slugs[l]) return slugs[l];
+
+  // Explicit section labels from astro.config.mjs
+  const sections: Record<string, string> = {
+    'get started':             'sparkles',
+    'atto ai coworker':        'layers',
+    'ai agents':               'cpu',
+    'auto-healing':            'activity',
+    'test cases':              'clipboard',
+    'elements':                'target',
+    'test data':               'database',
+    'test plans':              'clipboard',
+    'test suites':             'clipboard',
+    'reports':                 'bar-chart',
+    'integrations':            'link',
+    'ci/cd':                   'git-branch',
+    'testsigma agent':         'cpu',
+    'projects':                'clipboard',
+    'configuration':           'settings',
+    'on-premise setup':        'tool',
+    'test step recorder':      'tool',
+    'desktop automation':      'monitor',
+    'windows automation':      'monitor',
+    'windows lite':            'monitor',
+    'visual testing':          'monitor',
+    'accessibility':           'users',
+    'salesforce testing':      'tool',
+    'sap automation':          'tool',
+    'add-ons':                 'package',
+    'sdk':                     'code',
+    'uploads':                 'upload',
+    'collaboration':           'users',
+    'activity monitoring':     'activity',
+    'desired capabilities':    'settings',
+    'testsigma terminal':      'terminal',
+    'testsigma tunnel':        'wifi',
+    'debugging':               'tool',
+    'troubleshooting':         'help',
+    'best practices':          'zap',
+    'api reference':           'code',
+    'runs':                    'play',
+    'step groups':             'layers',
+    'test capture':            'clipboard',
+    'data sets':               'database',
+    'manage users':            'users',
+    'settings':                'settings',
+    'imports/exports':         'download',
+    'two-way sync':            'refresh-cw',
+    'atto (ai)':               'sparkles',
+    'introduction':            'book',
+    'projects':                'clipboard',
+    'faqs':                    'help',
+  };
+  if (sections[l]) return sections[l];
+
+  // Fuzzy fallbacks
+  if (l.includes('ai') || l.includes('atto') || l.includes('copilot') || l.includes('nlp')) return 'sparkles';
+  if (l.includes('agent')) return 'cpu';
+  if (l.includes('integrat')) return 'link';
+  if (l.includes('report') || l.includes('dashboard')) return 'bar-chart';
+  if (l.includes('data') || l.includes('server')) return 'database';
+  if (l.includes('setting') || l.includes('config') || l.includes('setup') || l.includes('install')) return 'settings';
+  if (l.includes('user') || l.includes('collaborat') || l.includes('access')) return 'users';
+  if (l.includes('securit') || l.includes('shield')) return 'shield';
+  if (l.includes('mobile') || l.includes('android') || l.includes('ios') || l.includes('flutter') || l.includes('desktop') || l.includes('windows') || l.includes('monitor')) return 'monitor';
+  if (l.includes('web') || l.includes('globe')) return 'globe';
+  if (l.includes('api') || l.includes('code') || l.includes('sdk')) return 'code';
+  if (l.includes('download') || l.includes('export')) return 'download';
+  if (l.includes('upload') || l.includes('import')) return 'upload';
+  if (l.includes('step') || l.includes('layer') || l.includes('group')) return 'layers';
+  if (l.includes('run') || l.includes('play') || l.includes('exec')) return 'play';
+  if (l.includes('trouble') || l.includes('debug') || l.includes('faq') || l.includes('help') || l.includes('general')) return 'help';
+  if (l.includes('git') || l.includes('ci') || l.includes('cd')) return 'git-branch';
+  if (l.includes('terminal') || l.includes('cli')) return 'terminal';
+  if (l.includes('tunnel') || l.includes('wifi') || l.includes('network')) return 'wifi';
+  if (l.includes('best') || l.includes('practice')) return 'zap';
+  if (l.includes('package') || l.includes('addon')) return 'package';
+  if (l.includes('test')) return 'clipboard';
+  return 'default';
+}
+
+function iconSvg(key: string): string {
+  const paths = (ICONS[key] ?? ICONS.default).split('||');
+  return paths.map((d) => `<path d="${d}" stroke-linecap="round" stroke-linejoin="round"/>`).join('');
+}
+
+// ── Label normalizer — converts raw folder slugs to readable names ────────────
+// Known acronyms and overrides first; fallback to title-casing hyphenated slugs.
+const LABEL_OVERRIDES: Record<string, string> = {
+  'generative-ai':              'Generative AI',
+  'ai-agents':                  'AI Agents',
+  'ai':                         'AI',
+  'api':                        'API',
+  'rest-api':                   'REST API',
+  'soap-api':                   'SOAP & REST API',
+  'byok':                       'BYOK',
+  'supported-llms':             'Supported LLMs',
+  'nlps':                       'NLPs',
+  'sdk':                        'SDK',
+  'ios-apps':                   'iOS Apps',
+  'ci-cd':                      'CI/CD',
+  'on-prem':                    'On-Premise',
+  'sap-automation':             'SAP Automation',
+  'restapi':                    'REST API',
+  'create-steps-restapi':       'Create Steps (REST API)',
+  'actions-and-options-manual':   'Actions & Options (Manual)',
+  'actions-and-options-recorder': 'Actions & Options (Recorder)',
+  'imports-and-exports':        'Imports & Exports',
+  'open-source-dev-environment-setup': 'Dev Environment Setup',
+};
+
+const WORD_CAPS: Record<string, string> = {
+  ai: 'AI', api: 'API', sdk: 'SDK', sap: 'SAP', ios: 'iOS',
+  nlp: 'NLP', nlps: 'NLPs', llm: 'LLM', llms: 'LLMs',
+  byok: 'BYOK', ci: 'CI', cd: 'CD', rest: 'REST', soap: 'SOAP',
+  faqs: 'FAQs', faq: 'FAQ', ui: 'UI', url: 'URL',
+};
+
+function formatLabel(label: string): string {
+  // If it already has uppercase letters or spaces it came from explicit config — keep it
+  if (/[A-Z]/.test(label) || label.includes(' ')) return label;
+  // Check full-slug override
+  const override = LABEL_OVERRIDES[label.toLowerCase()];
+  if (override) return override;
+  // Title-case each hyphen-separated word, respecting known acronyms
+  return label
+    .split('-')
+    .map((w) => WORD_CAPS[w.toLowerCase()] ?? (w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
+// Title-case a nav label: capitalize each word, but keep minor words (articles,
+// short prepositions/conjunctions) lowercase unless first, and preserve words that
+// already carry caps/acronyms (API, ID, Salesforce, iOS). Used for API nav labels.
+const TITLE_MINOR = new Set([
+  'a', 'an', 'the', 'and', 'or', 'but', 'nor', 'for', 'of', 'on', 'at',
+  'to', 'by', 'in', 'with', 'vs', 'via', 'per', 'as',
+]);
+function titleCase(label: string): string {
+  return label
+    .split(/\s+/)
+    .map((w, i) => {
+      if (!w) return w;
+      // Preserve acronyms / words that already contain an uppercase letter.
+      if (/[A-Z]/.test(w.slice(1)) || w === w.toUpperCase()) return w;
+      if (i > 0 && TITLE_MINOR.has(w.toLowerCase())) return w.toLowerCase();
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    })
+    .join(' ');
+}
+
+// The API Reference group is rendered flat: its sub-groups (Projects, Test Cases,
+// …) become static uppercase section headers with endpoint links directly beneath
+// — no collapsible folders, matching the API reference design.
+function isApiReferenceGroup(label: string): boolean {
+  return label.trim().toLowerCase() === 'api reference';
+}
+
+// Right-pointing chevron — rotates 90° to down-pointing when open
+const CARET = `<polyline points="9 18 15 12 9 6" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+// All links get the book icon; sub-groups always get their specific icon.
+// depth only controls indentation — not icon visibility.
+---
+
+{!nested ? (
+  /* ── Top level: always-open static section labels ── */
+  <div class="ts-nav-sections">
+    {sublist.map((entry) => (
+      entry.type === 'group' && isApiReferenceGroup(entry.label) ? (
+        /* API reference — flatten sub-groups into flat, static sections (no folders) */
+        <div class="ts-api-nav">
+          {entry.entries.map((child) => (
+            child.type === 'group' ? (
+              <div class="ts-nav-section">
+                <p class="ts-section-label">{formatLabel(child.label)}</p>
+                <Astro.self sublist={child.entries} nested={true} depth={1} api={true} />
+              </div>
+            ) : (
+              <a
+                href={child.href}
+                aria-current={child.isCurrent ? 'page' : undefined}
+                class:list={['ts-nav-item', { 'ts-nav-item--active': child.isCurrent }]}
+                {...child.attrs}
+              >
+                {child.badge
+                  ? <span class:list={['ts-method-pill', `ts-method-pill--${child.badge.variant}`]} data-method={child.badge.text}>{child.badge.text}</span>
+                  : <svg class="ts-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true" set:html={iconSvg('book')} />
+                }
+                <span class="ts-nav-label">{titleCase(formatLabel(child.label))}</span>
+              </a>
+            )
+          ))}
+        </div>
+      ) : entry.type === 'group' ? (
+        <div class="ts-nav-section">
+          <p class="ts-section-label">{formatLabel(entry.label)}</p>
+          <Astro.self sublist={entry.entries} nested={true} depth={1} />
+        </div>
+      ) : (
+        <a
+          href={entry.href}
+          aria-current={entry.isCurrent ? 'page' : undefined}
+          class:list={['ts-nav-item', { 'ts-nav-item--active': entry.isCurrent, 'ts-nav-item--plain': plain }]}
+        >
+          {!plain && (entry.badge
+            ? <span class:list={['ts-method-pill', `ts-method-pill--${entry.badge.variant}`]} data-method={entry.badge.text}>{entry.badge.text}</span>
+            : <svg class="ts-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true" set:html={iconSvg('book')} />)
+          }
+          <span class="ts-nav-label">{formatLabel(entry.label)}</span>
+        </a>
+      )
+    ))}
+  </div>
+) : (
+  /* ── Nested: items inside a section or sub-group ── */
+  <ul class="ts-nav-sub">
+    {sublist.map((entry) => (
+      <li>
+        {entry.type === 'link' ? (
+          <a
+            href={entry.href}
+            aria-current={entry.isCurrent ? 'page' : undefined}
+            class:list={['ts-nav-item', { 'ts-nav-item--active': entry.isCurrent }]}
+            {...entry.attrs}
+          >
+            {entry.badge
+              ? <span class:list={['ts-method-pill', `ts-method-pill--${entry.badge.variant}`]} data-method={entry.badge.text}>{entry.badge.text}</span>
+              : <svg class="ts-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true" set:html={iconSvg('book')} />
+            }
+            <span class="ts-nav-label">{api ? titleCase(formatLabel(entry.label)) : formatLabel(entry.label)}</span>
+          </a>
+        ) : (
+          /* Sub-group — collapsible, chevron on right */
+          <details
+            class="ts-sub-details"
+            open={hasCurrentDescendant(entry.entries)}
+          >
+            <summary class="ts-nav-item ts-nav-sub-summary">
+              <svg class="ts-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true" set:html={iconSvg(iconForLabel(entry.label))} />
+              <span class="ts-nav-label">{api ? titleCase(formatLabel(entry.label)) : formatLabel(entry.label)}</span>
+              <svg class="ts-sub-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" set:html={CARET} />
+            </summary>
+            <Astro.self sublist={entry.entries} nested={true} depth={depth + 1} api={api} />
+          </details>
+        )}
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  /* ── Sections wrapper ── */
+  .ts-nav-sections {
+    padding: 4px 8px 24px;
+  }
+
+  /* ── Static section label ── */
+  .ts-nav-section {
+    margin-top: 16px;
+  }
+  .ts-nav-section:first-child {
+    margin-top: 4px;
+  }
+  .ts-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ts-text-primary);
+    padding: 6px 8px 4px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+  }
+
+  /* ── Item list ── */
+  .ts-nav-sub {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 4px;
+  }
+  /* Sub-group children: indent + left border */
+  .ts-nav-sub .ts-nav-sub {
+    padding-left: 18px;
+    border-left: 1.5px solid var(--ts-border);
+    margin-left: 13px;
+    margin-top: 1px;
+    padding-bottom: 2px;
+  }
+
+  /* ── Link + sub-group summary — shared item style ── */
+  .ts-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ts-text-secondary);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.12s, background 0.12s;
+    cursor: pointer;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .ts-nav-item:hover {
+    color: var(--ts-text-primary);
+    background: var(--ts-hover-row);
+  }
+  .ts-nav-item--active,
+  .ts-nav-item--active:hover {
+    color: var(--ts-accent-text);
+    font-weight: 600;
+    background: var(--ts-accent-low);
+  }
+  .ts-nav-item--active .ts-nav-icon {
+    stroke: var(--ts-accent-text);
+  }
+
+  /* ── Label text — always single line ── */
+  .ts-nav-label {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Icon — 18px ── */
+  .ts-nav-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: var(--ts-text-tertiary);
+    transition: stroke 0.12s;
+  }
+  .ts-nav-item:hover .ts-nav-icon { stroke: var(--ts-text-primary); }
+
+  /* ── Sub-group details ── */
+  .ts-sub-details { list-style: none; }
+  .ts-nav-sub-summary { list-style: none; }
+  .ts-nav-sub-summary::-webkit-details-marker,
+  .ts-nav-sub-summary::marker { display: none; }
+
+  .ts-sub-caret {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--ts-text-tertiary);
+    transition: transform 0.15s;
+  }
+  .ts-sub-details[open] > .ts-nav-sub-summary .ts-sub-caret {
+    transform: rotate(90deg);
+  }
+
+  /* ── HTTP method pills (API sidebar) ── */
+  /* Content-width pills, colored by HTTP method (keyed off data-method so the
+     color is always correct regardless of the Starlight badge variant). */
+  .ts-method-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* Fixed width so every label starts at the same x (DELETE is the widest). */
+    width: 48px;
+    height: 18px;
+    padding: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .ts-method-pill[data-method='GET']    { background: #d1fae5; color: #047857; }
+  .ts-method-pill[data-method='POST']   { background: #d4f0f2; color: #0b7c84; }
+  .ts-method-pill[data-method='PUT']    { background: #fdecca; color: #b45309; }
+  .ts-method-pill[data-method='PATCH']  { background: #ece9fc; color: #6d28d9; }
+  .ts-method-pill[data-method='DELETE'] { background: #fee2e2; color: #b91c1c; }
+
+  /* ── API reference: flat, always-open sections ── */
+  .ts-api-nav .ts-nav-section { margin-top: 24px; }
+  .ts-api-nav .ts-nav-section:first-child { margin-top: 6px; }
+  /* Group labels: muted slate (per reference), a touch more tracking */
+  .ts-api-nav .ts-section-label {
+    color: #5d6a82;
+    font-size: 11.5px;
+    letter-spacing: 0.075em;
+    padding-bottom: 6px;
+  }
+  /* Endpoint rows: airier spacing, dark (not teal) text when active */
+  .ts-api-nav .ts-nav-item {
+    font-size: 14px;
+    padding: 7px 10px;
+    gap: 10px;
+  }
+  .ts-api-nav .ts-nav-item--active,
+  .ts-api-nav .ts-nav-item--active:hover {
+    color: var(--ts-text-primary);
+    font-weight: 600;
+    background: var(--ts-accent-low);
+  }
+
+  /* ── Changelog: clean month list, no icons ── */
+  .ts-nav-item--plain {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 12px;
+  }
+</style>

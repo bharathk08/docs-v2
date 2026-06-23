@@ -1,0 +1,169 @@
+---
+title: "Ad-hoc Run"
+pagetitle: "Perform Ad-Hoc Runs with Testsigma's Flexible Testing Capabilities"
+description: "Enhance testing efficiency today by initiating ad-hoc runs anytime for precise testing using Testsigma. You can easily configure settings for web, Android, and iOS apps."
+sidebar:
+  order: 9.11
+---
+
+---
+
+Testsigma's Ad-hoc Run feature allows you to run your test cases without impacting the real test outcomes. You can use this functionality to verify if your test cases are set up accurately and performing as intended before proceeding with full-scale testing. 
+
+This documentation will guide you through setting up Test Labs and Test Machines, selecting the App Source, adjusting Additional Settings, and configuring Desired Capabilities.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/).
+> - [Documentation on creating test labs](https://testsigma.com/docs/test-plans/supported-test-lab-types/).
+> - [Documentation on setting up local devices with Testsigma Agent](https://testsigma.com/docs/agent/overview/).
+> - [Documentation on creating environments](https://testsigma.com/docs/test-data/types/environment/#use-environment-in-ad-hoc-run-page).
+> - [Documentation on creating headless tests](https://testsigma.com/docs/test-plans/headless-testing/).
+> - [Documentation on managing desired capabilities](https://testsigma.com/docs/desired-capabilities/overview/) for all applications. 
+> - [Documentation on uploads](https://testsigma.com/docs/uploads/upload-apps/).
+> - [Documentation on creating camera image injection](https://testsigma.com/docs/test-cases/image-injection/).
+> - [Documentation on creating network logs](https://testsigma.com/docs/desired-capabilities/network-logs/#enable-network-logs-in-test-case) for Android and iOS applications.
+
+---
+
+## **Ad-hoc Run in Test Case**
+
+1. Create a **Test Case** with a list of the **test steps** and then click **Run** in the top right of the **Test Case Details** page to initiate an **Ad-hoc Run** overlay.
+   ![Run](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_5.png)
+2. Configure the ad-hoc run in the **Ad-hoc Run** overlay based on the application type in the below section. ![Perform Ad-hoc Run](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_1.png)
+3. Click **Save Configuration** in the screen's bottom right corner to save the Ad-hoc Run setups configuration. 
+   ![Save COnfiguration](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_2.png)
+4. Enter a **Name** for the configuration in the pop-up window that appears and click **Save**.
+   ![Configuration name](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_3.png)
+5. Click on **Saved Configs** at the top of the screen to reuse the saved configuration, and a drop-down list will appear. Select the Saved Config from this list. ![Save Config of Ad-Hoc](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_4.png)
+6. The Ad-hoc Run overlay will be automatically pre-filled with the saved configuration for your next runs when selected.
+7. In the **Test Case Details** page, click **Ad-Hoc Runs** in the right Navigation Bar to open the right sidebar. This will enable you to view the history and details of Ad-Hoc Run results for the Test Case. ![View History of Ad-Hoc Run](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/view_adhocrundetails.png)
+
+
+:::note[NOTE]
+Whitelisting of Testsigma IP addresses is necessary to ensure that the Testsigma servers and lab environments can securely interact with your applications and systems for testing activities. For more information, refer to [whitelisting Testsigma IP addresses](https://testsigma.com/docs/runs/test-locally-hosted-applications/#whitelisting-testsigma-ip-addresses)
+:::
+
+---
+
+## **Web Application**
+
+In the Ad-hoc run layover, provide the following configuration settings for a web application:
+1. **Test Lab**: Select the test lab to run the test case. You can run the tests on **Testsigma Cloud Lab**, your **Local Devices** or other vendor platforms, including **SauceLabs**, **BrowserStack**, **Lamba Test**, etc.
+2. **Test Machine**: Select the appropriate test machines and provide the following configuration details:
+   1. **OS** & **Version**
+   2. **Browser** & **Version**
+   3. **Resolution**
+3. **Headless Test**: Click the toggle button for **Headless Test** to enable headless testing for a test case.
+4. **Additional Settings**: Provide the following details under additional settings:
+   1. **Environment**: Select the test environment.
+   2. **Screenshot Capture**: Select when the screenshots need to be taken, for **All Steps** or **Failed Steps** alone.
+   3. **Page Timeout**: Duration for which the test should wait for the page to load.
+   4. **Element Timeout**: Duration for which the test should wait for the element to load.
+5. **Desired Capabilities**: Provide **Key**, **Data Type** and **Value** under Desired Capabilities.
+6. Click on **Run Now**. ![Ad-hoc screen for Web Application](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/webappliaction_adhocrun.png)
+
+---
+
+## **Mobile Web Application**
+
+In the Ad-hoc run layover, provide the following configuration settings for a mobile web application:
+1. **Test Lab**: Select the test lab to run the test case. You can run the tests on **Testsigma Cloud Lab**, your **Local Devices** or other vendor platforms, including **SauceLabs**, **BrowserStack**, **Lamba Test**, etc.
+2. **Test Machine**: Select the appropriate test machines and provide the following configuration details:
+   1. **OS** & **Version**
+   2. **Device**
+   3. **Browser**
+3. **Additional Settings**: Provide the following details under additional settings:
+   1. **Environment**: Select the test environment.
+   2. **Screenshot Capture**: Select when the screenshots need to be taken, for **All Steps** or **Failed Steps** alone.
+   3. **Page Timeout**: Duration for which the test should wait for the page to load.
+   4. **Element Timeout**: Duration for which the test should wait for the element to load.
+4. **Camera Image Injection**: Click the toggle button for **Camera Image Injection** to enable camera image injection for a test case.
+5. **Network Logs**: Click the toggle button for **Network Logs** to enable network logs for a test case.
+6. **Desired Capabilities**: Provide **Key**, **Data Type** and **Value** under Desired Capabilities.
+7. Click on **Run Now**. ![Ad-hoc screen for Mobile Web Application](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_6.png)
+
+---
+
+## **Android Application**
+
+In the Ad-hoc run layover, provide the following configuration settings for an Android application:
+1. **Test Lab**: Select the test lab to run the test case. You can run the tests on **Testsigma Cloud Lab**, your **Local Devices** or other vendor platforms, including **SauceLabs**, **BrowserStack**, **Lamba Test**, etc.
+2. **Test Machine**: Select the appropriate test machines and provide the following configuration details:
+   1. **OS** & **Version**
+   2. **Browser** & **Version**
+3. **App Source**: Select either one of the following options for an app source:
+   1. **External Path**: Provide the publicly accessible URL of the application.
+   2. **Uploaded Apps**: Select the application from uploaded apps in Testsigma.
+4. **Additional Settings**: Provide the following details under additional settings:
+   1. **Environment**: Select the test environment.
+   2. **Screenshot Capture**: Select when the screenshots need to be taken, for **All Step**s or **Failed Steps** alone.
+   3. **Page Timeout**: Duration for which the test should wait for the page to load.
+   4. **Element Timeout**: Duration for which the test should wait for the element to load.
+5. **Camera Image Injection**: Click the toggle button for **Camera Image Injection** to enable camera image injection for a test case.
+6. **Network Logs**: Click the toggle button for **Network Logs** to enable network logs for a test case.
+7. **Desired Capabilities**: Provide **Key**, **Data Type** and **Value** under Desired Capabilities.
+8. Click on **Run Now**. ![Ad-hoc screen for Android Application](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_7.png)
+
+---
+
+## **iOS Application**
+
+In the Ad-hoc run layover, provide the following configuration settings for an iOS application:
+
+1. **Test Lab**: Select the test lab to run the test case. You can run the tests on **Testsigma Cloud Lab**, your **Local Devices** or other vendor platforms, including **SauceLabs**, **BrowserStack**, **Lamba Test**, etc.
+2. **Test Machine**: Select the appropriate test machines and provide the following configuration details:
+   1. **OS** & **Version**
+   2. **Browser** & **Version**
+3. **App Source**: Select either one of the following options for an app source:
+   1. **External Path**: Provide the publicly accessible URL of the application.
+   2. **Uploaded Apps**: Select the application from uploaded apps in Testsigma.
+4. **Additional Settings**: Provide the following details under additional settings:
+   1. **Environment**: Select the test environment.
+   2. **Screenshot Capture**: Select when the screenshots need to be taken, for **All Step**s or **Failed Steps** alone.
+   3. **Page Timeout**: Duration for which the test should wait for the page to load.
+   4. **Element Timeout**: Duration for which the test should wait for the element to load.
+5. **Camera Image Injection**: Click the toggle button for **Camera Image Injection** to enable camera image injection for a test case.
+6. **Network Logs**: Click the toggle button for **Network Logs** to enable network logs for a test case.
+7. **Desired Capabilities**: Provide **Key**, **Data Type** and **Value** under Desired Capabilities. 
+8. Click on **Run Now**. ![Ad-hoc screen for iOS Application](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Adhoc_run_8.png)
+
+---
+
+## **Desktop Windows**
+
+In the Ad-hoc run layover, provide the following configuration settings for a Desktop application:
+1. **Test Lab**: Select the test lab as **Local Devices** to run the test case.
+2. **Test Machine**: Select the registered active agent as Test Machine to run the test case.
+3. **Desktop App Location**: Provide the Local URL for the application path.
+4. **Environment**: Select the test environment.
+5. **Desired Capabilities**: Provide **Key**, **Data Type** and **Value** under Desired Capabilities.
+6. Click on **Run Now**. ![Ad-hoc screen for Desktop Windows](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/dekstopwindows_adhocrun.png)
+
+---
+
+## **Rest API Application**
+
+In the Ad-hoc run layover, provide the following configuration settings for a Rest API:
+1. **Test Lab**: Select the test lab, either **Testsigma Cloud Lab** or **Local Devices**, to run the test case.
+2. **Environment**: Select the test environment.
+3. **Desired Capabilities**: Provide **Key**, **Data Type** and **Value** under Desired Capabilities.
+4. Click on **Run Now**. ![Rest API Application](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/restapiapp_adhocrun.png)
+
+---
+
+## **Adding Prerequisite Test Case**
+
+You can add a prerequisite test case for any test case while executing the test case as dry runs. Follow the steps below to add a prerequisite test case for dry runs. 
+
+1. Navigate to **Create Tests > Test Cases**, select a test case for which you want to add prerequisites and click on **Test Case Settings**.
+   ![Test Case Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tcsfapr.png)
+
+2. Select the prerequisite test case from the dropdown.
+
+3. For **Dry Runs**, the test case will be executed after the prerequisite test case.  You can check the **Execution sequence** on the test case results page. 
+   ![Dry Runs](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/vprtcie.png)

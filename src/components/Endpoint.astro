@@ -1,0 +1,132 @@
+---
+// ────────────────────────────────────────────────────────────────────────────
+//  <Endpoint /> — renders one API endpoint in the Testsigma reference style.
+//
+//  It reads the `api` block from the page's frontmatter (defined in
+//  src/content.config.ts) and renders:
+//    • method badge + path + base URL
+//    • an authentication note
+//    • Path / Query / Request-body / Response-attribute tables
+//    • cURL / JavaScript / Python request samples (auto-generated, in tabs)
+//    • the example response, syntax-highlighted
+//
+//  The cURL/JS/Python samples are GENERATED from method+path+body, so you only
+//  ever maintain one source of truth in frontmatter — they can never drift.
+//
+//  Syntax highlighting is Astro's built-in <Code> (Shiki). The language tabs
+//  are Starlight's built-in <Tabs>. No custom JavaScript ships to the browser.
+// ────────────────────────────────────────────────────────────────────────────
+import { Code } from 'astro:components';
+import { Tabs, TabItem, Aside, Badge } from '@astrojs/starlight/components';
+
+const { api } = Astro.props;
+const {
+  method,
+  path,
+  baseUrl,
+  pathParams = [],
+  query = [],
+  bodyFields = [],
+  requestBody,
+  response,
+  status = 200,
+  statusText = 'OK',
+  responseAttributes = [],
+} = api;
+
+const url = baseUrl + path;
+const bodyJson = requestBody ? JSON.stringify(requestBody, null, 2) : null;
+const responseJson = JSON.stringify(response, null, 2);
+
+// ── generate the three request samples from the spec ──
+const curl = [
+  `curl -X ${method} "${url}" \\`,
+  `  -H "Authorization: Bearer <API_KEY>" \\`,
+  `  -H "Content-Type: application/json"${bodyJson ? ' \\' : ''}`,
+  ...(bodyJson ? [`  -d '${bodyJson.replace(/\n/g, '')}'`] : []),
+].join('\n');
+
+const js = [
+  `const res = await fetch("${url}", {`,
+  `  method: "${method}",`,
+  `  headers: {`,
+  `    Authorization: "Bearer <API_KEY>",`,
+  `    "Content-Type": "application/json",`,
+  `  },${bodyJson ? `\n  body: JSON.stringify(${bodyJson}),` : ''}`,
+  `});`,
+  `const data = await res.json();`,
+].join('\n');
+
+const py = [
+  `import requests`,
+  ``,
+  `res = requests.${method.toLowerCase()}(`,
+  `    "${url}",`,
+  `    headers={`,
+  `        "Authorization": "Bearer <API_KEY>",`,
+  `        "Content-Type": "application/json",`,
+  `    },${bodyJson ? `\n    json=${bodyJson.replace(/true/g, 'True').replace(/false/g, 'False').replace(/null/g, 'None')},` : ''}`,
+  `)`,
+  `data = res.json()`,
+].join('\n');
+---
+
+<div class="ts-endpoint-line">
+  <span class="ts-method" data-m={method}>{method}</span>
+  <code>{path}</code>
+</div>
+<p class="ts-baseurl">Base URL <code>{baseUrl}</code></p>
+
+<slot />
+
+<Aside type="note" title="Authentication">
+  Authenticate with your API key as a <code>Bearer</code> token in the
+  <code>Authorization</code> header. See
+  <a href="/docs/test-management/settings/api-keys/">API Keys</a> to generate one.
+</Aside>
+
+{pathParams.length > 0 && (
+  <div class="ts-attrs">
+    <h4>Path parameters</h4>
+    {pathParams.map((p: { name: string; desc: string }) => (
+      <div class="ts-attr-row"><code>{p.name}</code><span>{p.desc}</span></div>
+    ))}
+  </div>
+)}
+
+{query.length > 0 && (
+  <div class="ts-attrs">
+    <h4>Query parameters</h4>
+    {query.map((p: { name: string; desc: string }) => (
+      <div class="ts-attr-row"><code>{p.name}</code><span>{p.desc}</span></div>
+    ))}
+  </div>
+)}
+
+{bodyFields.length > 0 && (
+  <div class="ts-attrs">
+    <h4>Request body</h4>
+    {bodyFields.map((p: { name: string; desc: string }) => (
+      <div class="ts-attr-row"><code>{p.name}</code><span>{p.desc}</span></div>
+    ))}
+  </div>
+)}
+
+<h3>Request</h3>
+<Tabs syncKey="lang">
+  <TabItem label="cURL"><Code code={curl} lang="bash" /></TabItem>
+  <TabItem label="JavaScript"><Code code={js} lang="js" /></TabItem>
+  <TabItem label="Python"><Code code={py} lang="python" /></TabItem>
+</Tabs>
+
+<h3>Response <Badge text={`${status} ${statusText}`} variant="success" /></h3>
+<Code code={responseJson} lang="json" />
+
+{responseAttributes.length > 0 && (
+  <div class="ts-attrs">
+    <h4>Response attributes</h4>
+    {responseAttributes.map((p: { name: string; desc: string }) => (
+      <div class="ts-attr-row"><code>{p.name}</code><span>{p.desc}</span></div>
+    ))}
+  </div>
+)}

@@ -1,0 +1,40 @@
+---
+title: "Integrating Xray with Testsigma"
+description: "Xray is a Test Management tool that gives the structure to organize, plan, and report the progress of testing. Learn how to integrate Xray with Testsigma"
+sidebar:
+  order: 4.7444
+---
+
+---
+
+Testsigma integrates with Xray to support test case generation from your existing test repositories. You can select Xray tests, epics, or stories as input, and use Testsigma’s Generative AI to generate new test cases aligned with your defined requirements. This helps bridge manual and automated workflows while maintaining consistency with your test management processes.
+
+---
+ 
+> <p id="prerequisites">Prerequisites</p>
+>
+> - Before you begin, ensure JIRA and Xray integrations are active, and you have the JIRA account URL, client ID, and client secret.
+> 
+> - *For more information on configuring global settings, refer to the *<a href="https://docs.getxray.app/display/XRAYCLOUD/Global+Settings%3A+API+Keys" rel="nofollow">documentation on configuring global settings</a>.*
+
+---
+ 
+## **Integrating Xray with Testsigma** 
+
+1. Navigate to **Settings > Integrations**.
+![Integrations](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_rayx_1.png)
+
+2. Enable toggle on **Xray** widget.
+![Xray Toggle](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_rayx_2.png)
+
+3. On the **Xray Details** prompt, enter **Jira Account URL**, **Client Id** and **Client Secret**.
+![Xray Details](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_rayx_3.png)
+
+4. Click on **Save & Enable**.
+![Save & Enable](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_rayx_4.png)
+
+:::note[NOTE]
+If you want to add attachments like logs, screenshots, and videos of execution for the test executions, please check the **Add Attachments to Test**.
+:::
+
+---

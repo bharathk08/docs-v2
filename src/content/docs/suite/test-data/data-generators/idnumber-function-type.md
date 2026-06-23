@@ -1,0 +1,287 @@
+---
+title: "IdNumber Function Type"
+pagetitle: "Generate Valid and Invalid Identification Numbers"
+description: "The IdNumber function in data generators allows you to simulate US standard identification numbers, including valid SSNs, validSvSeSSn and unique formats."
+sidebar:
+  order: 5.41
+---
+
+---
+
+You can generate and manage various file-related data. This functionality is useful for handling files with specific attributes like file extensions, MIME types, and file names. Creating diverse file data for different applications can make file-handling tasks more efficient and organized.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+>
+> Before you begin, ensure that you have referred to:
+> - [Documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/#create-test-case).
+> - [Documentation on creating test steps](https://testsigma.com/docs/test-cases/create-test-steps/overview/).
+> - [Documentation on adding data generators](https://testsigma.com/docs/test-data/types/data-generator/#add-data-generators-in-test-steps) in test steps.
+
+---
+
+## **Selecting IdNumber as a Function Type for Data Generator**
+
+1. From the left navigation bar, go to **Create Tests > Test Cases** and create a new test case.
+![Test Cases](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_randomtext_1.png) 
+
+2. Use **NLP** to create a **new step** in the test case and include a placeholder for **test data**.
+![NLP](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_idnumber_1.png)
+
+3. Click on the **test data** placeholder. From the **Test Data Types** dropdown menu, select the **! Data Generator** option.
+![Data Generator](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_idnumber_2.png)
+
+4. On the **! Data Generators** overlay, select the **Type** to **Default**. This will enable you to use a collection of built-in test data generators.
+![Default](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_idnumber_3.png)
+
+5. Select **IdNumber** from the **Function Type** dropdown list. 
+![IdNumber](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_idnumber_4.png)
+
+:::note[NOTE]
+This action will display a list of built-in functions associated with the IdNumber function type, enabling you to select the appropriate function based on your requirements.
+:::
+
+---
+
+## **Valid**
+
+- Enables you to generate a valid identification number that adheres to specified formats and validation rules.
+
+<style>
+  .example-container {
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #f2f2f2;
+  }
+  .example-title {
+    color: darkgreen;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  .example-title span {
+    margin-right: 5px;
+  }
+  .example-list {
+    list-style: none;
+    padding: 0;
+  }
+  .example-list li {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <ul class="example-list">
+    <li><b>Input:</b> None (This function does not require any specific input)</li>
+    <li><b>Output:</b></li>
+    <ul>
+      <li>871-85-7385</li>
+      <li>647-84-1801</li>
+      <li>493-16-0542</li>
+      <li>616-25-4680</li>
+    </ul>
+  </ul>
+</div>
+
+---
+
+## **Invalid**
+
+- Allows you to generate an invalid identification number that does not conform to standard formats or validation rules.
+
+<style>
+  .example-container {
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #f2f2f2;
+  }
+  .example-title {
+    color: darkgreen;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  .example-title span {
+    margin-right: 5px;
+  }
+  .example-list {
+    list-style: none;
+    padding: 0;
+  }
+  .example-list li {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <ul class="example-list">
+    <li><b>Input:</b> None (This function does not require any specific input)</li>
+    <li><b>Output:</b></li>
+    <ul>
+      <li>967-54-6956</li>
+      <li>889-04-0000</li>
+      <li>666-80-8283</li>
+      <li>210-98-7654</li>
+    </ul>
+  </ul>
+</div>
+
+---
+
+## **SSN Valid**
+
+- Enables you to generate a valid SSN format that meets the criteria for a valid social security number.
+
+<style>
+  .example-container {
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #f2f2f2;
+  }
+  .example-title {
+    color: darkgreen;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  .example-title span {
+    margin-right: 5px;
+  }
+  .example-list {
+    list-style: none;
+    padding: 0;
+  }
+  .example-list li {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <ul class="example-list">
+    <li><b>Input:</b> None (This function does not require any specific input)</li>
+    <li><b>Output:</b></li>
+    <ul>
+      <li>123-45-6789</li>
+      <li>456-78-9012</li>
+      <li>789-01-2345</li>
+      <li>567-89-0123</li>
+    </ul>
+  </ul>
+</div>
+
+---
+
+## **Valid SvSe SSN**
+
+- Allows you to generate a valid Swedish SSN according to specific validation rules for Sweden.
+
+<style>
+  .example-container {
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #f2f2f2;
+  }
+  .example-title {
+    color: darkgreen;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  .example-title span {
+    margin-right: 5px;
+  }
+  .example-list {
+    list-style: none;
+    padding: 0;
+  }
+  .example-list li {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <ul class="example-list">
+    <li><b>Input:</b> None (This function does not require any specific input)</li>
+    <li><b>Output:</b></li>
+    <ul>
+      <li>198501012389</li>
+      <li>197312310123</li>
+      <li>199011301234</li>
+      <li>200102281234</li>
+    </ul>
+  </ul>
+</div>
+
+---
+
+## **Invalid SvSe SSN**
+
+- Enables you to generate an invalid Swedish SSN that does not conform to valid formats or rules.
+
+<style>
+  .example-container {
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #f2f2f2;
+  }
+  .example-title {
+    color: darkgreen;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  .example-title span {
+    margin-right: 5px;
+  }
+  .example-list {
+    list-style: none;
+    padding: 0;
+  }
+  .example-list li {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<div class="example-container">
+  <div class="example-title">
+    <span>ℹ️</span>Example:
+  </div>
+  <ul class="example-list">
+    <li><b>Input:</b> None (This function does not require any specific input)</li>
+    <li><b>Output:</b></li>
+    <ul>
+      <li>198501013477</li>
+      <li>200102281235</li>
+      <li>199012301234</li>
+      <li>197312310001</li>
+    </ul>
+  </ul>
+</div>
+
+---
+
+

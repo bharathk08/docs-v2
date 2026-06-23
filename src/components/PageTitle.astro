@@ -1,0 +1,169 @@
+---
+const { sidebar, entry } = Astro.locals.starlightRoute;
+const pathname = Astro.url.pathname;
+const isSplash = entry.data.template === 'splash';
+// API pages render their own title inside ApiMarkdownContent — skip here
+const isApiPage = !!(entry.data as any).api;
+
+const product = pathname.includes('/arcus/') ? 'Arcus' : 'Suite';
+const productHref = `/docs/${product.toLowerCase()}/`;
+
+type SidebarLink = { type: 'link'; label: string; href: string; isCurrent: boolean };
+type SidebarGroup = { type: 'group'; label: string; entries: SidebarEntry[] };
+type SidebarEntry = SidebarLink | SidebarGroup;
+
+function hasCurrentLink(entries: SidebarEntry[]): boolean {
+  return entries.some(e =>
+    (e.type === 'link' && e.isCurrent) ||
+    (e.type === 'group' && hasCurrentLink(e.entries))
+  );
+}
+
+// First navigable link inside a group (for breadcrumb hrefs)
+function firstLink(entries: SidebarEntry[]): string | null {
+  for (const e of entries) {
+    if (e.type === 'link') return e.href;
+    if (e.type === 'group') {
+      const found = firstLink(e.entries);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function findSectionAndSubsection(entries: SidebarEntry[]): {
+  section: string | null; sectionHref: string | null;
+  subsection: string | null; subsectionHref: string | null;
+} {
+  for (const e of entries) {
+    if (e.type === 'group' && hasCurrentLink(e.entries)) {
+      const nested = e.entries.find(
+        sub => sub.type === 'group' && hasCurrentLink((sub as SidebarGroup).entries)
+      ) as SidebarGroup | undefined;
+      return {
+        section: e.label,
+        sectionHref: firstLink(e.entries),
+        subsection: nested?.label ?? null,
+        subsectionHref: nested ? firstLink(nested.entries) : null,
+      };
+    }
+  }
+  return { section: null, sectionHref: null, subsection: null, subsectionHref: null };
+}
+
+const LABEL_OVERRIDES: Record<string, string> = {
+  'generative-ai': 'Generative AI', 'ai-agents': 'AI Agents', 'ai': 'AI',
+  'api': 'API', 'rest-api': 'REST API', 'soap-api': 'SOAP & REST API',
+  'byok': 'BYOK', 'supported-llms': 'Supported LLMs', 'nlps': 'NLPs',
+  'sdk': 'SDK', 'ios-apps': 'iOS Apps', 'ci-cd': 'CI/CD',
+  'on-prem': 'On-Premise', 'sap-automation': 'SAP Automation',
+  'imports-and-exports': 'Imports & Exports',
+};
+const WORD_CAPS: Record<string, string> = {
+  ai: 'AI', api: 'API', sdk: 'SDK', sap: 'SAP', ios: 'iOS',
+  nlp: 'NLP', nlps: 'NLPs', llm: 'LLM', llms: 'LLMs',
+  byok: 'BYOK', ci: 'CI', cd: 'CD', rest: 'REST', soap: 'SOAP',
+  faqs: 'FAQs', faq: 'FAQ', ui: 'UI', url: 'URL',
+};
+function formatLabel(label: string): string {
+  if (/[A-Z]/.test(label) || label.includes(' ')) return label;
+  const override = LABEL_OVERRIDES[label.toLowerCase()];
+  if (override) return override;
+  return label
+    .split('-')
+    .map((w) => WORD_CAPS[w.toLowerCase()] ?? (w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
+const productGroup = (sidebar as SidebarEntry[]).find(
+  e => e.type === 'group' && e.label.toLowerCase() === product.toLowerCase()
+);
+const sectionEntries: SidebarEntry[] = productGroup?.type === 'group' ? productGroup.entries : (sidebar as SidebarEntry[]);
+const { section: rawSection, sectionHref: currentSectionHref, subsection: rawSubsection, subsectionHref: currentSubsectionHref } = findSectionAndSubsection(sectionEntries);
+const currentSection = rawSection ? formatLabel(rawSection) : null;
+const currentSubsection = rawSubsection ? formatLabel(rawSubsection) : null;
+const pageTitle = entry.data.title;
+---
+
+{isApiPage ? null : isSplash ? (
+  <span id="_top" aria-hidden="true" style="display:none"></span>
+) : (
+  <div class="ts-page-title-wrap">
+    <nav class="ts-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href={productHref}>{product}</a></li>
+        {currentSection && <li><a href={currentSectionHref ?? productHref}>{currentSection}</a></li>}
+        {currentSubsection && <li><a href={currentSubsectionHref ?? currentSectionHref ?? productHref}>{currentSubsection}</a></li>}
+        <li><strong>{pageTitle}</strong></li>
+      </ol>
+    </nav>
+    {currentSection && (
+      <p class="ts-eyebrow">{currentSection}</p>
+    )}
+    <h1 id="_top">{pageTitle}</h1>
+  </div>
+)}
+
+<style>
+  .ts-page-title-wrap {
+    margin-bottom: -14px;
+  }
+
+  /* Breadcrumb */
+  .ts-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+  .ts-breadcrumb li {
+    display: flex;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--ts-text-tertiary);
+  }
+  .ts-breadcrumb li + li::before {
+    content: '›';
+    margin: 0 6px;
+    color: var(--ts-border-strong);
+  }
+  .ts-breadcrumb a {
+    color: var(--ts-text-tertiary);
+    text-decoration: none;
+    transition: color 0.12s;
+  }
+  .ts-breadcrumb a:hover {
+    color: var(--ts-accent-text);
+  }
+  .ts-breadcrumb span {
+    color: var(--ts-text-tertiary);
+  }
+  .ts-breadcrumb strong {
+    color: var(--ts-text-primary);
+    font-weight: 600;
+  }
+
+  /* Eyebrow */
+  .ts-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ts-accent-text);
+    margin: 0 0 8px;
+  }
+
+  /* H1 */
+  #_top {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ts-text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0;
+    border: none !important;
+  }
+</style>

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/", "destination": "/docs/", "permanent": false }
+  ],
+  "functions": {
+    "api/ask.ts": {
+      "maxDuration": 60,
+      "includeFiles": "public/ask-index.bin,public/ask-index.meta.json"
+    }
+  }
+}

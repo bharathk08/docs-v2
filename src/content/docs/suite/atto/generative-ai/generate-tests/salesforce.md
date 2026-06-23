@@ -1,0 +1,71 @@
+---
+title: "Generate Test Cases for Salesforce"
+description: "Generate Salesforce test cases in Testsigma using GenAI. Attach Jira Epics or Stories and instantly create test cases with simple prompts to accelerate test creation"
+sidebar:
+  order: 4.7426
+---
+
+---
+
+You can quickly generate test cases for Salesforce requirements in Testsigma using GenAI. This feature allows you to import Epics or Stories from your Jira project and generate test cases using simple prompts. This article discusses generating test cases for Salesforce using Jira stories & prompts in Testsigma.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that,
+> - Your Salesforce instance contains active Flows or Workflows and is connected to Testsigma.
+> - You have referred to the [documentation on creating test cases](https://testsigma.com/docs/test-cases/manage/add-edit-delete/).
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/). 
+
+---
+
+## **Generate Test Cases for Salesforce**
+
+1. From the left navigation bar, go to **Atto’s Home** and click **Generate with AI**.
+
+2. On the **Generate Test Cases** page, click **Jira Requirements**. 
+
+3. In the **Add Jira Tickets** dialog, 
+   - From the **Jira Project** dropdown, select a project.
+   - Under **Issue Type**, select either **Epic** or **Story**:
+      - If you select **Epic**, choose the stories under that epic.
+      - If you select **Story**, choose the stories you want to generate test cases for.
+   - Select the stories/epics for which you want to generate test cases and click **Save**.
+     
+     ![Story Inputs](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/sf_3.png)
+     
+4. In the Prompt box, enter a detailed prompt that describes test cases want to generate.
+
+5. The **Read existing test case library** checkbox is selected by default. Clear this checkbox if you do not want the system to consider existing test cases while generating new ones.
+
+:::note[NOTE]
+- Once the **Read existing test case library** option is enabled, it cannot be unselected during the same session. The selection remains applicable throughout the session. However, you can enable this option at any time during a session if it was not selected earlier.
+:::
+
+6. Click **Generate with AI**.
+
+7. Wait for **Generator Agent** to generate the test cases based on the selected stories and prompt.
+
+8. After the test cases are generated, expand a category and select a test case.
+
+9.  In the **Test Case Details** dialog, go to the **Manual Steps** tab and review the generated steps.
+
+10. Click **Edit** to manually add a step or block, or to modify existing steps.
+
+11. If you want to refine the steps using **Atto**, enter a prompt and click **Refine manual steps**.
+
+12. Click **Generate Automated Steps** to convert the manual steps into NLP-based automated steps.
+
+13. After the steps are converted, choose one of the following options:
+    - To execute the test before saving, hover over **Run with Copilot**, and then select the environment in which you want to run the test steps. Copilot runs the automated steps. Review the execution results to ensure that everything works as expected, and then click **Save to Library** to save the test case to your project. 
+    - To save the test directly, click **Save to Library**. In the **Select Location** dialog box, expand the required **Feature**, and then select the **Scenario** where you want to save the automated test case. 
+
+14. Repeat steps 7–13 for all the test cases you want to add.
+
+:::note[NOTE]
+- To learn about **Agentic Learning**, please refer to the [documentation on Generator Agent](https://testsigma.com/docs/ai-agents/generator/).
+- To understand the difference between **Run with Copilot** and **Agentic Learning**, please refer to the [documentation on Run with Copilot vs Agentic Learning](http://testsigma.com/docs/atto/generative-ai/copilot/agentic-learning-vs-copilot/). 
+:::
+
+---

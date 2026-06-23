@@ -1,0 +1,19 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Host-level redirects (Netlify / Cloudflare Pages format).
+#  Keep old URLs alive so you don't lose SEO. Format:  FROM  TO  STATUS
+#
+#  Astro also applies the redirects listed in astro.config.mjs at build time;
+#  this file is for redirects the host should handle (wildcards, legacy
+#  underscore URLs). If you deploy somewhere else, see the README.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Legacy underscore URLs → hyphen URLs (the old Gatsby site did this).
+# Example pattern — add one line per page that historically had an underscore
+# variant, OR run `node scripts/gen-redirects.mjs` to generate them all.
+# /docs/test-management/projects/manage_projects/   /docs/test-management/projects/manage-projects/   301
+
+# Send the bare root to the docs home (the site lives under /docs/).
+/   /docs/   302
+
+# Explicit content moves (mirror of the old redirects.json):
+/docs/addons   /docs/addons/what-is-an-addon/   301

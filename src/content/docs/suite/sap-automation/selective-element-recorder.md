@@ -1,0 +1,51 @@
+---
+title: "Selective Element Recorder for SAP Automation"
+description: "Selective Element Recorder lets you capture UI elements one at a time in SAP apps and view them in a tree structure. This article explains how to use it."
+sidebar:
+  order: 29.2
+---
+
+---
+
+The Selective Element Recorder allows you to capture specific UI elements in a SAP desktop application by selecting an element at a time. Once recorded, the elements are displayed in a hierarchical tree structure for easy viewing and locating while creating test cases. This article explains how to capture individual elements from a SAP application using the Selective Element Recorder.
+
+---
+
+> <p id="prerequisites">Prerequisites</p>
+> 
+> Before you begin, ensure that:
+> - You have referred to the [documentation on creating projects](https://testsigma.com/docs/projects/overview/).
+> - You have referred to the [docuemntation on creating applications](https://testsigma.com/docs/projects/applications/) in Testsigma.
+> - You should have the **Testsigma Terminal** installed.
+> - The **WinTest Automation** folder must exist in the **Testsigma Agent** directory. 
+> - The **SAP** desktop application is installed and currently open on your device. 
+> - A working connection to your **SAP** system has been created using **SAP Logon**.
+---
+
+## **Steps to Create Elements Using Selective Element Recorder**
+
+1. From the left navigation bar, go to **Create Tests > Elements**.
+
+2. On the **Elements list** page, click **Record**.
+
+3. In the **Desktop Element Recorder** dialog box, select the **Selective Element Recorder** radio button and click **Launch**.
+
+4. In the **Select Application** window, choose the **SAP** application and click **Start Recording**.
+
+:::note[NOTE]
+- Ensure the **SAP** application is open and the desired screen is in focus.
+:::
+
+5. Click the **Record** button in the recorder to begin capturing.
+
+6. Hover over the desired element (such as a textbox, dropdown, or button) until it is highlighted in green, then click to capture it.
+
+7. After recording, select the element from the recorder list and click **Locate Element** to highlight it within the **SAP** application.
+
+:::note[NOTE]
+-  You can use the **Expand All** and **Collapse All** buttons at the top of the recorder to quickly view or hide the full hierarchy of recorded elements. 
+:::
+
+8. Click **Save Element**. 
+
+---

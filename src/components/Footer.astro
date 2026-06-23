@@ -1,0 +1,10 @@
+---
+// Wrapper override: render Starlight's default Footer untouched, then mount the
+// global <AskOverlay/> once per page. This is the no-touch mount point for the
+// Ask Assistant — it appears on every page (docs + splash, Suite + Arcus).
+import Default from '@astrojs/starlight/components/Footer.astro';
+import AskOverlay from './AskOverlay.astro';
+---
+
+<Default><slot /></Default>
+<AskOverlay />
