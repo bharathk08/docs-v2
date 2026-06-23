@@ -339,7 +339,8 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
   // ── Search forwarding ──
   function openSearch() {
     const btn = document.querySelector<HTMLButtonElement>('button[data-open-modal]');
-    btn?.click();
+    if (btn) { btn.click(); return; }
+    if (import.meta.env.DEV) console.warn('[ts-search] button[data-open-modal] not found — search requires a production build (npm run build)');
   }
   document.getElementById('ts-search-trigger')?.addEventListener('click', openSearch);
   document.addEventListener('keydown', (e) => {
