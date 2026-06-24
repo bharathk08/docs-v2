@@ -13,12 +13,9 @@ You can execute Android and iOS test cases in emulators or simulators using Test
 
 To quickly help you understand, this video demonstrates how to execute Android tests in an emulator using the Testsigma Agent.
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Execute_Tests_in_Emulator.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Execute_Tests_in_Emulator.mp4" type="video/mp4" />
+</video>
 
 
 ---

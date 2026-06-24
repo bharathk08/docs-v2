@@ -141,7 +141,13 @@
     function close() {
       overlay!.classList.remove('ts-ask-open');
       document.documentElement.style.overflow = '';
-      setTimeout(() => { overlay!.hidden = true; }, 220);
+      setTimeout(() => {
+        overlay!.hidden = true;
+        results.hidden = true;
+        results.innerHTML = '';
+        intro.hidden = false;
+        input.value = '';
+      }, 220);
       lastFocus?.focus?.();
     }
     function showResults() { intro.hidden = true; results.hidden = false; }
@@ -336,6 +342,10 @@
     position: fixed;
     inset: 0;
     z-index: 9999;
+    pointer-events: none;
+  }
+  .ts-ask-overlay.ts-ask-open {
+    pointer-events: auto;
   }
   .ts-ask-backdrop {
     position: absolute;

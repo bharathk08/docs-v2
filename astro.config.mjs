@@ -56,7 +56,6 @@ export default defineConfig({
       components: {
         Header:           './src/components/Header.astro',
         Sidebar:          './src/components/Sidebar.astro',
-        SidebarSublist:   './src/components/SidebarSublist.astro',
         TableOfContents:  './src/components/TableOfContents.astro',
         PageTitle:        './src/components/PageTitle.astro',
         MarkdownContent:  './src/components/ApiMarkdownContent.astro',
