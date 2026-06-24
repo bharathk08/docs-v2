@@ -323,7 +323,16 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
       const p = row.dataset.product || 'suite';
       applyProduct(p);
       setDropdownOpen(false);
-      window.location.href = '/docs/' + p + '/';
+      const path = window.location.pathname;
+      let dest: string;
+      if (path.includes('/changelog')) {
+        dest = '/docs/' + p + '/changelog/';
+      } else if (path.includes('/api-reference') || path.includes('/suite/api/')) {
+        dest = p === 'suite' ? '/docs/suite/api/overview/' : '/docs/arcus/api-reference/overview/';
+      } else {
+        dest = '/docs/' + p + '/';
+      }
+      window.location.href = dest;
     });
     // Hover background (only when not active)
     row.addEventListener('mouseenter', () => {
