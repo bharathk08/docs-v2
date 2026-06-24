@@ -105,16 +105,18 @@ const ALL_STEPS = [...ADHOC_STEPS, ...SPRINT_STEPS];
       return (
         <div class="qi-path-steps" data-path={path} aria-hidden={path === 'sprint' ? 'true' : 'false'} style={path === 'sprint' ? 'display:none' : ''}>
           {steps.map((step, i) => (
-            <div class="qi-step" data-index={i} data-state={i === 0 ? 'active' : 'pending'}>
+            <div class="qi-step" data-index={i} data-state={i === 0 ? 'active' : 'pending'} data-first={i === 0 ? 'true' : undefined} data-last={i === steps.length - 1 ? 'true' : undefined}>
+              {/* Continuous connector line — absolutely positioned, split at the node centre */}
+              <span class="qi-connector qi-connector--top"></span>
+              <span class="qi-connector qi-connector--bot"><span class="qi-loadbar"></span></span>
+
               {step.group && <div class="qi-group-label">{step.group}</div>}
-              <div class="qi-step-row">
-                <div class="qi-rail">
-                  <div class="qi-connector"></div>
-                  <div class="qi-node" data-dashed={step.dashed ? 'true' : undefined}>
-                    <div class="qi-spin-arc"></div>
-                    <svg class="qi-node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={STEP_ICONS[step.icon] ?? STEP_ICONS['clipboard']} />
-                    <svg class="qi-node-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CHECK_PATH} />
-                  </div>
+
+              <div class="qi-step-body">
+                <div class="qi-node" data-dashed={step.dashed ? 'true' : undefined}>
+                  <span class="qi-spin-arc"></span>
+                  <svg class="qi-node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={STEP_ICONS[step.icon] ?? STEP_ICONS['clipboard']} />
+                  <svg class="qi-node-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CHECK_PATH} />
                 </div>
                 <div class="qi-content">
                   <div class="qi-title-row">
@@ -163,6 +165,20 @@ let rafPending = false;
 function getStepCount(): number {
   const container = document.querySelector<HTMLElement>(`.qi-path-steps[data-path="${currentPath}"]`);
   return container ? container.querySelectorAll('.qi-step').length : 11;
+}
+
+// Measure each node's centre (offset from the top of its step) so the absolute
+// connector line splits exactly at the node — keeps the line continuous through
+// the group-label gaps regardless of step height.
+function measureNodes() {
+  document.querySelectorAll<HTMLElement>('.qi-path-steps').forEach(container => {
+    container.querySelectorAll<HTMLElement>('.qi-step').forEach(step => {
+      const node = step.querySelector<HTMLElement>('.qi-node');
+      if (!node) return;
+      const c = node.offsetTop + node.offsetHeight / 2;
+      step.style.setProperty('--qi-c', `${c}px`);
+    });
+  });
 }
 
 function applyActiveIndex(idx: number) {
@@ -214,6 +230,7 @@ function switchPath(path: 'adhoc' | 'sprint') {
     el.style.display = isActive ? '' : 'none';
     el.setAttribute('aria-hidden', isActive ? 'false' : 'true');
   });
+  measureNodes();
   applyActiveIndex(computeIdx());
 }
 
@@ -231,11 +248,27 @@ function initToggle() {
   });
 }
 
+let resizeRaf = false;
+function onResize() {
+  if (resizeRaf) return;
+  resizeRaf = true;
+  requestAnimationFrame(() => {
+    resizeRaf = false;
+    measureNodes();
+  });
+}
+
 function boot() {
   initToggle();
+  measureNodes();
   const pref = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!pref.matches) {
     window.addEventListener('scroll', onScroll, { passive: true });
+  }
+  window.addEventListener('resize', onResize, { passive: true });
+  // Re-measure after web fonts settle (text reflow shifts node positions)
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { measureNodes(); });
   }
   applyActiveIndex(computeIdx());
 }
@@ -324,7 +357,13 @@ if (document.readyState === 'loading') {
 .qi-panel::-webkit-scrollbar { display: none; }
 
 /* ── Step ── */
-.qi-step { position: relative; }
+/* Node centre offset (measured by JS) drives where the connector line splits.
+   --qi-c = distance from the top of the step to the node centre. */
+.qi-step {
+  position: relative;
+  --qi-c: 28px;
+  --qi-node-x: 16px; /* node centre x = 32/2 */
+}
 
 .qi-group-label {
   font-size: 10px;
@@ -332,34 +371,60 @@ if (document.readyState === 'loading') {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ts-text-tertiary);
-  padding: 10px 0 4px 44px;
+  padding: 12px 0 5px 44px;
 }
-.qi-step:first-child .qi-group-label { padding-top: 2px; }
+.qi-step[data-first] .qi-group-label { padding-top: 2px; }
 
-.qi-step-row {
+.qi-step-body {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  padding-bottom: 2px;
+  padding-bottom: 4px;
 }
 
-/* Rail: connector + node */
-.qi-rail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  width: 32px;
-}
+/* ── Continuous connector line (absolute, split at node centre) ── */
 .qi-connector {
+  position: absolute;
+  left: var(--qi-node-x);
   width: 1.5px;
-  flex: 1;
-  min-height: 8px;
-  background: #DFE1E6;
+  transform: translateX(-50%);
+  background: #DAE0E6;
   transition: background 0.35s;
+  z-index: 0;
 }
-.qi-step:first-child .qi-connector { visibility: hidden; min-height: 4px; }
-.qi-step[data-state="done"] .qi-connector { background: #6E45DF; }
+.qi-connector--top { top: 0; height: var(--qi-c); }
+.qi-connector--bot { top: var(--qi-c); bottom: 0; overflow: hidden; }
+
+/* First step: nothing above its node. Last step: nothing below. */
+.qi-step[data-first] .qi-connector--top { display: none; }
+.qi-step[data-last]  .qi-connector--bot { display: none; }
+
+/* Line above a node is filled once that step is reached (active or done). */
+.qi-step[data-state="active"] .qi-connector--top,
+.qi-step[data-state="done"]   .qi-connector--top { background: #6E45DF; }
+
+/* Line below a done node is solid violet (links to the next done/active node). */
+.qi-step[data-state="done"] .qi-connector--bot { background: #6E45DF; }
+
+/* Line below the ACTIVE node = the "loading" element: a violet bar travels down
+   it until scroll advances to the next step. */
+.qi-loadbar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg,
+    #6E45DF 0%,
+    #6E45DF 35%,
+    color-mix(in srgb, #6E45DF 0%, transparent) 70%);
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.qi-step[data-state="active"] .qi-loadbar {
+  opacity: 1;
+  animation: qi-load 1.6s ease-in-out infinite;
+}
 
 /* Node */
 .qi-node {
@@ -367,6 +432,7 @@ if (document.readyState === 'loading') {
   height: 32px;
   border-radius: 50%;
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -563,10 +629,14 @@ if (document.readyState === 'loading') {
 @keyframes qi-spin  { to { transform: rotate(360deg); } }
 @keyframes qi-pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 @keyframes qi-blink { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+/* Loading bar travels down the connector below the active node */
+@keyframes qi-load  { 0%{transform:translateY(-100%)} 100%{transform:translateY(100%)} }
 
 @media (prefers-reduced-motion: reduce) {
   .qi-spin-arc  { animation: none !important; }
   .qi-node-icon { animation: none !important; }
   .qi-dots span { animation: none !important; opacity: 1; }
+  .qi-loadbar   { animation: none !important; transform: translateY(0); opacity: 1;
+                  background: #6E45DF; }
 }
 </style>

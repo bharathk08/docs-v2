@@ -754,3 +754,81 @@ nav .sl-badge {
 
 /* … and raise the content-width cap so both columns have comfortable room. */
 .main-pane:has(.ts-api-page) { --sl-content-width: 58rem; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   QI landing page (Arcus home) — full-bleed grid background, no left nav,
+   left-aligned content, no partition between content and the QI timeline.
+   Marker set before paint by the inline script in Header.astro.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Graph-paper grid behind everything */
+:root[data-qi-home] {
+  --qi-grid-line: rgba(9, 30, 66, 0.04);
+  --qi-grid-size: 34px;
+}
+:root[data-qi-home] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #FBFBFC;
+  background-image:
+    linear-gradient(to right,  var(--qi-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--qi-grid-line) 1px, transparent 1px);
+  background-size: var(--qi-grid-size) var(--qi-grid-size);
+}
+
+/* Keep page chrome above the grid, and let the grid show through panels */
+:root[data-qi-home] .page,
+:root[data-qi-home] .main-frame {
+  position: relative;
+  z-index: 1;
+}
+:root[data-qi-home] .main-pane,
+:root[data-qi-home] .content-panel,
+:root[data-qi-home] .right-sidebar,
+:root[data-qi-home] .right-sidebar-container,
+:root[data-qi-home] .sl-container,
+:root[data-qi-home] article {
+  background: transparent !important;
+}
+
+/* Hide the left sidebar entirely (not in the design) */
+:root[data-qi-home] .sidebar-pane { display: none !important; }
+
+/* The TOC slot's .sl-container width is derived from --sl-sidebar-width; our
+   wider rail needs it to fill the column instead. */
+:root[data-qi-home] .sl-container {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Remove the partition border between content and the QI timeline rail */
+:root[data-qi-home] .right-sidebar {
+  border-inline-start: none !important;
+}
+
+@media (min-width: 72rem) {
+  /* Give the QI timeline rail more room than a normal TOC, and left-align
+     the main content (no auto centering). */
+  :root[data-qi-home] .right-sidebar-container {
+    width: 26rem;
+  }
+  /* The fixed inner rail resolves width:100% against the viewport — pin it to
+     the container width so the timeline lays out in its own column, not 1440px. */
+  :root[data-qi-home] .right-sidebar {
+    width: 26rem;
+    padding-inline: 4px 28px;
+    box-sizing: border-box;
+  }
+  :root[data-qi-home] .main-pane {
+    --sl-content-margin-inline: 0 auto;
+    width: calc(100% - 26rem);
+  }
+}
+
+/* Tighten hero top padding on the QI home (header already gives space) */
+:root[data-qi-home] .ts-hero {
+  padding-top: 32px;
+}
