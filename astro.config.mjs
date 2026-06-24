@@ -14,8 +14,11 @@ export default defineConfig({
   site: 'https://testsigma.com',
 
   // The whole docs site lives under /docs/ on the host.
-  // Vercel rewrites /docs/:path* → /:path* so static files in dist/ are served correctly.
+  // outDir builds into dist/docs/ so files are physically at the right URL path.
+  // Vercel is told outputDirectory:"dist" so it serves dist/ as root,
+  // making dist/docs/suite/index.html accessible at /docs/suite/ with no rewrites.
   base: '/docs',
+  outDir: './dist/docs',
 
   // CRITICAL for SEO parity: the old Gatsby site serves every URL WITH a
   // trailing slash (e.g. /docs/test-management/projects/). Keep this 'always'
