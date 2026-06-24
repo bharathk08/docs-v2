@@ -298,7 +298,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
     }
 
     // Tab hrefs
-    const base = '/docs/' + p;
+    const base = '/' + p;
     if (tabDocs)       tabDocs.href       = base + '/';
     if (tabApi)        tabApi.href        = p === 'suite' ? base + '/api/overview/' : base + '/api-reference/overview/';
     if (tabChangelog)  tabChangelog.href  = base + '/changelog/';
@@ -323,7 +323,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
       const p = row.dataset.product || 'suite';
       applyProduct(p);
       setDropdownOpen(false);
-      window.location.href = '/docs/' + p + '/';
+      window.location.href = '/' + p + '/';
     });
     // Hover background (only when not active)
     row.addEventListener('mouseenter', () => {
