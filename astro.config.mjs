@@ -26,10 +26,6 @@ export default defineConfig({
   // NOTE: the old site also auto-redirected underscore URLs to hyphen URLs
   // (e.g. /manage_projects/ → /manage-projects/). See public/_redirects and
   // the README "URL parity" section for how that is handled at the host.
-  redirects: {
-    '/docs/addons/': '/docs/addons/what-is-an-addon/',
-  },
-
   integrations: [
     starlight({
       title: 'Testsigma Docs',
