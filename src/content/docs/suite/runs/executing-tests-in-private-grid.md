@@ -50,12 +50,9 @@ Here’s a quick demonstration on creating a Dynamic Agent through API with the 
 
 <br>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/CreateDynamicAgent.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/CreateDynamicAgent.mp4" type="video/mp4" />
+</video>
 
 ---
 
@@ -78,12 +75,9 @@ Here’s a quick GIF demonstration on starting Dynamic Agent using jwtApiKey wit
 
 <br>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/compressed-video.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/compressed-video.mp4" type="video/mp4" />
+</video>
 
 ---
 
@@ -104,12 +98,9 @@ Once the command runs, the registered **Nodes** will be added to the **Private G
 Here’s a quick demonstration on starting the Private Grid Hub and adding Web Nodes.
 <br>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/PrivateHub.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/PrivateHub.mp4" type="video/mp4" />
+</video>
 
 ---
 
@@ -129,12 +120,9 @@ Here’s  a quick demonstration on executing tests through a Dynamic Agent throu
 
 <br>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/executetestswithgrid.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/executetestswithgrid.mp4" type="video/mp4" />
+</video>
 ---
 
 ## **Execute Tests in Private Grid from Application**
@@ -178,12 +166,9 @@ Follow the steps below to set up ngrok on your device to fetch the Private Hub U
    Here’s a quick demonstration on executing a test case in Private Grid.
   <br>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tcexein.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/tcexein.mp4" type="video/mp4" />
+</video>
 
 2. For test plan execution, add **Private Grid** while creating test machine profiles for execution. You need to go to **Add Test Suites & Link Machine Profiles > Select test machine profiles > Add Machine** and add **Private Grid** as **Test Lab**. 
 
@@ -191,11 +176,8 @@ Follow the steps below to set up ngrok on your device to fetch the Private Hub U
 
   <br>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ExecuteTestinPGUI.mp4" 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-          allowfullscreen>
-  </iframe>
-</div>
+<video controls style="width:100%;height:auto;border-radius:8px;">
+  <source src="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/ExecuteTestinPGUI.mp4" type="video/mp4" />
+</video>
 
 ---
