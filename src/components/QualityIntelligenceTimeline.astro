@@ -210,7 +210,9 @@ function computeIdx(): number {
   if (total <= 0) return 0;
   const p = Math.max(0, Math.min(1, window.scrollY / total));
   const n = getStepCount();
-  return Math.min(Math.floor(p * (n + 1)), n - 1);
+  // Allow the index to reach n (one past the last step) so that at the bottom
+  // of the page every step — including the last — resolves to "done".
+  return Math.min(Math.floor(p * (n + 1)), n);
 }
 
 function onScroll() {
