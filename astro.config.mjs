@@ -74,6 +74,11 @@ export default defineConfig({
       // <title>, description, canonical, and Open Graph tags automatically
       // from each page's frontmatter — only the EXTRA bits go here.
       head: [
+        // Favicon — teal Testsigma gear mark
+        {
+          tag: 'link',
+          attrs: { rel: 'icon', type: 'image/svg+xml', href: '/docs/favicon.svg' },
+        },
         // Google Tag Manager (was inline in seo.jsx)
         {
           tag: 'script',
