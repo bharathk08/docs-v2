@@ -302,7 +302,7 @@
           '<div class=”ts-ask-status”>Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
         return;
       }
-      const prefix = `/${product()}/`;
+      const prefix = `/docs/${product()}/`;
       const search = await engine.search(query);
       const raw    = await Promise.all(search.results.slice(0, 12).map((r: any) => r.data()));
       const hits   = raw.filter((d: any) => (d.url || '').includes(prefix)).slice(0, 6);

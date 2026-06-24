@@ -6,7 +6,7 @@ const isSplash = entry.data.template === 'splash';
 const isApiPage = !!(entry.data as any).api;
 
 const product = pathname.includes('/arcus/') ? 'Arcus' : 'Suite';
-const productHref = `/${product.toLowerCase()}/`;
+const productHref = `/docs/${product.toLowerCase()}/`;
 
 type SidebarLink = { type: 'link'; label: string; href: string; isCurrent: boolean };
 type SidebarGroup = { type: 'group'; label: string; entries: SidebarEntry[] };

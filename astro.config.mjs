@@ -13,6 +13,10 @@ export default defineConfig({
   // Your production domain. Used for canonical URLs, sitemap, and OG tags.
   site: 'https://testsigma.com',
 
+  // The whole docs site lives under /docs/ on the host.
+  // Vercel rewrites /docs/:path* → /:path* so static files in dist/ are served correctly.
+  base: '/docs',
+
   // CRITICAL for SEO parity: the old Gatsby site serves every URL WITH a
   // trailing slash (e.g. /docs/test-management/projects/). Keep this 'always'
   // so Astro produces the exact same URLs and you don't lose rankings.

@@ -180,7 +180,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
     <a
       id="ts-tab-docs"
       class:list={['ts-tab', { 'ts-tab--active': activeTab === 'docs' }]}
-      href={`/${product}/`}
+      href={`/docs/${product}/`}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -191,7 +191,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
     <a
       id="ts-tab-api"
       class:list={['ts-tab', { 'ts-tab--active': activeTab === 'api' }]}
-      href={product === 'suite' ? '/suite/api/overview/' : '/arcus/api-reference/overview/'}
+      href={product === 'suite' ? '/docs/suite/api/overview/' : '/docs/arcus/api-reference/overview/'}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/>
@@ -202,7 +202,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
     <a
       id="ts-tab-changelog"
       class:list={['ts-tab', { 'ts-tab--active': activeTab === 'changelog' }]}
-      href={`/${product}/changelog/`}
+      href={`/docs/${product}/changelog/`}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 3l1.9 5.5L19.5 10l-5.6 1.5L12 17l-1.9-5.5L4.5 10l5.6-1.5z"/>
@@ -298,7 +298,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
     }
 
     // Tab hrefs
-    const base = '/' + p;
+    const base = '/docs/' + p;
     if (tabDocs)       tabDocs.href       = base + '/';
     if (tabApi)        tabApi.href        = p === 'suite' ? base + '/api/overview/' : base + '/api-reference/overview/';
     if (tabChangelog)  tabChangelog.href  = base + '/changelog/';
@@ -323,7 +323,7 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
       const p = row.dataset.product || 'suite';
       applyProduct(p);
       setDropdownOpen(false);
-      window.location.href = '/' + p + '/';
+      window.location.href = '/docs/' + p + '/';
     });
     // Hover background (only when not active)
     row.addEventListener('mouseenter', () => {
