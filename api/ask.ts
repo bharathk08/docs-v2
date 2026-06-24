@@ -191,7 +191,6 @@ export default async function handler(req: any, res: any) {
     const stream = anthropic.messages.stream({
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
-      thinking: { type: 'adaptive' },
       system: `You are a concise, helpful documentation assistant for Testsigma.
 Answer the user's question using ONLY the numbered documentation excerpts below.
 Be direct. Use [N] inline to cite which excerpt supports each fact.
