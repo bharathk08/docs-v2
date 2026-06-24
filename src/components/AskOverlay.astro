@@ -43,7 +43,7 @@
           <div class="ts-ask-hero-title">Search documentation. <span class="ts-ask-hero-accent">Get answers.</span></div>
           <div class="ts-ask-poweredby">
             <span>POWERED BY</span>
-            <img src="/docs/testsigma-logo.svg" alt="Testsigma" height="16" />
+            <img src="/testsigma-logo.svg" alt="Testsigma" height="16" />
           </div>
         </div>
         <div class="ts-ask-suggestions" id="ts-ask-suggestions"></div>
@@ -302,7 +302,7 @@
           '<div class=”ts-ask-status”>Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
         return;
       }
-      const prefix = `/docs/${product()}/`;
+      const prefix = `/${product()}/`;
       const search = await engine.search(query);
       const raw    = await Promise.all(search.results.slice(0, 12).map((r: any) => r.data()));
       const hits   = raw.filter((d: any) => (d.url || '').includes(prefix)).slice(0, 6);

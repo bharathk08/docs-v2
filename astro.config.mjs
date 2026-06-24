@@ -19,8 +19,6 @@ export default defineConfig({
   trailingSlash: 'always',
 
   // The whole docs site lives under /docs/ (same as today).
-  base: '/docs',
-
   // ── Explicit redirects (old URL → new URL). ──
   // Mirror of the old src/redirects.json. Add any URL that changes here.
   // NOTE: the old site also auto-redirected underscore URLs to hyphen URLs
