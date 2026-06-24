@@ -13,23 +13,24 @@ export default defineConfig({
   // Your production domain. Used for canonical URLs, sitemap, and OG tags.
   site: 'https://testsigma.com',
 
+  // The whole docs site lives under /docs/ on the host.
+  // outDir builds into dist/docs/ so files are physically at the right URL path.
+  // Vercel is told outputDirectory:"dist" so it serves dist/ as root,
+  // making dist/docs/suite/index.html accessible at /docs/suite/ with no rewrites.
+  base: '/docs',
+  outDir: './dist/docs',
+
   // CRITICAL for SEO parity: the old Gatsby site serves every URL WITH a
   // trailing slash (e.g. /docs/test-management/projects/). Keep this 'always'
   // so Astro produces the exact same URLs and you don't lose rankings.
   trailingSlash: 'always',
 
   // The whole docs site lives under /docs/ (same as today).
-  base: '/docs',
-
   // ── Explicit redirects (old URL → new URL). ──
   // Mirror of the old src/redirects.json. Add any URL that changes here.
   // NOTE: the old site also auto-redirected underscore URLs to hyphen URLs
   // (e.g. /manage_projects/ → /manage-projects/). See public/_redirects and
   // the README "URL parity" section for how that is handled at the host.
-  redirects: {
-    '/docs/addons/': '/docs/addons/what-is-an-addon/',
-  },
-
   integrations: [
     starlight({
       title: 'Testsigma Docs',
@@ -72,6 +73,11 @@ export default defineConfig({
       // <title>, description, canonical, and Open Graph tags automatically
       // from each page's frontmatter — only the EXTRA bits go here.
       head: [
+        // Favicon — teal Testsigma gear mark
+        {
+          tag: 'link',
+          attrs: { rel: 'icon', type: 'image/svg+xml', href: '/docs/favicon.svg' },
+        },
         // Google Tag Manager (was inline in seo.jsx)
         {
           tag: 'script',
