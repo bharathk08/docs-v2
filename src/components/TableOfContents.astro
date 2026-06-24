@@ -1,7 +1,10 @@
 ---
+import QualityIntelligenceTimeline from './QualityIntelligenceTimeline.astro';
+
 const { toc, editUrl, lastUpdated, entry } = Astro.locals.starlightRoute;
 
 const isApiPage = !!(entry.data as any).api;
+const isQIHome = !!(entry.data as any).homeQI;
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -14,7 +17,7 @@ interface TocItem {
 }
 ---
 
-{isApiPage ? null : <div class="ts-right-panel">
+{isApiPage ? null : isQIHome ? <QualityIntelligenceTimeline /> : <div class="ts-right-panel">
 
   {toc && toc.items.length > 0 && (
     <nav class="ts-toc" aria-labelledby="ts-toc-heading" data-ts-toc>

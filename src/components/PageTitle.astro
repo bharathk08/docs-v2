@@ -1,7 +1,7 @@
 ---
 const { sidebar, entry } = Astro.locals.starlightRoute;
 const pathname = Astro.url.pathname;
-const isSplash = entry.data.template === 'splash';
+const isSplash = entry.data.template === 'splash' || !!(entry.data as any).homeQI;
 // API pages render their own title inside ApiMarkdownContent — skip here
 const isApiPage = !!(entry.data as any).api;
 
