@@ -796,6 +796,11 @@ nav .sl-badge {
 
 /* Hide the left sidebar entirely (not in the design) */
 :root[data-qi-home] .sidebar-pane { display: none !important; }
+/* …and reclaim the space it reserves: the main frame pads its inline-start by
+   --sl-sidebar-width to clear the (now hidden) sidebar. Drop it so the content
+   starts at the left edge, aligned with the header's Docs tab (32px). */
+:root[data-qi-home] .main-frame { padding-inline-start: 0 !important; }
+:root[data-qi-home] { --sl-content-pad-x: 2rem; }
 
 /* The TOC slot's .sl-container width is derived from --sl-sidebar-width; our
    wider rail needs it to fill the column instead. */
