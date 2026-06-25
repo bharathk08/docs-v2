@@ -3,6 +3,7 @@ title: "Test Step Type: Blocks"
 pagetitle: "Streamline Test Steps with Step Blocks in Testsigma"
 description: "Optimise test management with Testsigma Test Step Type: Blocks for streamlined steps. Avoid nesting or converting Step Blocks for streamlined processes."
 sidebar:
+  label: "Type: Block"
   order: 4.36
 ---
 ---

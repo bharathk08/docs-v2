@@ -2,6 +2,7 @@
 title: "Manage Test Machines in Test Plans"
 description: "Easily manage test machines in Test Plans, which helps allocate tests to specific machines. Learn how to allot test machines for test plans in Testsigma."
 sidebar:
+  label: "Add, Edit, Delete Test Machines"
   order: 8.22
 ---
 

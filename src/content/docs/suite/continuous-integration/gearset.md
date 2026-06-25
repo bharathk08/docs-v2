@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Gearset (Salesforce)"
 description: "Integrate Testsigma with Gearset for effortless Salesforce test automation | Improve your testing efficiency accelerate Salesforce automation by integrating Testsigma with Gearset"
 sidebar:
+  label: "Gearset CI/CD"
   order: 13.25
 ---
 

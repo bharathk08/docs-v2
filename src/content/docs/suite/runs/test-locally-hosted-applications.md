@@ -2,6 +2,7 @@
 title: "Access Locally Hosted Applications"
 description: "When Testsigma servers are unable to access your locally hosted applications, you need to whitelist Testsigma IP addresses or access through secure Tunnel/VPN"
 sidebar:
+  label: "Test Locally Hosted Applications"
   order: 9.51
 ---
 

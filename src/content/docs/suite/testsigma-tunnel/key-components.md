@@ -2,6 +2,7 @@
 title: "Key Components & System Requirements"
 description: "Ensure seamless connection of Testsigma tunnel by understanding these key components and system requirements for testing locally hosted applications."
 sidebar:
+  label: "Components & Requirements"
   order: 34.2
 ---
 ---

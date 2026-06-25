@@ -2,6 +2,7 @@
 title: "Bypass the Missing SSL Certificate Error?"
 description: "How to bypass the missing SSL certificate error while automating browser tests using Testsigma"
 sidebar:
+  label: "Bypass SSL"
   order: 9.83
 ---
 

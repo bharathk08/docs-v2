@@ -2,6 +2,7 @@
 title: "Copilot in Mobile Recorder"
 description: "Testsigma has simplified test case generation for mobile applications with Testsigma Copilot | With just a single click, you can create test cases for mobile apps"
 sidebar:
+  label: "In Mobile Recorder"
   order: 4.7432
 ---
 

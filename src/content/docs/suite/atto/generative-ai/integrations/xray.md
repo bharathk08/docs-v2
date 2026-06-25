@@ -2,6 +2,7 @@
 title: "Integrating Xray with Testsigma"
 description: "Xray is a Test Management tool that gives the structure to organize, plan, and report the progress of testing. Learn how to integrate Xray with Testsigma"
 sidebar:
+  label: "Xray"
   order: 4.7444
 ---
 

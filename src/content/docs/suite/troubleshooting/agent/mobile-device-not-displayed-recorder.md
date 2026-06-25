@@ -2,6 +2,7 @@
 title: "Testsigma Agent's Failure to Detect Local Devices for Mobile Test Recorder"
 description: "Know the possible reasons why Testsigma Agent not detecting Local Devices for Mobile Test Recorder and learn steps to fix the issue by troubleshooting"
 sidebar:
+  label: "Why mobile device not displayed in Testsigma Mobile Test Recorder?"
   order: 24.31
 ---
 

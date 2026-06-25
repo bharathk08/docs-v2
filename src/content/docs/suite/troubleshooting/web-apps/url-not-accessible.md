@@ -2,6 +2,7 @@
 title: "Unable to Access URL from Testsigma Servers?"
 description: "Learn the procedure to access URLs from Testsigma Servers. This guide covers the steps for accessing the URL if the given URL is somehow inaccessible."
 sidebar:
+  label: "URL not accessible"
   order: 24.51
 ---
 

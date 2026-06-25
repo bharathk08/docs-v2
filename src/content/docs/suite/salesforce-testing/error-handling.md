@@ -2,6 +2,7 @@
 title: "Error Handling Post Metadata Refresh"
 description: "On refreshing metadata, Testsigma identifies potential errors in test cases, step groups and elements linked to updates in the Salesforce organization structure"
 sidebar:
+  label: "Error Handling On Metadata Refresh"
   order: 28.94
 ---
 

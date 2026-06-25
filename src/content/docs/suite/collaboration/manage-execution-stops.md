@@ -2,6 +2,7 @@
 title: "Execution Controls (Stopping Test Execution)"
 description: "Learn how to control stopping executions in Testsigma and prevent accidental stops. Admins have the highest control, while user accounts need to contact the admin."
 sidebar:
+  label: "Execution Controls"
   order: 3.6
 ---
 

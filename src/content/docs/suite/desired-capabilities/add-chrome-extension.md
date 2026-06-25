@@ -3,6 +3,7 @@ title: "Automate Add Chrome Extension Functionality"
 description: "Learn how to add Chrome extension to one of your test sessions in Testsigma Application | Add a Chrome Extension to your Automation Session in 2 simple steps"
 search_keyword: ""
 sidebar:
+  label: "Add Chrome Extension"
   order: 16.9
 ---
 

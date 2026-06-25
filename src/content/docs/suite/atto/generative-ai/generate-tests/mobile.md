@@ -2,6 +2,7 @@
 title: "Generate Test Cases for Android & iOS"
 description: "In Testsigma, you can create test cases for Mobile Applications using Testsigma Copilot | Learn how to create test cases for Mobile Applications using GenAI capabilities"
 sidebar:
+  label: "For Android & iOS"
   order: 4.7425
 ---
 

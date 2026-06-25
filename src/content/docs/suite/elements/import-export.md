@@ -2,6 +2,7 @@
 title: "Import and Export Elements"
 description: "How to import and export Elements to the Elements list | Import functionality helps to copy Elements between Application Versions within Testsigma app."
 sidebar:
+  label: "Import/Export Elements"
   order: 6.9
 ---
 

@@ -2,6 +2,7 @@
 title: "Troubleshoot Deployment Errors (Testsigma CE)"
 description: "This detailed guide will help you troubleshoot deployment errors in Testsigma CE Docker | Troubleshooting issues while setting up Testsigma CE using Docker."
 sidebar:
+  label: "Server Docker Deployment Errors"
   order: 24.21
 ---
 

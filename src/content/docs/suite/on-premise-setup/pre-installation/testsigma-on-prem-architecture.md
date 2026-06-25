@@ -3,6 +3,7 @@ title: "Testsigma's On-Premise Architecture"
 description: "Learn how Testsigma on-premise system architecture provides a secure environment for creating and executing automated tests within your organization's local infrastructure"
 search_keyword: ""
 sidebar:
+  label: "On-Premise System Architecture"
   order: 26.11
 ---
 

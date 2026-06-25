@@ -3,6 +3,7 @@ title: "On-Premise: FAQs"
 description: "Learn what are the frequently asked questions if you're opting for Testsigma on-premise installation | FAQs about Testsigma on-premise specifications and installation "
 search_keyword: ""
 sidebar:
+  label: "FAQs"
   order: 26.32
 ---
 

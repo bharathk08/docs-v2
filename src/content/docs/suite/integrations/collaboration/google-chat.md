@@ -2,6 +2,7 @@
 title: "Integrating Google Chat with Testsigma"
 description: "Learn how to configure a Google Chat channel to receive notifications about Test Results in real-time from Testsigma Application"
 sidebar:
+  label: "Google Chat"
   order: 17.23
 ---
 

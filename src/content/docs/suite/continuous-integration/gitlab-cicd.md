@@ -2,6 +2,7 @@
 title: "GitLab Integration With Testsigma"
 description: "Integrate GitLab with Testsigma for effortless test automation | Improve your testing efficiency accelerate SDLC by integrating GitLab with Testsigma"
 sidebar:
+  label: "GitLab CI/CD"
   order: 13.23
 ---
 

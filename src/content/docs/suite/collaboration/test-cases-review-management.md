@@ -2,6 +2,7 @@
 title: "Review Management for Test Cases"
 description: "Learn how Testsigma's Test Case Review Management enhances collaboration, improves accuracy, and streamlines testing processes to boost testing efficiency."
 sidebar:
+  label: "Review Management [Test Cases]"
   order: 3.3
 ---
 

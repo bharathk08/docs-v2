@@ -2,6 +2,7 @@
 title: "Integrating MS Team with Testsigma"
 metsdesc: "Configure Microsoft Teams channel to receive notifications about Test Results in real-time from Testsigma Application | Testsigms Integration with MS Team"
 sidebar:
+  label: "Microsoft Teams"
   order: 17.22
 ---
 

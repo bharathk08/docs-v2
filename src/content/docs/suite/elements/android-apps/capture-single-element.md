@@ -2,6 +2,7 @@
 title: "Record Single Element Using Recorder"
 description: "Learn how to create single element at a time using the Testsigma test recorder for an android project in Testsigma application."
 sidebar:
+  label: "Record Single Element"
   order: 6.32
 ---
 

@@ -2,6 +2,7 @@
 title: "Record Single Element Using Recorder"
 description: "Elements play an important role in Automation Testsing. Learn how to capture single element for a Web Application project in Testsigma"
 sidebar:
+  label: "Record Single Element"
   order: 6.22
 ---
 

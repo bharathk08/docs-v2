@@ -2,6 +2,7 @@
 title: "How to enable Developer Mode? (iOS 16 or Above)"
 description: "In case you cannot see the developer mode for an iOS device running iOS 16 or above, follow this troubleshooting guide | Enable Developer Mode on iOS 16 & above"
 sidebar:
+  label: "Developer Mode (iOS 16 & Above)"
   order: 24.694
 ---
 

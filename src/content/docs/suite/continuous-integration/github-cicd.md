@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Github"
 metadecs: "This article discusses step-by-step instructions for integrating Testsigma application with Github | Learn how to integrate Github with Testsigma Application" 
 sidebar:
+  label: "GitHub CI/CD"
   order: 13.21
 ---
 

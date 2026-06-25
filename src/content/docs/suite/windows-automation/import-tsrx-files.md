@@ -2,6 +2,7 @@
 title: "Importing/Updating TSRx Files into Testsigma"
 description: "For Windows Advanced automation, you need to have objects captured in TSRx format. This article discusses how to import TSRx files into Testsigma application"
 sidebar:
+  label: "Importing/Updating TSRx Files"
   order: 33.5
 ---
 

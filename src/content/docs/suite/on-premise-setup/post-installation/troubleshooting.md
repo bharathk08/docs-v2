@@ -3,6 +3,7 @@ title: "On-Premise: Troubleshooting"
 description: "This guide will help you resolve issues while installing on-premise setup | Troubleshooting guide for general & network issues while installing Testsigma's on-premise"
 search_keyword: ""
 sidebar:
+  label: "Troubleshooting"
   order: 26.33
 ---
 

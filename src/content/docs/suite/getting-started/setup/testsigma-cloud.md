@@ -2,6 +2,7 @@
 title: "Deploy to Testsigma Cloud "
 description: "How to create and run your first tests on Testsigma Cloud"
 sidebar:
+  label: "Using Testsigma Cloud"
   order: 1.31
 ---
 

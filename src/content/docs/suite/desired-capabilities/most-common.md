@@ -3,6 +3,7 @@ title: "Common Desired Capabilities"
 description: "Enhance efficiency with common desired capabilities in testing. Optimise workflows, boost collaboration, and ensure quality with cutting-edge testing features."
 search_keyword: ""
 sidebar:
+  label: "Most Common Desired Capabilities"
   order: 16.2
 ---
 

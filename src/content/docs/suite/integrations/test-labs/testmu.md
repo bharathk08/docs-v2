@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with TestMU"
 description: "TestMU integration lets you execute your Testsigma tests on TestMU. Learn how to integrate the TestMU Test Execution Platform with Testsigma"
 sidebar:
+  label: "TestMU"
   order: 17.44
 ---
 

@@ -2,6 +2,7 @@
 title: "Bug Reporter Agent in Testsigma"
 description: "The Bug Reporter Agent in Testsigma streamlines bug reporting by allowing users to log bugs directly from the Analyzer Agent panel | Learn about Bug Reporter in Testsigma"
 sidebar:
+  label: "Bug Reporter"
   order: 4.816
 ---
 

@@ -2,6 +2,7 @@
 title: "Accessibility Testing for Android & iOS Applications"
 description: "Learn how to implement and manage mobile accessibility testing in Testsigma. Mobile accessibility testing ensures your websites & apps comply with accessibility guidelines"
 sidebar:
+  label: "Accessibility Testing for Android & iOS"
   order: 27.2
 ---
 

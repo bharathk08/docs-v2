@@ -2,6 +2,7 @@
 title: "Trello Bug Reporting Integration"
 description: "How to integrate Testsigma with Trello for real-time bug reporting during Test Runs | Push bugs directly from Testsigma to your Trello project"
 sidebar:
+  label: "Trello"
   order: 17.53
 ---
 

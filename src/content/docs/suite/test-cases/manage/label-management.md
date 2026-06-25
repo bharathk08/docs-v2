@@ -3,6 +3,7 @@ title: "Label Management in Testsigma"
 pagetitle: "Label Management in Testsigma"
 description: "The Label Management helps you manage labels linked to test cases, elements, step groups, test suites, and test plans | Label Management in Testsigma Application"
 sidebar:
+  label: "Label Management"
   order: 4.27
 ---
 

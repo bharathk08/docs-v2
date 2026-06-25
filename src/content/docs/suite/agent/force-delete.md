@@ -2,6 +2,7 @@
 title: "Force Delete Testsigma Agent Manually"
 description: "This article discusses in Detail on how to locate Testsigma Agent Configuration file and how to stop/delete Testsigma Agent manually."
 sidebar:
+  label: "Delete Corrupted Agent"
   order: 12.82
 ---
 

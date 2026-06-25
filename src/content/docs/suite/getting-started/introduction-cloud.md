@@ -3,6 +3,7 @@
 title: "Introduction: Testsigma Cloud"
 description: "What is Testsigma Cloud and how to get started with it"
 sidebar:
+  label: "Introduction: Cloud"
   order: 1.1
 ---
 

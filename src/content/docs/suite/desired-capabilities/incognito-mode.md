@@ -3,6 +3,7 @@ title: "Run Browser in Incognito/Private mode"
 description: "Execute browser tests in incognito/private mode with Testsigma for secure and confidential testing environments, safeguarding your web application's privacy."
 search_keyword: ""
 sidebar:
+  label: "Incognito/Private mode"
   order: 16.97
 ---
 

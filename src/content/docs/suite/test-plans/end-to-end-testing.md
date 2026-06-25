@@ -2,6 +2,7 @@
 title: "End-to-End Testing in Testsigma"
 description: "This document discusses enabling & configuring end-to-end testing in Testsigma by creating a single test plan that includes test suites from multiple projects & applications"
 sidebar:
+  label: "End-to-End Testing"
   order: 8.271
 ---
 

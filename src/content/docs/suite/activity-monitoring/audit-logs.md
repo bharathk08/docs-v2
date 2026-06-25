@@ -2,6 +2,7 @@
 title: "Audit Logs: Complete Record of Activities"
 description: "Track and export all user actions in Testsigma with Audit Logs. Monitor activity, ensure accountability, and support security and compliance reviews in Testsigma."
 sidebar:
+  label: "Audit Logs"
   order: 35.1
 ---
 

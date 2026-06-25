@@ -3,6 +3,7 @@ title: "On-Premise: Post-Installation Checklist"
 description: "This checklist helps you verify that your Testsigma on-premise setup is installed, configured, and functioning as expected a few mandatory action items post upgrade"
 search_keyword: ""
 sidebar:
+  label: "Post-Installation Checklist"
   order: 26.31
 ---
 

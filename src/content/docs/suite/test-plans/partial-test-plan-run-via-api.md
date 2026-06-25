@@ -2,6 +2,7 @@
 title: "Execute Partial Test Plan Run via API"
 description: "Automate the running of partial test plans in Testsigma via APIs. Configure suites, apply filters, and schedule executions for efficient testing."
 sidebar:
+  label: "Execute Partial Test Plans via API"
   order: 8.35
 ---
 

@@ -2,6 +2,7 @@
 title: "Creating a Windows Project & Application"
 description: "Testsigma supports various apps, including Web, Mobile Web, Android, iOS, Salesforce, Windows Lite, Windows Advanced, & APIs | This article discusses how to create a Windows Lite app"
 sidebar:
+  label: "Windows (Lite) Project & Application"
   order: 31.2
 ---
 

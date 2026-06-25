@@ -4,6 +4,7 @@ pagetitle: "Update Your Addon: Simple Guide for Easy Modifications"
 description: "Updating a Testsigma addon is simple and quick. Follow our step-by-step guide to modify, enhance, and manage your addon versions effectively."
 search_keyword: ""
 sidebar:
+  label: "Update Addon"
   order: 18.6
 ---
 

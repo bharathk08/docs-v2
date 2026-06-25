@@ -2,6 +2,7 @@
 title: "Integrating Jira with Testsigma"
 description: "You can integrate Testsigma with Jira to generate test cases directly from your user stories, epics, and issues | Jira integration with Testsigma for test generation"
 sidebar:
+  label: "Jira"
   order: 4.7441
 ---
 

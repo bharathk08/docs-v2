@@ -2,6 +2,7 @@
 title: "Creating a Windows Project & Application"
 description: "Testsigma supports various apps, including Web, Mobile Web, Android, iOS, Salesforce, Windows, & APIs | This article discusses how to create a Windows Advanced app"
 sidebar:
+  label: "Windows (Adv) Project & Application"
   order: 33.2
 ---
 

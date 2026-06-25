@@ -2,6 +2,7 @@
 title: "Update Testsigma agent manually"
 description: "In case the auto-update failures of Testsigma Agent due to bad network conditions or incorrect configuration, you can update the Agent manually."
 sidebar:
+  label: "Update Agent Manually"
   order: 12.8
 ---
 

@@ -2,6 +2,7 @@
 title: "Backlog Bug Reporting Integration"
 description: "Backlog bug reporting integration helps you in realtime bug reporting during Test Runs. Learn how to integrate Testsigma application with Backlog"
 sidebar:
+  label: "Backlog"
   order: 17.33
 ---
 

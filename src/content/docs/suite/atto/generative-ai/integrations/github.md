@@ -2,6 +2,7 @@
 title: "Integrating GitHub with Testsigma"
 description: "Integrate GitHub with Testsigma to automatically generate test cases using Atto when a pull request is raised | GitHub Integration for Agentic Tests in Testsigma"
 sidebar:
+  label: "GitHub"
   order: 4.7446
 ---
 

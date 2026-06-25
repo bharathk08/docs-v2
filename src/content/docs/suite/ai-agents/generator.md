@@ -2,6 +2,7 @@
 title: "Generator Agent in Testsigma"
 description: "The Generator Agent in Testsigma allows you to quickly generate and automate test cases by analyzing application behavior and user workflows with ease"
 sidebar:
+  label: "Generator"
   order: 4.811
 ---
 

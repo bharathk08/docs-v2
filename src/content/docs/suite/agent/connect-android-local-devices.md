@@ -3,6 +3,7 @@ title: "Setting up Android Local Devices"
 description: "Run tests on your local Android devices in addition to Testsigma Cloud machines/devices. Learn how to setup Android Local Devices in Testsigma application."
 search_keyword: ""
 sidebar:
+  label: "Setup: Android Local Devices"
   order: 12.4
 ---
 

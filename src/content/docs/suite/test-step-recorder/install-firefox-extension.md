@@ -2,6 +2,7 @@
 title: "Install Testsigma Recorder Extension: Firefox"
 description: "Effortlessly start installing the Testsigma Recorder Extension in Firefox. Follow simple steps to record interactions for efficient testing. Learn more now."
 sidebar:
+  label: "Install Firefox Extension"
   order: 7.12
 ---
 

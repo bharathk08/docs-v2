@@ -2,6 +2,7 @@
 title: "Create Environment Test Data"
 description: "Learn how to create environment test data for efficient testing. Follow our guide to streamline your test process and ensure accurate results in Testsigma."
 sidebar:
+  label: "Create Test Data [Environment]"
   order: 5.23
 ---
 

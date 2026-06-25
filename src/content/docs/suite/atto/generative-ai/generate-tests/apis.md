@@ -2,6 +2,7 @@
 title: "Generate Test Cases for SOAP and REST APIs Using Atto"
 description: "Learn how Atto in Testsigma generates test cases for SOAP and REST APIs using .wsdl, .xml, or .json schemas."
 sidebar:
+  label: "For APIs"
   order: 4.7428
 ---
 

@@ -2,6 +2,7 @@
 title: "Prerequisites for Testsigma Agent"
 description: "The pre-requisites or conditions that should be met before you can successfully install and execute Testsigma agent on your devices."
 sidebar:
+  label: "Pre-requisites"
   order: 12.2
 ---
 

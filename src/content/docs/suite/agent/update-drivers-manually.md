@@ -2,6 +2,7 @@
 title: "Update browser drivers for Testsigma agent manually"
 description: "Learn how to update the Browser Driver files for Testsigma Agent manually if update fails, due to bad network conditions or Firewall restrictions."
 sidebar:
+  label: "Update Drivers Manually"
   order: 12.81
 ---
 

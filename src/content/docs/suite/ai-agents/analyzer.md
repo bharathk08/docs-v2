@@ -2,6 +2,7 @@
 title: "Analyzer Agent in Testsigma"
 description: "The Analyzer Agent in Testsigma is your intelligent assistant that autonomously reviews test executions | This article discusses the Analyzer Agent in Testsigma"
 sidebar:
+  label: "Analyzer"
   order: 4.815
 ---
 

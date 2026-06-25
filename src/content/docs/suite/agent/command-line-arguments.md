@@ -2,6 +2,7 @@
 title: "Command-Line Arguments & Usage Guide"
 description: "Customize the behavior of the Testsigma Agent by passing command-line arguments when starting it from the installation directory in Testsigma"
 sidebar:
+  label: "Arguments Usage Details"
   order: 12.6
 ---
 

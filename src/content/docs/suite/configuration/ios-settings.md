@@ -3,6 +3,7 @@ title: "Configuring Local iOS Device with Provisioning Profile"
 description: "Effortlessly configure your local iOS device with a provisioning profile to start. Follow steps for error-free testing and elevate your mobile app development."
 search_keyword: ""
 sidebar:
+  label: "iOS Settings"
   order: 20.5
 ---
 

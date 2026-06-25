@@ -4,6 +4,7 @@ pagetitle: "Generate Custom Allure Reports in Testsigma"
 description: "Learn how to generate interactive, browser-based Allure reports from Testsigma test plan results using the custom report JAR file."
 search_keyword: ""
 sidebar:
+  label: "Custom Allure Reports Generation"
   order: 14.29
 ---
 

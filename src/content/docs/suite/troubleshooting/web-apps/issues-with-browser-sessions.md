@@ -2,6 +2,7 @@
 title: "Most Common Errors with Browser Session"
 description: "This article discusses most common errors with browser sessions and how to troubleshoot the errors | Learn how to troubleshoot errors with browser sessions"
 sidebar:
+  label: "Errors with Browser Session"
   order: 24.56
 ---
 

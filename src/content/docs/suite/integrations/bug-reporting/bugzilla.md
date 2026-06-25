@@ -2,6 +2,7 @@
 title: "Bugzilla Bug Reporting Integration"
 description: "Bugzilla integration helps you in creating issues in Bugzilla from the Testsigma. Learn how to integrate Testsigma with Bugzilla for real-time bug reporting"
 sidebar:
+  label: "Bugzilla"
   order: 17.32
 ---
 

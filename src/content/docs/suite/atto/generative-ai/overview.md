@@ -2,6 +2,7 @@
 title: "Overview: Generative AI Capabilities in Testsigma"
 description: "Testsigma is revolutionizing test case creation using Generative AI Capabilities | You can generate test cases for web, mobile, and APIs from multiple sources"
 sidebar:
+  label: "Overview: Generative AI"
   order: 4.741
 ---
 

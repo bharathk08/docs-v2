@@ -2,6 +2,7 @@
 title: "Install Testsigma Recorder Extension: Edge"
 description: "Effortlessly install the Testsigma Recorder Extension in Edge. This extension will help you record test steps for Web, Mobile & Mobile Web applications"
 sidebar:
+  label: "Install Edge Extension"
   order: 7.13
 ---
 

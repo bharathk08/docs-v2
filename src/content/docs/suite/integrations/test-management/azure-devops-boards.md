@@ -2,6 +2,7 @@
 title: "Azure DevOps Integration"
 description: "Azure DevOps Integration allows you to create a work item directly in your Azure project from Testsigma. Learn how to intergrate Azure DevOps with Testsigma"
 sidebar:
+  label: "Azure DevOps Boards"
   order: 17.51
 ---
 

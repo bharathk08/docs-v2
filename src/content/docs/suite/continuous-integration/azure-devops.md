@@ -3,6 +3,7 @@ title: "Integrate Testsigma with Azure DevOps"
 description: "How to integrate Testsigma with Azure DevOps"
 search_keyword: "Azure DevOps, Integrations, CI/CD"
 sidebar:
+  label: "Azure DevOps"
   order: 13.14
 ---
 

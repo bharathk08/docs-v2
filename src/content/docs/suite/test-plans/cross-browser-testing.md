@@ -2,6 +2,7 @@
 title: "Test Plan: Cross Browser Testing"
 description: "Test the functionality of your web application in Testsigma across all platforms. Test your application on multiple browsers and versions easily."
 sidebar:
+  label: "Cross Browser Testing"
   order: 8.26
 ---
 

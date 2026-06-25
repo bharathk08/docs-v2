@@ -2,6 +2,7 @@
 title: "Record Multiple Elements Using Recorder"
 description: "Elements play an important role in Test Automation. Learn how to create elements using Testsigma's test recorder extension for a Web Application."
 sidebar:
+  label: "Record Multiple Elements"
   order: 6.23
 ---
 
