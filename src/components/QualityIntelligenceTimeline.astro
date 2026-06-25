@@ -6,6 +6,7 @@ export interface Props {
   product?: 'arcus' | 'suite';
 }
 const { product = 'arcus' } = Astro.props;
+const base = import.meta.env.BASE_URL; // '/docs/'
 
 interface SubCard {
   label: string;
@@ -73,9 +74,9 @@ const SUITE_STEPS: Step[] = [
   { group: 'AI-POWERED AUTHORING', title: 'Test authoring', subtitle: 'Two ways to build your tests', resultText: 'Tests ready', pills: [], badges: [], icon: 'sparkles', dashed: false,
     cards: [
       { label: 'Copilot', icon: 'bot', accent: 'a', items: ['Intent-based steps', 'Execute tests', 'Learn elements', 'Auto-heal', 'Analyze failures', 'Report bugs'] },
-      { label: 'Atto', icon: 'sparkles', accent: 'b', items: ['Tests from requirements', 'Learn test cases', 'Record steps', 'Manual to automated', 'Handover to Copilot'] },
+      { label: 'Atto', icon: 'atto', accent: 'b', items: ['Tests from requirements', 'Learn test cases', 'Record steps', 'Manual to automated', 'Handover to Copilot'] },
     ],
-    handoff: { fromLabel: 'Atto', fromIcon: 'sparkles', fromAccent: 'b', toLabel: 'Copilot', toIcon: 'bot', toAccent: 'a', text: 'Execution readiness verified' } },
+    handoff: { fromLabel: 'Atto', fromIcon: 'atto', fromAccent: 'b', toLabel: 'Copilot', toIcon: 'bot', toAccent: 'a', text: 'Execution readiness verified' } },
   { group: 'PLANNING', title: 'Create test suites', subtitle: 'Group related tests into suites for organised runs', resultText: 'Suites ready', pills: [], badges: [], icon: 'stack', dashed: false },
   { group: null, title: 'Create test plans and add machines', subtitle: 'Bring suites together and assign execution machines', resultText: 'Plans configured',
     pills: [{ label: 'Cloud', icon: 'cloud' }, { label: 'Local', icon: 'home' }, { label: 'On-prem', icon: 'server' }], badges: [], icon: 'calendar', dashed: false },
@@ -226,7 +227,9 @@ const PATHS: { key: string; steps: Step[] }[] = product === 'suite'
                       {step.cards.map(card => (
                         <div class={`qi-card qi-card--${card.accent}`}>
                           <span class="qi-card-pill">
-                            <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[card.icon] ?? STEP_ICONS[card.icon] ?? ''} />
+                            {card.icon === 'atto'
+                              ? <img class="qi-pill-img" src={`${base}atto-icon.png`} alt="" aria-hidden="true" />
+                              : <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[card.icon] ?? STEP_ICONS[card.icon] ?? ''} />}
                             {card.label}
                           </span>
                           <div class="qi-mini">
@@ -243,7 +246,9 @@ const PATHS: { key: string; steps: Step[] }[] = product === 'suite'
                     <div class="qi-handoff">
                       <span class="qi-handoff-flow">
                         <span class={`qi-card-pill qi-card-pill--${step.handoff.fromAccent}`}>
-                          <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.fromIcon] ?? STEP_ICONS[step.handoff.fromIcon] ?? ''} />
+                          {step.handoff.fromIcon === 'atto'
+                            ? <img class="qi-pill-img" src={`${base}atto-icon.png`} alt="" aria-hidden="true" />
+                            : <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.fromIcon] ?? STEP_ICONS[step.handoff.fromIcon] ?? ''} />}
                           {step.handoff.fromLabel}
                         </span>
                         <svg class="qi-handoff-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -853,6 +858,14 @@ if (document.readyState === 'loading') {
   white-space: nowrap;
 }
 .qi-card-pill .qi-pill-icon { width: 12px; height: 12px; }
+/* Atto mascot — rendered as an image instead of a glyph */
+.qi-pill-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin: -2px 0;
+}
 /* Standalone pills (handoff banner) carry their own accent */
 .qi-card-pill--a { --qi-card-c: #0B7C84; }
 .qi-card-pill--b { --qi-card-c: #1F8A5B; }
