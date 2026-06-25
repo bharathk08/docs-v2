@@ -836,6 +836,16 @@ nav .sl-badge {
     width: calc(100% - 26rem);
   }
   :root[data-qi-home] .right-sidebar-panel { padding-block: 0; }
+
+  /* The footer sits below the cards where the timeline rail is empty — there's
+     no reason to keep it boxed into the left column. Extend it across the
+     reserved rail width so it spans the full page. z-index keeps it above the
+     (empty, transparent) rail container that paints over the main pane. */
+  :root[data-qi-home] .ts-footer {
+    margin-right: -26rem;
+    position: relative;
+    z-index: 1;
+  }
 }
 
 /* Tighten hero top padding on the QI home (header already gives space) */
