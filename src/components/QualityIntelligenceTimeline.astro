@@ -8,6 +8,12 @@ export interface Props {
 const { product = 'arcus' } = Astro.props;
 const base = import.meta.env.BASE_URL; // '/docs/'
 
+// Icons rendered as raster images (mascots) rather than inline glyphs.
+const IMG_ICONS: Record<string, string> = {
+  atto: 'atto-icon.png',
+  copilot: 'copilot-icon.png',
+};
+
 interface SubCard {
   label: string;
   icon: string;
@@ -73,10 +79,10 @@ const SUITE_STEPS: Step[] = [
     badges: [], icon: 'layout-grid', dashed: false },
   { group: 'AI-POWERED AUTHORING', title: 'Test authoring', subtitle: 'Two ways to build your tests', resultText: 'Tests ready', pills: [], badges: [], icon: 'sparkles', dashed: false,
     cards: [
-      { label: 'Copilot', icon: 'bot', accent: 'a', items: ['Intent-based steps', 'Execute tests', 'Learn elements', 'Auto-heal', 'Analyze failures', 'Report bugs'] },
+      { label: 'Copilot', icon: 'copilot', accent: 'a', items: ['Intent-based steps', 'Execute tests', 'Learn elements', 'Auto-heal', 'Analyze failures', 'Report bugs'] },
       { label: 'Atto', icon: 'atto', accent: 'b', items: ['Tests from requirements', 'Learn test cases', 'Record steps', 'Manual to automated', 'Handover to Copilot'] },
     ],
-    handoff: { fromLabel: 'Atto', fromIcon: 'atto', fromAccent: 'b', toLabel: 'Copilot', toIcon: 'bot', toAccent: 'a', text: 'Execution readiness verified' } },
+    handoff: { fromLabel: 'Atto', fromIcon: 'atto', fromAccent: 'b', toLabel: 'Copilot', toIcon: 'copilot', toAccent: 'a', text: 'Execution readiness verified' } },
   { group: 'PLANNING', title: 'Create test suites', subtitle: 'Group related tests into suites for organised runs', resultText: 'Suites ready', pills: [], badges: [], icon: 'stack', dashed: false },
   { group: null, title: 'Create test plans and add machines', subtitle: 'Bring suites together and assign execution machines', resultText: 'Plans configured',
     pills: [{ label: 'Cloud', icon: 'cloud' }, { label: 'Local', icon: 'home' }, { label: 'On-prem', icon: 'server' }], badges: [], icon: 'calendar', dashed: false },
@@ -227,8 +233,8 @@ const PATHS: { key: string; steps: Step[] }[] = product === 'suite'
                       {step.cards.map(card => (
                         <div class={`qi-card qi-card--${card.accent}`}>
                           <span class="qi-card-pill">
-                            {card.icon === 'atto'
-                              ? <img class="qi-pill-img" src={`${base}atto-icon.png`} alt="" aria-hidden="true" />
+                            {IMG_ICONS[card.icon]
+                              ? <img class="qi-pill-img" src={`${base}${IMG_ICONS[card.icon]}`} alt="" aria-hidden="true" />
                               : <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[card.icon] ?? STEP_ICONS[card.icon] ?? ''} />}
                             {card.label}
                           </span>
@@ -246,14 +252,16 @@ const PATHS: { key: string; steps: Step[] }[] = product === 'suite'
                     <div class="qi-handoff">
                       <span class="qi-handoff-flow">
                         <span class={`qi-card-pill qi-card-pill--${step.handoff.fromAccent}`}>
-                          {step.handoff.fromIcon === 'atto'
-                            ? <img class="qi-pill-img" src={`${base}atto-icon.png`} alt="" aria-hidden="true" />
+                          {IMG_ICONS[step.handoff.fromIcon]
+                            ? <img class="qi-pill-img" src={`${base}${IMG_ICONS[step.handoff.fromIcon]}`} alt="" aria-hidden="true" />
                             : <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.fromIcon] ?? STEP_ICONS[step.handoff.fromIcon] ?? ''} />}
                           {step.handoff.fromLabel}
                         </span>
                         <svg class="qi-handoff-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         <span class={`qi-card-pill qi-card-pill--${step.handoff.toAccent}`}>
-                          <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.toIcon] ?? STEP_ICONS[step.handoff.toIcon] ?? ''} />
+                          {IMG_ICONS[step.handoff.toIcon]
+                            ? <img class="qi-pill-img" src={`${base}${IMG_ICONS[step.handoff.toIcon]}`} alt="" aria-hidden="true" />
+                            : <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.toIcon] ?? STEP_ICONS[step.handoff.toIcon] ?? ''} />}
                           {step.handoff.toLabel}
                         </span>
                       </span>
