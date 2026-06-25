@@ -381,10 +381,13 @@ if (document.readyState === 'loading') {
   flex: 1 1 auto;
   min-height: 0;
 }
-/* Steps grow to fill the matched panel height, staying edge-to-edge so the
-   connector line stays continuous (gaps would break the absolute line). The
+/* Steps fill the matched panel height as equal slots, staying edge-to-edge so
+   the connector line stays continuous (gaps would break the absolute line).
+   flex-basis:0 + min-height:0 makes each slot's height independent of its
+   content — so revealing pills/badges on state change doesn't reflow the other
+   steps (which otherwise causes the timeline to "shake" while scrolling). The
    last step keeps its natural height so it lands at the bottom. */
-.qi-path-steps > .qi-step { flex: 1 1 auto; }
+.qi-path-steps > .qi-step { flex: 1 1 0; min-height: 0; }
 .qi-path-steps > .qi-step[data-last] { flex: 0 0 auto; }
 
 /* ── Step ── */
