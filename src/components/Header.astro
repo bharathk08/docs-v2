@@ -27,9 +27,10 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
     var p = fromUrl || localStorage.getItem('ts-product') || 'suite';
     document.documentElement.setAttribute('data-product', p);
     if (fromUrl) localStorage.setItem('ts-product', fromUrl);
-    // QI landing page (Arcus home) — full-width, no left nav, grid background
+    // QI landing pages (Arcus/Suite home) — full-width, no left nav, grid bg
     var path = location.pathname.replace(/\/$/, '');
-    if (path === '/docs/arcus' || path === '/docs/arcus/index') {
+    if (path === '/docs/arcus' || path === '/docs/arcus/index' ||
+        path === '/docs/suite' || path === '/docs/suite/index') {
       document.documentElement.setAttribute('data-qi-home', '');
     }
   })();

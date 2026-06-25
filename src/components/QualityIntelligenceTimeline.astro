@@ -1,5 +1,19 @@
 ---
-// QualityIntelligenceTimeline.astro — Scroll-driven QI timeline for Arcus home
+// QualityIntelligenceTimeline.astro — Scroll-driven QI timeline.
+// Product-aware: Arcus (Ad-Hoc/Sprint paths, violet) and Suite (single flow, teal).
+
+export interface Props {
+  product?: 'arcus' | 'suite';
+}
+const { product = 'arcus' } = Astro.props;
+
+interface SubCard {
+  label: string;
+  icon: string;
+  accent: 'a' | 'b';
+  body: string;
+  result: string;
+}
 
 interface Step {
   group: string | null;
@@ -11,6 +25,7 @@ interface Step {
   icon: string;
   dashed: boolean;
   entryPath?: 'adhoc' | 'sprint';
+  cards?: SubCard[];
 }
 
 const ADHOC_ENTRY: Step = {
@@ -43,6 +58,32 @@ const SHARED_STEPS: Step[] = [
 const ADHOC_STEPS = [ADHOC_ENTRY, ...SHARED_STEPS];
 const SPRINT_STEPS = [SPRINT_ENTRY, ...SHARED_STEPS];
 
+// ── Suite flow (single path, teal) ─────────────────────────────────────────
+const SUITE_STEPS: Step[] = [
+  { group: 'SETUP', title: 'Create project', subtitle: 'Set up your workspace, roles, and project settings', resultText: 'Project ready', pills: [], badges: [], icon: 'folder-plus', dashed: false },
+  { group: null, title: 'Create applications', subtitle: 'Add the apps you want to test', resultText: '6 app types supported',
+    pills: [{ label: 'Web', icon: 'globe' }, { label: 'Android', icon: 'android' }, { label: 'iOS', icon: 'apple' }, { label: 'Salesforce', icon: 'cloud' }, { label: 'Desktop', icon: 'monitor' }, { label: 'Unified', icon: 'smartphone' }],
+    badges: [], icon: 'layout-grid', dashed: false },
+  { group: 'AI-POWERED AUTHORING', title: 'Test authoring', subtitle: 'Two ways to build your tests', resultText: 'Tests ready', pills: [], badges: [], icon: 'sparkles', dashed: false,
+    cards: [
+      { label: 'Copilot', icon: 'bot', accent: 'a', body: 'Record tests live in your browser. Interact with the app and Copilot captures every step.', result: 'Tests recorded' },
+      { label: 'Atto', icon: 'sparkles', accent: 'b', body: 'Generate tests from Jira stories, Figma designs, and recordings automatically.', result: 'Tests generated' },
+    ] },
+  { group: 'PLANNING', title: 'Create test suites', subtitle: 'Group related tests into suites for organised runs', resultText: 'Suites ready', pills: [], badges: [], icon: 'stack', dashed: false },
+  { group: null, title: 'Create test plans and add machines', subtitle: 'Bring suites together and assign execution machines', resultText: 'Plans configured',
+    pills: [{ label: 'Cloud', icon: 'cloud' }, { label: 'Local', icon: 'home' }, { label: 'On-prem', icon: 'server' }], badges: [], icon: 'calendar', dashed: false },
+  { group: 'EXECUTION', title: 'Execute tests', subtitle: 'Run tests across browsers, devices, and environments', resultText: 'Tests executed',
+    pills: [{ label: 'Cloud', icon: 'cloud' }, { label: 'Local', icon: 'home' }, { label: 'On-prem', icon: 'server' }], badges: [], icon: 'play', dashed: false },
+  { group: 'INTEGRATIONS', title: 'Bug reporting', subtitle: 'File bugs directly to your issue tracker', resultText: 'Bugs filed',
+    pills: [{ label: 'Jira', icon: 'jira' }, { label: 'Bugzilla', icon: 'bug' }, { label: 'Monday', icon: 'grid' }, { label: '+3 more', icon: 'more' }], badges: [], icon: 'bug', dashed: false },
+  { group: null, title: 'Collaboration', subtitle: 'Send results and alerts to your team channels', resultText: 'Team notified',
+    pills: [{ label: 'Slack', icon: 'slack' }, { label: 'Teams', icon: 'users' }, { label: 'Google Chat', icon: 'message' }], badges: [], icon: 'message', dashed: false },
+  { group: null, title: 'Test management sync', subtitle: 'Push results to your existing TMS tools', resultText: 'Results synced',
+    pills: [{ label: 'Azure', icon: 'cloud' }, { label: 'TestRail', icon: 'list' }, { label: 'Zephyr', icon: 'zap' }, { label: '+5 more', icon: 'more' }], badges: [], icon: 'sync', dashed: false },
+  { group: 'RESULTS', title: 'Reports and analytics', subtitle: 'Review results, trends, and coverage across all test plans', resultText: 'Reports ready', pills: [], badges: [], icon: 'chart', dashed: false },
+  { group: null, title: 'Ship', subtitle: 'Your build is tested and cleared for release', resultText: 'Cleared to ship', pills: [], badges: [], icon: 'rocket', dashed: false },
+];
+
 const STEP_ICONS: Record<string, string> = {
   sliders:    '<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
   bolt:       '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
@@ -56,6 +97,17 @@ const STEP_ICONS: Record<string, string> = {
   radar:      '<path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6h.01"/><path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"/><path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"/><path d="M12 18h.01"/><path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"/><circle cx="12" cy="12" r="2"/><path d="m13.41 10.59 5.66-5.66"/>',
   clipboard:  '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>',
   rocket:     '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>',
+  // ── Suite step icons ──
+  'folder-plus':  '<path d="M12 10v6"/><path d="M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  'layout-grid':  '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  sparkles:   '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/>',
+  stack:      '<path d="m12 2 9 4.5-9 4.5-9-4.5L12 2Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 17 9 4.5 9-4.5"/>',
+  calendar:   '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  play:       '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+  bug:        '<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/>',
+  message:    '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  sync:       '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  chart:      '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="3" height="5" rx="0.5"/><rect x="12" y="9" width="3" height="9" rx="0.5"/><rect x="17" y="5" width="3" height="13" rx="0.5"/>',
 };
 
 const CHECK_PATH = '<polyline points="20 6 9 17 4 12"/>';
@@ -68,44 +120,68 @@ const PILL_ICONS: Record<string, string> = {
   github:     '<path fill="currentColor" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>',
   files:      '<path stroke="currentColor" stroke-width="1.5" fill="none" d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline stroke="currentColor" stroke-width="1.5" fill="none" points="14 2 14 8 20 8"/>',
   video:      '<path stroke="currentColor" stroke-width="1.5" fill="none" d="m22 8-6 4 6 4V8z"/><rect stroke="currentColor" stroke-width="1.5" fill="none" x="2" y="6" width="14" height="12" rx="2"/>',
+  // ── Suite pill glyphs (UI icons in the accent colour) ──
+  globe:      '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" fill="none"/><path stroke="currentColor" stroke-width="1.6" fill="none" d="M2 12h20"/><path stroke="currentColor" stroke-width="1.6" fill="none" d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  android:    '<path fill="currentColor" d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.86 3.23a11.46 11.46 0 0 0-9.78 0L5.25 5.9a.4.4 0 1 0-.69.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52M7 15.25a1.25 1.25 0 1 1 1.25-1.25A1.25 1.25 0 0 1 7 15.25m10 0A1.25 1.25 0 1 1 18.25 14 1.25 1.25 0 0 1 17 15.25"/>',
+  apple:      '<path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.09zM12.03 7.25C11.88 5.02 13.69 3.18 15.77 3c.29 2.58-2.34 4.5-3.74 4.25z"/>',
+  cloud:      '<path stroke="currentColor" stroke-width="1.6" fill="none" d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6 1.5A3.5 3.5 0 0 0 6.5 19z"/>',
+  monitor:    '<rect stroke="currentColor" stroke-width="1.6" fill="none" x="2" y="3" width="20" height="14" rx="2"/><path stroke="currentColor" stroke-width="1.6" d="M8 21h8M12 17v4"/>',
+  smartphone: '<rect stroke="currentColor" stroke-width="1.6" fill="none" x="5" y="2" width="14" height="20" rx="2"/><path stroke="currentColor" stroke-width="1.6" d="M12 18h.01"/>',
+  home:       '<path stroke="currentColor" stroke-width="1.6" fill="none" d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+  server:     '<rect stroke="currentColor" stroke-width="1.6" fill="none" x="3" y="4" width="18" height="7" rx="1.5"/><rect stroke="currentColor" stroke-width="1.6" fill="none" x="3" y="13" width="18" height="7" rx="1.5"/><path stroke="currentColor" stroke-width="1.6" d="M7 7.5h.01M7 16.5h.01"/>',
+  grid:       '<rect stroke="currentColor" stroke-width="1.6" fill="none" x="3" y="3" width="7" height="7" rx="1"/><rect stroke="currentColor" stroke-width="1.6" fill="none" x="14" y="3" width="7" height="7" rx="1"/><rect stroke="currentColor" stroke-width="1.6" fill="none" x="14" y="14" width="7" height="7" rx="1"/><rect stroke="currentColor" stroke-width="1.6" fill="none" x="3" y="14" width="7" height="7" rx="1"/>',
+  slack:      '<path fill="currentColor" d="M5.04 15.12a2.52 2.52 0 0 1-2.52 2.52A2.52 2.52 0 0 1 0 15.12a2.52 2.52 0 0 1 2.52-2.52h2.52zm1.26 0a2.52 2.52 0 0 1 2.52-2.52 2.52 2.52 0 0 1 2.52 2.52v6.36A2.52 2.52 0 0 1 8.82 24a2.52 2.52 0 0 1-2.52-2.52zM8.82 5.04A2.52 2.52 0 0 1 6.3 2.52 2.52 2.52 0 0 1 8.82 0a2.52 2.52 0 0 1 2.52 2.52v2.52zm0 1.26a2.52 2.52 0 0 1 2.52 2.52 2.52 2.52 0 0 1-2.52 2.52H2.52A2.52 2.52 0 0 1 0 8.82 2.52 2.52 0 0 1 2.52 6.3zM18.96 8.82a2.52 2.52 0 0 1 2.52-2.52A2.52 2.52 0 0 1 24 8.82a2.52 2.52 0 0 1-2.52 2.52h-2.52zm-1.26 0a2.52 2.52 0 0 1-2.52 2.52 2.52 2.52 0 0 1-2.52-2.52V2.52A2.52 2.52 0 0 1 15.18 0a2.52 2.52 0 0 1 2.52 2.52zM15.18 18.96a2.52 2.52 0 0 1 2.52 2.52A2.52 2.52 0 0 1 15.18 24a2.52 2.52 0 0 1-2.52-2.52v-2.52zm0-1.26a2.52 2.52 0 0 1-2.52-2.52 2.52 2.52 0 0 1 2.52-2.52h6.3A2.52 2.52 0 0 1 24 15.18a2.52 2.52 0 0 1-2.52 2.52z"/>',
+  users:      '<path stroke="currentColor" stroke-width="1.6" fill="none" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle stroke="currentColor" stroke-width="1.6" fill="none" cx="9" cy="7" r="4"/><path stroke="currentColor" stroke-width="1.6" fill="none" d="M22 21v-2a4 4 0 0 0-3-3.87"/>',
+  list:       '<path stroke="currentColor" stroke-width="1.6" fill="none" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  zap:        '<polygon fill="currentColor" points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  more:       '<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>',
 };
 
-// Render both paths; JS hides/shows via data-entry-path attribute on steps
-const ALL_STEPS = [...ADHOC_STEPS, ...SPRINT_STEPS];
+// Which path containers to render. Arcus has the Ad-Hoc/Sprint toggle; Suite is
+// a single flow with no toggle.
+const PATHS: { key: string; steps: Step[] }[] = product === 'suite'
+  ? [{ key: 'suite', steps: SUITE_STEPS }]
+  : [{ key: 'adhoc', steps: ADHOC_STEPS }, { key: 'sprint', steps: SPRINT_STEPS }];
+
 ---
 
-<div class="qi-wrap" id="qi-wrap">
+<div class="qi-wrap" id="qi-wrap" data-qi-product={product}>
 
-  <p class="qi-title">Quality Intelligence is <s class="qi-strike">almost</s> here!</p>
+  <p class="qi-title">
+    {product === 'suite'
+      ? 'Your testing workflow, end to end'
+      : <Fragment>Quality Intelligence is <s class="qi-strike">almost</s> here!</Fragment>}
+  </p>
 
-  <div class="qi-toggle" role="group" aria-label="Select path">
-    <button class="qi-toggle-btn qi-toggle-btn--active" data-path="adhoc" aria-pressed="true">
-      <svg class="qi-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
-        <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
-        <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
-      </svg>
-      <span class="qi-toggle-name">Ad-Hoc</span>
-      <span class="qi-toggle-sub">Manually attach context &amp; generate</span>
-    </button>
-    <button class="qi-toggle-btn" data-path="sprint" aria-pressed="false">
-      <svg class="qi-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-      </svg>
-      <span class="qi-toggle-name">Sprint</span>
-      <span class="qi-toggle-sub">Auto-triggered when sprint starts</span>
-    </button>
-  </div>
+  {product === 'arcus' && (
+    <div class="qi-toggle" role="group" aria-label="Select path">
+      <button class="qi-toggle-btn qi-toggle-btn--active" data-path="adhoc" aria-pressed="true">
+        <svg class="qi-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+          <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+          <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+        </svg>
+        <span class="qi-toggle-name">Ad-Hoc</span>
+        <span class="qi-toggle-sub">Manually attach context &amp; generate</span>
+      </button>
+      <button class="qi-toggle-btn" data-path="sprint" aria-pressed="false">
+        <svg class="qi-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <span class="qi-toggle-name">Sprint</span>
+        <span class="qi-toggle-sub">Auto-triggered when sprint starts</span>
+      </button>
+    </div>
+  )}
 
   <div class="qi-panel" id="qi-panel">
     <!-- Steps rendered per path; JS toggles visibility via data-path on the container -->
-    {(['adhoc', 'sprint'] as const).map((path) => {
-      const steps = path === 'adhoc' ? ADHOC_STEPS : SPRINT_STEPS;
+    {PATHS.map(({ key: path, steps }, pathIdx) => {
       return (
-        <div class="qi-path-steps" data-path={path} aria-hidden={path === 'sprint' ? 'true' : 'false'} style={path === 'sprint' ? 'display:none' : ''}>
+        <div class="qi-path-steps" data-path={path} aria-hidden={pathIdx === 0 ? 'false' : 'true'} style={pathIdx === 0 ? '' : 'display:none'}>
           {steps.map((step, i) => (
-            <div class="qi-step" data-index={i} data-state={i === 0 ? 'active' : 'pending'} data-first={i === 0 ? 'true' : undefined} data-last={i === steps.length - 1 ? 'true' : undefined}>
+            <div class="qi-step" data-index={i} data-state={i === 0 ? 'active' : 'pending'} data-first={i === 0 ? 'true' : undefined} data-last={i === steps.length - 1 ? 'true' : undefined} data-tall={step.cards ? 'true' : undefined}>
               {/* Continuous connector line — absolutely positioned, split at the node centre */}
               <span class="qi-connector qi-connector--top"></span>
               <span class="qi-connector qi-connector--bot"><span class="qi-loadbar"></span></span>
@@ -138,6 +214,20 @@ const ALL_STEPS = [...ADHOC_STEPS, ...SPRINT_STEPS];
                       ))}
                     </div>
                   )}
+                  {step.cards && step.cards.length > 0 && (
+                    <div class="qi-cards">
+                      {step.cards.map(card => (
+                        <div class={`qi-card qi-card--${card.accent}`}>
+                          <span class="qi-card-pill">
+                            <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[card.icon] ?? STEP_ICONS[card.icon] ?? ''} />
+                            {card.label}
+                          </span>
+                          <p class="qi-card-body">{card.body}</p>
+                          <span class="qi-card-result">{card.result}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   {step.badges.length > 0 && (
                     <div class="qi-badges">
                       {step.badges.map(b => <span class="qi-badge">{b}</span>)}
@@ -158,7 +248,8 @@ const ALL_STEPS = [...ADHOC_STEPS, ...SPRINT_STEPS];
 // JS only toggles data-state on pre-rendered elements and switches path visibility.
 // No innerHTML needed — all HTML is Astro-rendered with proper scope classes.
 
-let currentPath: 'adhoc' | 'sprint' = 'adhoc';
+// The visible path container's key (Arcus: 'adhoc'|'sprint', Suite: 'suite').
+let currentPath: string = document.querySelector<HTMLElement>('.qi-path-steps')?.dataset.path ?? 'adhoc';
 let activeIdx = 0;
 let rafPending = false;
 
@@ -228,7 +319,7 @@ function onScroll() {
   });
 }
 
-function switchPath(path: 'adhoc' | 'sprint') {
+function switchPath(path: string) {
   currentPath = path;
   document.querySelectorAll<HTMLElement>('.qi-path-steps').forEach(el => {
     const isActive = el.dataset.path === path;
@@ -249,7 +340,7 @@ function initToggle() {
       });
       btn.classList.add('qi-toggle-btn--active');
       btn.setAttribute('aria-pressed', 'true');
-      switchPath((btn.dataset.path as 'adhoc' | 'sprint') ?? 'adhoc');
+      switchPath(btn.dataset.path ?? 'adhoc');
     });
   });
 }
@@ -293,12 +384,37 @@ if (document.readyState === 'loading') {
   font-family: var(--sl-font);
   font-size: 13px;
   color: var(--ts-text-primary);
-  /* Align the title row with the "Arcus Documentation" hero title, which sits
-     below the hero's top padding. */
+  /* Align the title row with the hero title, which sits below the hero's top
+     padding. */
   padding-top: 40px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
+  /* ── Accent tokens (Arcus defaults — violet "done", dark-teal "active") ── */
+  --qi-active:        #093F4D;  /* active ring / icon / dots / spinner */
+  --qi-active-bg:     #ffffff;  /* active node fill */
+  --qi-done:          #6E45DF;  /* done accent — connectors, pill outline */
+  --qi-done-node-bg:  #6E45DF;  /* done node fill (solid for Arcus) */
+  --qi-done-check:    #ffffff;  /* checkmark colour */
+  --qi-done-text:     #5B23D6;  /* done pill text */
+  --qi-grad:          linear-gradient(135deg, #E58086, #5C27F5);
+  --qi-result-text:   var(--ts-text-secondary);
+  --qi-result-dot:    #1F8A5B;  /* green status dot */
+  --qi-result-dot-display: inline;
+}
+
+/* ── Suite: strict Suite teal palette, softer node style ── */
+.qi-wrap[data-qi-product='suite'] {
+  --qi-active:        #00B2BD;
+  --qi-active-bg:     #E0F7F9;
+  --qi-done:          #00B2BD;
+  --qi-done-node-bg:  #E0F7F9;  /* light teal fill (soft, not solid) */
+  --qi-done-check:    #0B7C84;  /* dark-teal check */
+  --qi-done-text:     #0B7C84;
+  --qi-grad:          linear-gradient(135deg, #00B2BD, #07C0A1);
+  --qi-result-text:   #0B7C84;  /* result reads as a teal status label */
+  --qi-result-dot-display: none;
 }
 
 .qi-title {
@@ -389,6 +505,9 @@ if (document.readyState === 'loading') {
    last step keeps its natural height so it lands at the bottom. */
 .qi-path-steps > .qi-step { flex: 1 1 0; min-height: 0; }
 .qi-path-steps > .qi-step[data-last] { flex: 0 0 auto; }
+/* A step with sub-cards needs a taller slot; grow weight (not content) sets the
+   height, so it stays reflow-free and the cards never overflow the next step. */
+.qi-path-steps > .qi-step[data-tall] { flex-grow: 3.2; }
 
 /* ── Step ── */
 /* Node centre offset (measured by JS) drives where the connector line splits.
@@ -435,13 +554,13 @@ if (document.readyState === 'loading') {
 
 /* Line above a node is filled once that step is reached (active or done). */
 .qi-step[data-state="active"] .qi-connector--top,
-.qi-step[data-state="done"]   .qi-connector--top { background: #6E45DF; }
+.qi-step[data-state="done"]   .qi-connector--top { background: var(--qi-done); }
 
-/* Line below a done node is solid violet (links to the next done/active node). */
-.qi-step[data-state="done"] .qi-connector--bot { background: #6E45DF; }
+/* Line below a done node is filled (links to the next done/active node). */
+.qi-step[data-state="done"] .qi-connector--bot { background: var(--qi-done); }
 
-/* Line below the ACTIVE node = the "loading" element: a violet bar travels down
-   it until scroll advances to the next step. */
+/* Line below the ACTIVE node = the "loading" element: an accent bar travels
+   down it until scroll advances to the next step. */
 .qi-loadbar {
   position: absolute;
   left: 0;
@@ -449,9 +568,9 @@ if (document.readyState === 'loading') {
   width: 100%;
   height: 100%;
   background: linear-gradient(180deg,
-    #6E45DF 0%,
-    #6E45DF 35%,
-    color-mix(in srgb, #6E45DF 0%, transparent) 70%);
+    var(--qi-done) 0%,
+    var(--qi-done) 35%,
+    color-mix(in srgb, var(--qi-done) 0%, transparent) 70%);
   transform: translateY(-100%);
   opacity: 0;
 }
@@ -477,13 +596,14 @@ if (document.readyState === 'loading') {
 }
 .qi-step[data-state="pending"] .qi-node { opacity: 0.45; }
 .qi-step[data-state="active"]  .qi-node {
-  border-color: #093F4D;
+  background: var(--qi-active-bg);
+  border-color: var(--qi-active);
   border-width: 2px;
-  box-shadow: 0 0 0 3px color-mix(in srgb, #093F4D 12%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qi-active) 12%, transparent);
 }
 .qi-step[data-state="done"] .qi-node {
-  background: #6E45DF;
-  border-color: #6E45DF;
+  background: var(--qi-done-node-bg);
+  border-color: var(--qi-done);
 }
 
 /* Dashed ring for "when detected" step */
@@ -501,7 +621,7 @@ if (document.readyState === 'loading') {
   z-index: 1;
 }
 .qi-step[data-state="active"] .qi-node-icon {
-  color: #093F4D;
+  color: var(--qi-active);
   animation: qi-pulse 2s ease-in-out infinite;
 }
 .qi-step[data-state="done"] .qi-node-icon { display: none; }
@@ -509,7 +629,7 @@ if (document.readyState === 'loading') {
 .qi-node-check {
   width: 14px;
   height: 14px;
-  color: #fff;
+  color: var(--qi-done-check);
   display: none;
   position: relative;
   z-index: 1;
@@ -522,7 +642,7 @@ if (document.readyState === 'loading') {
   inset: -3px;
   border-radius: 50%;
   border: 2px solid transparent;
-  border-top-color: #093F4D;
+  border-top-color: var(--qi-active);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
@@ -567,7 +687,7 @@ if (document.readyState === 'loading') {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: #093F4D;
+  background: var(--qi-active);
   animation: qi-blink 1.2s ease-in-out infinite;
 }
 .qi-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -590,15 +710,16 @@ if (document.readyState === 'loading') {
   align-items: center;
   gap: 4px;
   font-size: 11.5px;
-  color: var(--ts-text-secondary);
-  font-weight: 500;
-  margin-top: 2px;
+  color: var(--qi-result-text);
+  font-weight: 600;
+  margin-top: 3px;
 }
 .qi-step[data-state="done"] .qi-result { display: flex; }
 .qi-result-dot {
+  display: var(--qi-result-dot-display);
   width: 8px;
   height: 8px;
-  color: #1F8A5B;
+  color: var(--qi-result-dot);
   flex-shrink: 0;
 }
 
@@ -627,9 +748,9 @@ if (document.readyState === 'loading') {
   transition: border-color 0.25s, background 0.25s, color 0.25s;
 }
 .qi-step[data-state="done"] .qi-pill {
-  border-color: color-mix(in srgb, #6E45DF 30%, transparent);
-  background: color-mix(in srgb, #6E45DF 6%, #fff);
-  color: #5B23D6;
+  border-color: color-mix(in srgb, var(--qi-done) 30%, transparent);
+  background: color-mix(in srgb, var(--qi-done) 6%, #fff);
+  color: var(--qi-done-text);
 }
 .qi-pill-icon {
   width: 11px;
@@ -656,7 +777,57 @@ if (document.readyState === 'loading') {
   padding: 2px 8px;
   border-radius: 20px;
   color: #fff;
-  background: linear-gradient(135deg, #E58086, #5C27F5);
+  background: var(--qi-grad);
+}
+
+/* ── Split sub-cards (Suite "Test authoring": Copilot + Atto) ── */
+.qi-cards {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+.qi-step[data-state="active"] .qi-cards,
+.qi-step[data-state="done"]   .qi-cards { display: grid; }
+
+.qi-card {
+  border: 1px solid var(--qi-card-border, var(--ts-border-strong));
+  background: var(--qi-card-bg, #fff);
+  border-radius: 10px;
+  padding: 10px 11px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+/* Card A = teal (Copilot), Card B = green (the other end of the Suite gradient, Atto) */
+.qi-card--a { --qi-card-c: #0B7C84; --qi-card-bg: #E8F8FA; --qi-card-border: color-mix(in srgb, #00B2BD 28%, transparent); }
+.qi-card--b { --qi-card-c: #1F8A5B; --qi-card-bg: #E9F7EF; --qi-card-border: color-mix(in srgb, #07C0A1 32%, transparent); }
+
+.qi-card-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 9px 2px 7px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--qi-card-c) 35%, transparent);
+  background: #fff;
+  color: var(--qi-card-c);
+}
+.qi-card-pill .qi-pill-icon { width: 12px; height: 12px; }
+
+.qi-card-body {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ts-text-secondary);
+  margin: 0;
+}
+.qi-card-result {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--qi-card-c);
 }
 
 /* ── Animations ── */
@@ -671,6 +842,6 @@ if (document.readyState === 'loading') {
   .qi-node-icon { animation: none !important; }
   .qi-dots span { animation: none !important; opacity: 1; }
   .qi-loadbar   { animation: none !important; transform: translateY(0); opacity: 1;
-                  background: #6E45DF; }
+                  background: var(--qi-done); }
 }
 </style>
