@@ -820,17 +820,22 @@ nav .sl-badge {
   :root[data-qi-home] .right-sidebar-container {
     width: 26rem;
   }
-  /* The fixed inner rail resolves width:100% against the viewport — pin it to
-     the container width so the timeline lays out in its own column, not 1440px. */
+  /* Let the rail flow in the document and scroll with the doc cards (instead
+     of Starlight's fixed/pinned TOC). The timeline matches the cards' length
+     via JS (panel height), so the two columns scroll together. */
   :root[data-qi-home] .right-sidebar {
     width: 26rem;
-    padding-inline: 4px 28px;
+    padding: 0 28px 0 4px;
     box-sizing: border-box;
+    position: static;
+    height: auto;
+    overflow: visible;
   }
   :root[data-qi-home] .main-pane {
     --sl-content-margin-inline: 0 auto;
     width: calc(100% - 26rem);
   }
+  :root[data-qi-home] .right-sidebar-panel { padding-block: 0; }
 }
 
 /* Tighten hero top padding on the QI home (header already gives space) */

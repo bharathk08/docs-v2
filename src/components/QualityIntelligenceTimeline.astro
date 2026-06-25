@@ -167,6 +167,20 @@ function getStepCount(): number {
   return container ? container.querySelectorAll('.qi-step').length : 11;
 }
 
+// Match the timeline panel's height to the doc-cards column so the steps spread
+// over the same length and scroll in step with the cards.
+function matchCardsLength() {
+  const panel = document.getElementById('qi-panel');
+  const cards = document.querySelector<HTMLElement>('.ts-home');
+  if (!panel || !cards) return;
+  // Span from where the panel starts down to the bottom of the last card, so
+  // the final step lands beside the last card.
+  const panelTop = panel.getBoundingClientRect().top + window.scrollY;
+  const cardsBottom = cards.getBoundingClientRect().bottom + window.scrollY;
+  const h = Math.max(cards.offsetHeight, cardsBottom - panelTop);
+  panel.style.height = `${h}px`;
+}
+
 // Measure each node's centre (offset from the top of its step) so the absolute
 // connector line splits exactly at the node — keeps the line continuous through
 // the group-label gaps regardless of step height.
@@ -190,19 +204,8 @@ function applyActiveIndex(idx: number) {
   stepEls.forEach((el, i) => {
     el.dataset.state = i < idx ? 'done' : i === idx ? 'active' : 'pending';
   });
-
-  // Scroll active step into view within panel
-  const activeEl = stepEls[idx];
-  const panel = document.getElementById('qi-panel');
-  if (panel && activeEl) {
-    const panelRect = panel.getBoundingClientRect();
-    const elRect = activeEl.getBoundingClientRect();
-    if (elRect.bottom > panelRect.bottom - 16) {
-      panel.scrollTop += elRect.bottom - panelRect.bottom + 24;
-    } else if (elRect.top < panelRect.top + 16) {
-      panel.scrollTop -= panelRect.top - elRect.top + 24;
-    }
-  }
+  // The rail flows with the page now, so the active step scrolls into view
+  // naturally with the doc cards — no internal panel scrolling needed.
 }
 
 function computeIdx(): number {
@@ -232,6 +235,7 @@ function switchPath(path: 'adhoc' | 'sprint') {
     el.style.display = isActive ? '' : 'none';
     el.setAttribute('aria-hidden', isActive ? 'false' : 'true');
   });
+  matchCardsLength();
   measureNodes();
   applyActiveIndex(computeIdx());
 }
@@ -256,21 +260,23 @@ function onResize() {
   resizeRaf = true;
   requestAnimationFrame(() => {
     resizeRaf = false;
+    matchCardsLength();
     measureNodes();
   });
 }
 
 function boot() {
   initToggle();
+  matchCardsLength();
   measureNodes();
   const pref = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!pref.matches) {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
   window.addEventListener('resize', onResize, { passive: true });
-  // Re-measure after web fonts settle (text reflow shifts node positions)
+  // Re-measure after web fonts settle (text reflow shifts heights/node positions)
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => { measureNodes(); });
+    document.fonts.ready.then(() => { matchCardsLength(); measureNodes(); });
   }
   applyActiveIndex(computeIdx());
 }
@@ -290,6 +296,9 @@ if (document.readyState === 'loading') {
   /* Align the title row with the "Arcus Documentation" hero title, which sits
      below the hero's top padding. */
   padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .qi-title {
@@ -359,13 +368,24 @@ if (document.readyState === 'loading') {
 }
 
 /* ── Panel ── */
+/* The panel flows with the page (no internal scroll). Its height is set in JS
+   to match the doc-cards column, so the steps spread to the same length and
+   scroll with the cards. */
 .qi-panel {
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  max-height: calc(100vh - 230px);
+  display: flex;
+  flex-direction: column;
 }
-.qi-panel::-webkit-scrollbar { display: none; }
+.qi-path-steps {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+/* Steps grow to fill the matched panel height, staying edge-to-edge so the
+   connector line stays continuous (gaps would break the absolute line). The
+   last step keeps its natural height so it lands at the bottom. */
+.qi-path-steps > .qi-step { flex: 1 1 auto; }
+.qi-path-steps > .qi-step[data-last] { flex: 0 0 auto; }
 
 /* ── Step ── */
 /* Node centre offset (measured by JS) drives where the connector line splits.
