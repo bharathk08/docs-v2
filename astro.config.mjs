@@ -76,7 +76,7 @@ export default defineConfig({
         // Favicon — teal Testsigma gear mark
         {
           tag: 'link',
-          attrs: { rel: 'icon', type: 'image/svg+xml', href: '/docs/favicon.svg' },
+          attrs: { rel: 'icon', type: 'image/png', href: '/docs/favicon.png' },
         },
         // Google Tag Manager (was inline in seo.jsx)
         {

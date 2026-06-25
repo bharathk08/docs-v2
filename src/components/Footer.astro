@@ -1,10 +1,199 @@
 ---
-// Wrapper override: render Starlight's default Footer untouched, then mount the
-// global <AskOverlay/> once per page. This is the no-touch mount point for the
-// Ask Assistant — it appears on every page (docs + splash, Suite + Arcus).
-import Default from '@astrojs/starlight/components/Footer.astro';
 import AskOverlay from './AskOverlay.astro';
+
+const pathname  = Astro.url.pathname;
+const isArcus   = pathname.includes('/arcus/');
+const product   = isArcus ? 'arcus' : 'suite';
+
+const { editUrl } = Astro.locals.starlightRoute;
+const base = import.meta.env.BASE_URL;
+
+const cta = isArcus
+  ? 'Plan, manage, and track every test from one AI-powered workspace.'
+  : 'Author and run low-code tests across 3000+ real device and browser environments.';
 ---
 
-<Default><slot /></Default>
+<footer class={`ts-footer ts-footer--${product}`}>
+
+  {/* ── CTA banner ── */}
+  <div class="ts-footer-cta">
+    <p class="ts-footer-cta-text">{cta}</p>
+    <a class="ts-footer-cta-btn" href="https://testsigma.com/request-demo" rel="noopener noreferrer">
+      Schedule a free demo
+    </a>
+  </div>
+
+  {/* ── Middle: logo + contribute links ── */}
+  <div class="ts-footer-mid">
+    <a class="ts-footer-logo" href="https://testsigma.com" rel="noopener noreferrer" aria-label="Testsigma">
+      <img src={`${base}testsigma-logo.svg`} alt="Testsigma" height="24" />
+    </a>
+
+    <p class="ts-footer-contribute-label">Want to contribute or report missing content?</p>
+
+    <div class="ts-footer-links">
+      {editUrl && (
+        <>
+          <a href={editUrl.toString()} class="ts-footer-link" rel="noopener noreferrer">Edit this Page on GitHub</a>
+          <span class="ts-footer-sep" aria-hidden="true">|</span>
+        </>
+      )}
+      <a href="https://github.com/testsigmahq/testsigma-docs/blob/main/CONTRIBUTING.md" class="ts-footer-link" rel="noopener noreferrer">Contributing Guidelines</a>
+      <span class="ts-footer-sep" aria-hidden="true">|</span>
+      <a href="https://github.com/testsigmahq/testsigma-docs/issues/new" class="ts-footer-link" rel="noopener noreferrer">Report an Issue</a>
+    </div>
+
+    <p class="ts-footer-license">
+      Testsigma&nbsp;<a href="https://github.com/testsigmahq/testsigma-docs/blob/main/LICENSE" class="ts-footer-link" rel="noopener noreferrer">See License</a>
+    </p>
+  </div>
+
+  {/* ── Bottom bar ── */}
+  <div class="ts-footer-bar">
+    <a href="https://www.testsigma.com" class="ts-footer-bar-link" rel="noopener noreferrer">www.testsigma.com</a>
+    <span class="ts-footer-copyright">©2026 Copyright , Testsigma Technologies Inc</span>
+  </div>
+
+</footer>
+
 <AskOverlay />
+
+<style>
+  .ts-footer {
+    --ts-footer-btn-bg: #00B2BD;
+    --ts-footer-link-color: #00B2BD;
+    margin-top: 2rem;
+  }
+  .ts-footer--arcus {
+    --ts-footer-btn-bg: linear-gradient(90deg, #E58086 0%, #9F57C0 100%);
+    --ts-footer-link-color: #5C27F5;
+  }
+
+  /* ── CTA card ── */
+  .ts-footer-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    background: #F2F3F5;
+    border-radius: 16px;
+    padding: 32px 40px;
+    margin-bottom: 32px;
+  }
+
+  .ts-footer-cta-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0D1F3C;
+    line-height: 1.35;
+    margin: 0;
+    max-width: 560px;
+  }
+
+  .ts-footer-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    height: 52px;
+    padding: 0 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    background: var(--ts-footer-btn-bg);
+    transition: opacity .15s;
+  }
+  .ts-footer-cta-btn:hover { opacity: .88; }
+
+  /* ── Middle section ── */
+  .ts-footer-mid {
+    background: #F2F3F5;
+    border-radius: 16px;
+    padding: 48px 32px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .ts-footer-logo img {
+    height: 24px;
+    width: auto;
+    display: block;
+  }
+
+  .ts-footer-contribute-label {
+    font-size: 14.5px;
+    color: #4B5563;
+    margin: 0;
+  }
+
+  .ts-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ts-footer-link {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ts-footer-link-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .ts-footer-link:hover { opacity: .75; }
+
+  .ts-footer-sep {
+    color: #9CA3AF;
+    font-size: 14px;
+  }
+
+  .ts-footer-license {
+    font-size: 14px;
+    color: #4B5563;
+    margin: 0;
+  }
+
+  /* ── Bottom bar ── */
+  .ts-footer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 8px;
+    margin-top: 24px;
+    border-top: 1px solid #E5E7EB;
+  }
+
+  .ts-footer-bar-link {
+    font-size: 13px;
+    color: #6B7280;
+    text-decoration: none;
+  }
+  .ts-footer-bar-link:hover { text-decoration: underline; }
+
+  .ts-footer-copyright {
+    font-size: 13px;
+    color: #6B7280;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .ts-footer-cta {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px;
+    }
+    .ts-footer-cta-btn { width: 100%; }
+    .ts-footer-bar {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+  }
+</style>

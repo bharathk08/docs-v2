@@ -754,3 +754,130 @@ nav .sl-badge {
 
 /* … and raise the content-width cap so both columns have comfortable room. */
 .main-pane:has(.ts-api-page) { --sl-content-width: 58rem; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   QI landing page (Arcus home) — full-bleed grid background, no left nav,
+   left-aligned content, no partition between content and the QI timeline.
+   Marker set before paint by the inline script in Header.astro.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Graph-paper grid behind everything */
+:root[data-qi-home] {
+  --qi-grid-line: rgba(9, 30, 66, 0.04);
+  --qi-grid-size: 34px;
+}
+:root[data-qi-home] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #FBFBFC;
+  background-image:
+    linear-gradient(to right,  var(--qi-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--qi-grid-line) 1px, transparent 1px);
+  background-size: var(--qi-grid-size) var(--qi-grid-size);
+}
+/* Ambient Testsigma gear marks behind the page (above the grid, below content).
+   The PNGs are used as alpha MASKS (their shape), filled with a product-coloured
+   gradient — teal for Suite, the AI/Arcus gradient for Arcus. */
+:root[data-qi-home] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background: var(--qi-mark-fill, linear-gradient(135deg, #00B2BD, #07C0A1));
+  -webkit-mask-image: url('/docs/qi-mark.png'), url('/docs/qi-mark-fade.png');
+  mask-image: url('/docs/qi-mark.png'), url('/docs/qi-mark-fade.png');
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-position: right -150px top 56px, left -170px bottom -120px;
+  mask-position: right -150px top 56px, left -170px bottom -120px;
+  -webkit-mask-size: 420px, 500px;
+  mask-size: 420px, 500px;
+}
+/* Suite: teal gradient (default above). Arcus: salmon→violet AI gradient. */
+:root[data-qi-home][data-product='arcus'] body::after {
+  --qi-mark-fill: linear-gradient(135deg, #E58086, #5C27F5);
+}
+
+/* Keep page chrome above the grid, and let the grid show through panels */
+:root[data-qi-home] .page,
+:root[data-qi-home] .main-frame {
+  position: relative;
+  z-index: 1;
+}
+:root[data-qi-home] .main-pane,
+:root[data-qi-home] .content-panel,
+:root[data-qi-home] .right-sidebar,
+:root[data-qi-home] .right-sidebar-container,
+:root[data-qi-home] .sl-container,
+:root[data-qi-home] article {
+  background: transparent !important;
+}
+
+/* Hide the left sidebar entirely (not in the design) */
+:root[data-qi-home] .sidebar-pane { display: none !important; }
+/* …and reclaim the space it reserves: the main frame pads its inline-start by
+   --sl-sidebar-width to clear the (now hidden) sidebar. Drop it so the content
+   starts at the left edge, aligned with the header's Docs tab (32px). */
+:root[data-qi-home] .main-frame { padding-inline-start: 0 !important; }
+:root[data-qi-home] { --sl-content-pad-x: 2rem; }
+
+/* The TOC slot's .sl-container width is derived from --sl-sidebar-width; our
+   wider rail needs it to fill the column instead. */
+:root[data-qi-home] .sl-container {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Remove the partition border between content and the QI timeline rail */
+:root[data-qi-home] .right-sidebar {
+  border-inline-start: none !important;
+}
+
+@media (min-width: 72rem) {
+  /* Give the QI timeline rail more room than a normal TOC, and left-align
+     the main content (no auto centering). */
+  :root[data-qi-home] .right-sidebar-container {
+    width: 26rem;
+  }
+  /* Let the rail flow in the document and scroll with the doc cards (instead
+     of Starlight's fixed/pinned TOC). The timeline matches the cards' length
+     via JS (panel height), so the two columns scroll together. */
+  :root[data-qi-home] .right-sidebar {
+    width: 26rem;
+    padding: 0 28px 0 4px;
+    box-sizing: border-box;
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+  :root[data-qi-home] .main-pane {
+    --sl-content-margin-inline: 0 auto;
+    width: calc(100% - 26rem);
+  }
+  :root[data-qi-home] .right-sidebar-panel { padding-block: 0; }
+
+  /* The footer sits below the cards where the timeline rail is empty — there's
+     no reason to keep it boxed into the left column. Extend it across the
+     reserved rail width so it spans the full page. z-index keeps it above the
+     (empty, transparent) rail container that paints over the main pane. */
+  :root[data-qi-home] .ts-footer {
+    margin-right: -26rem;
+    position: relative;
+    z-index: 1;
+  }
+  /* The CTA text is capped at 560px (sized for the narrow footer); the
+     full-width footer has room for it on one line. */
+  :root[data-qi-home] .ts-footer-cta-text {
+    max-width: none;
+  }
+}
+
+/* Tighten hero top padding on the QI home (header already gives space) */
+:root[data-qi-home] .ts-hero {
+  padding-top: 32px;
+}

@@ -45,6 +45,7 @@ export const collections = {
         page_id: z.string().optional(),
         warning: z.boolean().optional(),
         noindex: z.boolean().optional(),
+        homeQI: z.boolean().optional(),
 
         // ── API Reference fields (only used on endpoint pages) ──
         // Leave these off for normal doc pages.
