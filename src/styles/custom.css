@@ -846,6 +846,11 @@ nav .sl-badge {
     position: relative;
     z-index: 1;
   }
+  /* The CTA text is capped at 560px (sized for the narrow footer); the
+     full-width footer has room for it on one line. */
+  :root[data-qi-home] .ts-footer-cta-text {
+    max-width: none;
+  }
 }
 
 /* Tighten hero top padding on the QI home (header already gives space) */
