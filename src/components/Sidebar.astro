@@ -46,6 +46,32 @@ const sections = isApiPage
   </div>
 )}
 
+{isApiPage && (
+  <div class="ts-api-version">
+    <p class="ts-api-version-label">API Version</p>
+    <details class="ts-api-version-dd">
+      <summary class="ts-api-version-trigger">
+        <span class="ts-api-version-name">API v1</span>
+        <span class="ts-api-version-badge">Stable</span>
+        <svg class="ts-api-version-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </summary>
+      <div class="ts-api-version-menu" role="listbox">
+        <div class="ts-api-version-option ts-api-version-option--active" role="option" aria-selected="true">
+          <span class="ts-api-version-option-text">
+            <span class="ts-api-version-option-name">API v1</span>
+            <span class="ts-api-version-option-meta">Stable · current release</span>
+          </span>
+          <svg class="ts-api-version-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+    </details>
+  </div>
+)}
+
 <SidebarPersister>
   <SidebarSublist sublist={sections} />
 </SidebarPersister>
@@ -75,5 +101,136 @@ const sections = isApiPage
   .ts-sidebar-welcome:hover {
     background: var(--ts-hover-row);
     border-color: var(--ts-accent);
+  }
+
+  /* ── API version selector (API reference pages only) ── */
+  .ts-api-version {
+    padding: 16px 14px 6px;
+  }
+  .ts-api-version-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ts-label-grey);
+    margin: 0 0 8px;
+    padding: 0 2px;
+    user-select: none;
+  }
+
+  .ts-api-version-dd {
+    position: relative;
+  }
+  .ts-api-version-dd > summary {
+    list-style: none;
+  }
+  .ts-api-version-dd > summary::-webkit-details-marker,
+  .ts-api-version-dd > summary::marker {
+    display: none;
+  }
+
+  .ts-api-version-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    background: #ffffff;
+    border: 1.5px solid var(--ts-border-strong);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .ts-api-version-trigger:hover {
+    border-color: var(--ts-accent);
+  }
+  /* Active/focus ring when the dropdown is open */
+  .ts-api-version-dd[open] > .ts-api-version-trigger {
+    border-color: var(--ts-accent);
+    box-shadow: 0 0 0 3px var(--ts-accent-low);
+  }
+
+  .ts-api-version-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ts-text-primary);
+  }
+  .ts-api-version-badge {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border-radius: 999px;
+    color: var(--ts-accent-text);
+    background: var(--ts-accent-low);
+  }
+  .ts-api-version-caret {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--ts-text-tertiary);
+    transition: transform 0.15s;
+  }
+  .ts-api-version-dd[open] > .ts-api-version-trigger .ts-api-version-caret {
+    transform: rotate(180deg);
+  }
+
+  /* ── Menu ── */
+  .ts-api-version-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 20;
+    padding: 6px;
+    background: #ffffff;
+    border: 1px solid var(--ts-border-strong);
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(9, 30, 66, 0.14);
+  }
+
+  .ts-api-version-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .ts-api-version-option:hover {
+    background: var(--ts-hover-row);
+  }
+  .ts-api-version-option--active,
+  .ts-api-version-option--active:hover {
+    background: var(--ts-accent-low);
+  }
+  .ts-api-version-option-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ts-api-version-option-name {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ts-text-primary);
+  }
+  .ts-api-version-option-meta {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ts-text-tertiary);
+  }
+  .ts-api-version-check {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--ts-accent-text);
   }
 </style>
