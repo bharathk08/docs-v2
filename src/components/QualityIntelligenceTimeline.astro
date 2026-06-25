@@ -385,7 +385,11 @@ function onResize() {
 
 function boot() {
   initToggle();
+  // Set the panel height, then enable the equal-slot spread, then measure node
+  // centres in that spread layout. Order matters: measureNodes must run after
+  // the .qi-ready flex rules apply.
   matchCardsLength();
+  document.getElementById('qi-wrap')?.classList.add('qi-ready');
   measureNodes();
   const pref = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!pref.matches) {
@@ -524,17 +528,21 @@ if (document.readyState === 'loading') {
   flex: 1 1 auto;
   min-height: 0;
 }
-/* Steps fill the matched panel height as equal slots, staying edge-to-edge so
-   the connector line stays continuous (gaps would break the absolute line).
-   flex-basis:0 + min-height:0 makes each slot's height independent of its
-   content — so revealing pills/badges on state change doesn't reflow the other
-   steps (which otherwise causes the timeline to "shake" while scrolling). The
-   last step keeps its natural height so it lands at the bottom. */
-.qi-path-steps > .qi-step { flex: 1 1 0; min-height: 0; }
-.qi-path-steps > .qi-step[data-last] { flex: 0 0 auto; }
-/* A step with sub-cards needs a taller slot; grow weight (not content) sets the
-   height, so it stays reflow-free and the cards never overflow the next step. */
-.qi-path-steps > .qi-step[data-tall] { flex-grow: 3.2; }
+/* Before JS measures the panel height, steps keep their natural height and
+   stack normally — this avoids a flash where flex-basis:0 steps collapse to
+   zero height and overlap (visible for a moment on navigation). */
+.qi-path-steps > .qi-step { flex: 0 0 auto; }
+
+/* Once ready (panel height set by JS): steps fill it as equal slots, staying
+   edge-to-edge so the connector line stays continuous (gaps would break the
+   absolute line). flex-basis:0 + min-height:0 makes each slot's height
+   independent of its content — so revealing pills/badges on state change
+   doesn't reflow the others (which otherwise causes the timeline to "shake"
+   while scrolling). The last step keeps its natural height so it lands at the
+   bottom; a step with sub-cards gets a taller slot via grow weight. */
+.qi-wrap.qi-ready .qi-path-steps > .qi-step { flex: 1 1 0; min-height: 0; }
+.qi-wrap.qi-ready .qi-path-steps > .qi-step[data-last] { flex: 0 0 auto; }
+.qi-wrap.qi-ready .qi-path-steps > .qi-step[data-tall] { flex-grow: 3.2; }
 
 /* ── Step ── */
 /* Node centre offset (measured by JS) drives where the connector line splits.
