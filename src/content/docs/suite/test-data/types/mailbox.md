@@ -2,6 +2,7 @@
 title: "Test Data Type: Mail Box"
 description: "Learn how to use Mail Box Test Data Types in Testsigma to verify OTP, validate email content and improve your testing efficiency with this guide."
 sidebar:
+  label: "Mail Box"
   order: 5.119
 ---
 

@@ -2,6 +2,7 @@
 title: "Test Step Type: Step Groups"
 description: "Instead of writing the same steps repeatedly, you can create a step group and use it in the test cases when required. This article discusses how to use step groups in Testsigma"
 sidebar:
+  label: "Type: Step Group"
   order: 4.33
 ---
 

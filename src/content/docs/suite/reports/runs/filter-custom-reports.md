@@ -2,6 +2,7 @@
 title: "Filters on the Run Results Page"
 description: "Quickly view the enhanced run results for the selected test plan by applying filters | Learn how to apply filters on run results page in Testsigma"
 sidebar:
+  label: "Filters on Run Results"
   order: 14.27
 ---
 

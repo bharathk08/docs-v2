@@ -2,6 +2,7 @@
 title: "Youtrack Bug Reporting Integration"
 description: "How to integrate Testsigma with Youtrack for real-time bug reporting during Test Runs | Push bugs directly from Testsigma to your YouTrack's project"
 sidebar:
+  label: "Youtrack"
   order: 17.35
 ---
 

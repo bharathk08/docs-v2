@@ -2,6 +2,7 @@
 title: "Batch Element Recorder for SAP Automation"
 description: "Batch Element Recorder captures all UI elements in SAP apps window at once and displays them in a tree structure. This article explains how to use it."
 sidebar:
+  label: "Batch Element Recorder"
   order: 29.3
 ---
 

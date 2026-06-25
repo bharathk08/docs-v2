@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Circle CI"
 description: " How to integrate Testsigma with Circle CI"
 sidebar:
+  label: "Circle CI"
   order: 13.17
 ---
 

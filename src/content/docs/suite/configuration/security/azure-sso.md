@@ -3,6 +3,7 @@ title: "Setting up SAML-based SSO login for Testsigma in Azure"
 description: "Learn how to Set up SAML-based SSO login for Testsigma in Azure. With Azure Active Directory, users can automatically sign into their cloud-hosted/on-premise apps "
 search_keyword: ""
 sidebar:
+  label: "Setting Up Azure SSO Login (SAML)"
   order: 20.27
 ---
 

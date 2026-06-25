@@ -2,6 +2,7 @@
 title: "Generate Test Cases For Mobile Web"
 description: "Generate mobile web test cases in Testsigma using Generative AI with inputs from Jira, Figma, Xray, videos, images, and PDF files to accelerate test automation."
 sidebar:
+  label: "For Mobile Web"
   order: 4.7424
 ---
 

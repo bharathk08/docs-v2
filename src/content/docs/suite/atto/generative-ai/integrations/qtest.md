@@ -2,6 +2,7 @@
 title: "Integrating qTest with Testsigma"
 description: "qTest is a Test Management tool that gives the structure to organize, plan, and report the progress of testing. Learn how to integrate qTest with Testsigma Application"
 sidebar:
+  label: "qTest"
   order: 4.7445
 ---
 

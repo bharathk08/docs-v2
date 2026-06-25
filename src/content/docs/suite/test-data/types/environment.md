@@ -2,6 +2,7 @@
 title: "Environment Test Data"
 description: "Integrate environment test data to enhance testing efficiency in Testsigma. Optimise specific environment for test steps, ad-hoc runs, and test plans."
 sidebar:
+  label: "Environment"
   order: 5.24
 ---
 

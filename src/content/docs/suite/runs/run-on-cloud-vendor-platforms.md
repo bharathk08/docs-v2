@@ -2,6 +2,7 @@
 title: "Run on cloud vendor platforms"
 description: "When executing your test cases on Testsigma you have the option to execute them on a cloud vendor platform. Learn how to run tests on cloud vendor platforms in Testsigma"
 sidebar:
+  label: "Run Tests on Vendor Platforms"
   order: 9.41
 ---
 

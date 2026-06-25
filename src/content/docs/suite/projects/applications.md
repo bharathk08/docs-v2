@@ -2,6 +2,7 @@
 title: "Manage Applications"
 description: "Applications tab provides details about all applications available in the project | Learn how to manage applications within Testsigma projects"
 sidebar:
+  label: "Applications"
   order: 2.1
 ---
 

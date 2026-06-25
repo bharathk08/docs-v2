@@ -2,6 +2,7 @@
 title: "Manage Application Versions"
 description: "Managing Versions is necessary as there will be constant change in application features. This article discusses managing application versions within Testsigma projects"
 sidebar:
+  label: "Versions"
   order: 2.2
 ---
 

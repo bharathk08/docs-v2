@@ -2,6 +2,7 @@
 title: "Integrating Figma with Testsigma"
 description: "Effortlessly generate test cases directly from Figma designs for efficient testing. You can integrate your Figma account & generate multiple test cases with a click."
 sidebar:
+  label: "Figma"
   order: 4.7443
 ---
 

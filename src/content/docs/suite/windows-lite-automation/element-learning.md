@@ -2,6 +2,7 @@
 title: "Element Learning (Using Test Recorder)"
 description: "To automate windows applications, you need to have elements captured from Test Recorder. This article discusses how to learn elements using Test Recorder in Testsigma"
 sidebar:
+  label: "Element Learning with Test Recorder"
   order: 31.3
 ---
 

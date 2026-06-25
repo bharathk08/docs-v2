@@ -2,6 +2,7 @@
 title: "Generate Test Cases For Web"
 description: "Generate tests for web & mobile web applications using Testsigma’s GenAI. You can provide input from multiple sources, including Jira, Figma, Xray, videos, & files"
 sidebar:
+  label: "For Web"
   order: 4.7423
 ---
 

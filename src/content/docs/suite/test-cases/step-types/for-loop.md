@@ -2,6 +2,7 @@
 title: "Adding For Loops in Test Cases"
 description: "How to create For Loop test steps while creating a test case in Testsigma"
 sidebar:
+  label: "Type: For Loop"
   order: 4.35
 ---
 

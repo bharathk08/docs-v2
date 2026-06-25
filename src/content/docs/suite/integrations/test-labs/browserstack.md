@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with BrowserStack"
 description: "BrowserStack integration lets you execute your Testsigma tests on BrowserStack. Learn how to integrate the BrowserStack Cloud Test Execution Platform with Testsigma"
 sidebar:
+  label: "BrowserStack"
   order: 17.42
 ---
 

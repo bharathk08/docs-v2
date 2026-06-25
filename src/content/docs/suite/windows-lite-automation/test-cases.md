@@ -2,6 +2,7 @@
 title: "Test Cases for Windows (Lite) Automation"
 description: "With Testsigma, you can create & execute tests for Windows Applications using Testsigma Agent | Learn how to build tests for Windows Automation"
 sidebar:
+  label: "Test Cases for Windows (Lite)"
   order: 31.4
 ---
 

@@ -2,6 +2,7 @@
 title: "Copilot in Web Recorder"
 description: "Testsigma has simplified test case generation for web applications with Testsigma Copilot | With just a single click, you can create test cases for web apps"
 sidebar:
+  label: "In Web Recorder"
   order: 4.7431
 ---
 

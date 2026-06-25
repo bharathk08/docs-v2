@@ -2,6 +2,7 @@
 title: "Phone Number Type Test Data"
 description: "Type phone number data as test data input to your test cases in Testsigma. Learn how to use phone number as test data type for your test cases in Test Automation"
 sidebar:
+  label: "Phone Number"
   order: 5.118
 ---
 

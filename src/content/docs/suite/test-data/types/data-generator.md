@@ -2,6 +2,7 @@
 title: "Test Data Type: Data Generator"
 description: "Discover how you can enable dynamic test data creation with Testsigma's Data Generators to optimise your test scenarios for enhanced efficiency and coverage."
 sidebar:
+  label: "Data Generator"
   order: 5.117
 ---
 

@@ -2,6 +2,7 @@
 title: "Create Elements Manually"
 description: "Element path plays an important role in dynamic websites. Learn how to create elements manually for a iOS Applications in Testsigma application"
 sidebar:
+  label: "Create Elements"
   order: 6.44
 ---
 

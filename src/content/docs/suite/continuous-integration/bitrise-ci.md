@@ -2,6 +2,7 @@
 title: " Integrate Testsigma with Bitrise CI"
 description: "How to integrate Testsigma with Bitrise CI"
 sidebar:
+  label: "Bitrise CI"
   order: 13.20
 ---
 

@@ -2,6 +2,7 @@
 title: "Supported Element Locator Types"
 description: "The guide explains different types of locators used for creating Elements in Testsigma | Locators supported by Testsigma to create Elements"
 sidebar:
+  label: "Supported Locator Types"
   order: 6.25
 ---
 

@@ -2,6 +2,7 @@
 title: "Testsigma Development Environment (Addons)"
 description: "How to setup Testsigma  Development Environment to contribute"
 sidebar:
+  label: "Setup Dev Environment [Addons]"
   order: 23.4
 ---
 

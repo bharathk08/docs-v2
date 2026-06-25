@@ -2,6 +2,7 @@
 title: "Use Mock Servers in Test Executions"
 description: "Learn how to configure mock servers for dry runs, test plan executions, and local executions in Testsigma."
 sidebar:
+  label: "Use Mock Servers"
   order: 9.92
 ---
 

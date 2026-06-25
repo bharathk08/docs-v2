@@ -3,6 +3,7 @@ title: "Using Add-ons to Extend the Testsigma Actions"
 description: "This article discusses what are add-ons, why are they useful, and how to use them to extend functionality for unique cases in Testsigma"
 search_keyword: ""
 sidebar:
+  label: "What is an Addon?"
   order: 18.1
 ---
 

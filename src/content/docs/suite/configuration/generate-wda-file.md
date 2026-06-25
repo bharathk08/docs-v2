@@ -3,6 +3,7 @@ title: "Creating WDA File for iOS App Testing"
 description: "Creating WebDriverAgent (WDA) is important for automating iOS tests | Learn how to generate WDA file for iOS app testing to ensure quality of application"
 search_keyword: "Create WDA File"
 sidebar:
+  label: "Create WDA File"
   order: 20.6
 ---
 

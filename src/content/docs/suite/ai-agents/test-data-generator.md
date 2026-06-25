@@ -2,6 +2,7 @@
 title: "Test Data Generator in Testsigma"
 description: "The Test Data Generator in Testsigma helps you quickly create a Test Data Profile for data-driven test cases | Generate the data automatically using the Test Data Generator agent"
 sidebar:
+  label: "Test Data Generator"
   order: 4.813
 ---
 

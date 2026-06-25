@@ -3,6 +3,7 @@ title: "Bypass Unsafe Download Prompt in Chrome"
 description: "Learn how to bypass the unsafe download warning prompt by setting a desired capability while downloading a file in your test using Testsigma application"
 search_keyword: ""
 sidebar:
+  label: "Bypass Unsafe Download Prompt"
   order: 16.5
 ---
 

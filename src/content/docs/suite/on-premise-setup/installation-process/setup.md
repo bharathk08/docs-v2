@@ -3,6 +3,7 @@ title: "On-Premise Installation Steps"
 description: "Learn how to setup Testsigma On-premise using docker compose file | Steps to Deploy Docker Compose File for Testsigma's on-prem setup"
 search_keyword: ""
 sidebar:
+  label: "Installation Steps"
   order: 26.21
 ---
 

@@ -2,6 +2,7 @@
 title: " Integrate Testsigma with Bamboo CI"
 description: "How to integrate Testsigma with Bamboo CI"
 sidebar:
+  label: "Bamboo CI"
   order: 13.18
 ---
 

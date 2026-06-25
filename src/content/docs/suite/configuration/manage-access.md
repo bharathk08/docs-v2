@@ -3,6 +3,7 @@ title: "Manage Access: Grant/Revoke Permissions"
 description: "Grant and revoke access to Testsigma support | Learn how to securely share access, view activity logs, & maintain full control over your account data"
 search_keyword: ""
 sidebar:
+  label: "Manage Access"
   order: 20.8
 ---
 

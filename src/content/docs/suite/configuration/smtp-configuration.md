@@ -3,6 +3,7 @@ title: "SMTP Configuration in Testsigma"
 description: "This article discusses a step-by-step guide to setup Simple Mail Transfer Protocol (SMTP) to trigger emails from a configured email address."
 search_keyword: ""
 sidebar:
+  label: "SMTP Configuration"
   order: 20.7
 ---
 

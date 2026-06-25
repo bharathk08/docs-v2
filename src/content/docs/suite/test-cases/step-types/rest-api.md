@@ -3,6 +3,7 @@ title: "Test Step Type: Rest API"
 pagetitle: "Test Step Type: Rest API | Testsigma Documentaion"
 description: "Discover how to create powerful and secure REST APIs from scratch in this comprehensive guide that covers best practices, authentication, and error handling."
 sidebar:
+  label: "Type: REST API"
   order: 4.33
 ---
 

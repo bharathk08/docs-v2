@@ -2,6 +2,7 @@
 title: " Integrate Testsigma with Bitbucket CI"
 description: "How to integrate Testsigma with Bitbucket CI"
 sidebar:
+  label: "Bitbucket CI/CD"
   order: 13.22
 ---
 ---

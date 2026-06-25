@@ -2,6 +2,7 @@
 title: "Testsigma Dashboard - Overview"
 description: "Testsigma dashboard is the control panel that gives an overview of the currently selected project & its components. This article discusses Testsigma dashboards"
 sidebar:
+  label: "Dashboard"
   order: 14.50
 ---
 

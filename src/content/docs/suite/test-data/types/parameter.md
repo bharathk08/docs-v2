@@ -2,6 +2,7 @@
 title: "Test Data - Parameter"
 description: "Use parameter test data input from your test data profile in Testsigma. Learn how to use parameter from you test data profile for Test Automation"
 sidebar:
+  label: "Parameter"
   order: 5.113
 ---
 

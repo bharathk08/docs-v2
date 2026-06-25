@@ -2,6 +2,7 @@
 title: "Generate Test Cases for Salesforce"
 description: "Generate Salesforce test cases in Testsigma using GenAI. Attach Jira Epics or Stories and instantly create test cases with simple prompts to accelerate test creation"
 sidebar:
+  label: "For Salesforce"
   order: 4.7426
 ---
 

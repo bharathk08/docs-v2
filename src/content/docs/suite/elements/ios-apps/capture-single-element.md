@@ -2,6 +2,7 @@
 title: "Record Single Element Using Recorder"
 description: "Learn how to selectively capture elements one at a time by using the Testsigma mobile inspector for an iOS project in Testsigma application."
 sidebar:
+  label: "Record Single Element"
   order: 6.42
 ---
 

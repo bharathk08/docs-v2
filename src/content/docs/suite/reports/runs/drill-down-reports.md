@@ -2,6 +2,7 @@
 title: "Test Plan Run Results in Testsigma"
 description: "View and download reports from the Run Results page in Testsigma | This page provides detailed results at the test cases, suites, and machines levels."
 sidebar:
+  label: "Test Plan Run Results"
   order: 14.23
 ---
 

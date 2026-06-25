@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with AWS Lambda"
 description: "How to integrate Testsigma with AWS Lambda. "
 sidebar:
+  label: "AWS Lambda"
   order: 13.16
 ---
 

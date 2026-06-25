@@ -2,6 +2,7 @@
 title: "Inviting Team Members to a Project"
 description: "In Testsigma, you can add team members to your project & assign them different roles for better collaboration within your team | Learn how to add team members to a Project in Testsigma."
 sidebar:
+  label: "Invite Team Members"
   order: 3.0
 ---
 

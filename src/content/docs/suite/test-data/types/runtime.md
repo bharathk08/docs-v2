@@ -2,6 +2,7 @@
 title: "Test Data Type: Runtime"
 description: "Runtime test data in Testsigma stores data obtained during the execution of Test Cases. Learn how to store runtime test data with example use cases."
 sidebar:
+  label: "Runtime"
   order: 5.114
 ---
 

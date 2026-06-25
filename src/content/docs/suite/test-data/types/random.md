@@ -2,6 +2,7 @@
 title: "Random Test Data in Testsigma"
 description: "Type random data as test data input to your test cases in Testsigma. Learn how to use random text as test data type for your test cases in Test Automation"
 sidebar:
+  label: "Random"
   order: 5.116
 ---
 

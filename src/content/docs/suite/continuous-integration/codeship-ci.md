@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with CodeShip CI"
 description: "How to integrate Testsigma with CodeShip CI"
 sidebar:
+  label: "CodeShip CI"
   order: 13.191
 ---
 

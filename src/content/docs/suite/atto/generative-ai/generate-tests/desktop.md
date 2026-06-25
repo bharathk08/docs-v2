@@ -2,6 +2,7 @@
 title: "Generate Test Cases for Desktop"
 description: "Testsigma’s AI capabilities help you with test case creation for Desktop applications | Generates multiple test cases that align with UI elements for Desktop apps"
 sidebar:
+  label: "For Desktop"
   order: 4.7427
 ---
 

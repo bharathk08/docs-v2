@@ -2,6 +2,7 @@
 title: "Missing Elements in the Recorder"
 description: "There might be instances where you miss elements on the recorder screen while recording | This article discusses troubleshooting steps for missing elements "
 sidebar:
+  label: "Missing Elements in Recorder"
   order: 24.54
 ---
 

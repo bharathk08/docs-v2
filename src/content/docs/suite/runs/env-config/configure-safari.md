@@ -2,6 +2,7 @@
 title: "Configure Safari for Test Automation in Testsigma"
 description: "How to use WebDriver API for automating tests on older versions of Safari"
 sidebar:
+  label: "Configure Safari"
   order: 9.81
 ---
 

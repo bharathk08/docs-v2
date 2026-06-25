@@ -2,6 +2,7 @@
 title: "Mantis Bug Reporting Integration"
 description: "Mantis Bug Reporting integration helps you in creating issues in Mantis from the Testsigma. Learn how to integrate Testsigma with Mantis for real-time bug reporting"
 sidebar:
+  label: "Mantis"
   order: 17.34
 ---
 

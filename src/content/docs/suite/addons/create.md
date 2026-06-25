@@ -4,6 +4,7 @@ pagetitle: "Create Custom Add-ons: Automate Unique Actions Easily"
 description: "Create an add-on in Testsigma to automate custom actions, data generation, and more. Follow simple steps to extend your testing capabilities."
 search_keyword: ""
 sidebar:
+  label: "Create an Addon"
   order: 18.5
 ---
 

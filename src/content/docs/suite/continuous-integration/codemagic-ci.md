@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Codemagic"
 description: "Integrate Testsigma with Codemagic for seamless test automation | Trigger Testsigma test runs from your CI/CD pipeline using a shell script in GitHub."
 sidebar:
+  label: "Codemagic CI/CD"
   order: 13.26
 ---
 

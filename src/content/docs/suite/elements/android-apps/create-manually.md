@@ -2,6 +2,7 @@
 title: "Create Elements Manually"
 description: "Element path plays an important role in dynamic websites. Learn how to create elements manually for a android apps in Testsigma application"
 sidebar:
+  label: "Creating Elements Manually"
   order: 6.34
 ---
 

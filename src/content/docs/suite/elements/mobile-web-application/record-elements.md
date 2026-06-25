@@ -2,6 +2,7 @@
 title: "Record Multiple Elements Using Recorder"
 description: "Element path or locators plays an important role in Automation Testsing. Learn how to record elements for a mobile web application in Testsigma"
 sidebar:
+  label: "Record Multiple Elements"
   order: 6.61
 ---
 

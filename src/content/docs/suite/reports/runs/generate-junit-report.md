@@ -4,6 +4,7 @@ pagetitle: "Generate Custom JUnit Report in Testsigma"
 description: "Learn how to generate JUnit-compatible XML reports from Testsigma test plan results to integrate with CI/CD pipelines like Jenkins, GitHub Actions, and GitLab CI."
 search_keyword: ""
 sidebar:
+  label: "Custom JUnit Report Generation"
   order: 14.30
 ---
 

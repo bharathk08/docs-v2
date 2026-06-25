@@ -2,6 +2,7 @@
 title: "Plain Text"
 description: "Type anything you want as test data input to your test cases in Testsigma. Learn how to use plain text as test data type for your test cases in Test Automation"
 sidebar:
+  label: "Raw"
   order: 5.112
 ---
 

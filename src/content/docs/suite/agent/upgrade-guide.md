@@ -2,6 +2,7 @@
 title: "Testsigma Agent Upgrade Guide"
 description: "Upgrade Testsigma Agent automatically/manually when a new version is available. Automatic upgrades are enabled by default to ensure the agent always runs the new version"
 sidebar:
+  label: "Agent Upgrade Guide"
   order: 12.7
 ---
 

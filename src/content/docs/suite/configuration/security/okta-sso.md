@@ -3,6 +3,7 @@ title: "Setting Up Okta Single Sign-On Integration with SAML Login in Testsigma"
 description: "Single Sign-On (SSO) provides faster, easier, and trusted access to applications. Learn how to set up Single Sign-On (SSO) with SAML login easily in Testsigma."
 search_keyword: ""
 sidebar:
+  label: "Setting Up Okta SSO Login (SAML)"
   order: 20.26
 ---
 

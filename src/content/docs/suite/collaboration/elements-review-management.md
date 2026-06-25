@@ -2,6 +2,7 @@
 title: "Review Management for Elements"
 description: "Review Management for Elements allows you to assign or review elements among the team members in Testsigma | Learn how to assign or review the elements created within your team"
 sidebar:
+  label: "Review Management [Elements]"
   order: 3.4
 ---
 

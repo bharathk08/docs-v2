@@ -2,6 +2,7 @@
 title: "Setting Up Testsigma Agent Locally"
 description: "Learn how to install Testsigma Agent on your local machine and register it to your Testsigma Account for local inspection and test runs."
 sidebar:
+  label: "Setup: Windows, Mac, Linux"
   order: 12.3
 ---
 

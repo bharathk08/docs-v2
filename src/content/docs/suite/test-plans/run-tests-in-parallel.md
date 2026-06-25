@@ -4,6 +4,7 @@ pagetitle: "Efficient Test Execution with Parallel Runs & Backups"
 description: "Start efficient test execution with parallel runs and backup devices. Ensure minimal disruption and faster results with our easy setup guide."
 search_keyword: ""
 sidebar:
+  label: "Run Test Suites In Parallel"
   order: 8.25
 ---
 

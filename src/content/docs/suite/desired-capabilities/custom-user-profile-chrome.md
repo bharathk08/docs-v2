@@ -3,6 +3,7 @@ title: "Using Custom User Profile in Chrome"
 description: "Custom user profiles help you emulate settings such as pre-installed extensions. Learn how to start the Chrome Browser with a custom User Profile in Test Session using Testsigma"
 search_keyword: ""
 sidebar:
+  label: "Custom User Profile in Chrome"
   order: 16.7
 ---
 

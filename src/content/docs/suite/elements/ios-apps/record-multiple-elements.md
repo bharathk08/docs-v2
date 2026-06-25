@@ -2,6 +2,7 @@
 title: "Record Multiple Elements Using Recorder"
 description: "Elements play an important role in Automation Testsing. Learn how to record multiple elements for a iOS project in Testsigma Appication."
 sidebar:
+  label: "Record Multiple Elements"
   order: 6.43
 ---
 

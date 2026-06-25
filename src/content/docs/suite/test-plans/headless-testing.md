@@ -2,6 +2,7 @@
 title: "Headless Browser Testing"
 description: "Learn how to perform headless browser testing in Testsigma. Automate tests without a visual browser interface, ensuring efficient and reliable web app testing."
 sidebar:
+  label: "Headless Testing"
   order: 8.28
 ---
 

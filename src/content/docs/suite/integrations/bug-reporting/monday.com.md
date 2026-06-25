@@ -2,6 +2,7 @@
 title: "Monday.com Integration With Testsigma"
 description: "Monday.com integration helps you in creating issues in Monday.com from the Testsigma. Learn how to integrate Testsigma with Monday.com for real-time bug reporting"
 sidebar:
+  label: "Monday.com"
   order: 17.38
 ---
 

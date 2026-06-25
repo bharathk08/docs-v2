@@ -3,6 +3,7 @@ title: "Prerequisites for On-Premise Installation"
 description: "This detailed guide will help you understand the prerequisites for Testsigma On-premise setup  | Know these details before getting started with Testsigma on-premise setup"
 search_keyword: ""
 sidebar:
+  label: "Prerequisites"
   order: 26.12
 ---
 

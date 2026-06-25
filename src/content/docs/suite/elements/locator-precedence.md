@@ -2,6 +2,7 @@
 title: "Locator Precedence in Test Recorder"
 description: "Enhance element recording process by defining locator precedence on the test recorder for Link Text, Name, ID, CSS Selector, and XPath based on the priority."
 sidebar:
+  label: "Locator Precedence (Web Apps)"
   order: 6.92
 ---
 

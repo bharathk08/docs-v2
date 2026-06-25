@@ -2,6 +2,7 @@
 title: "AfterTest in Test Cases & Step Groups"
 description: "AfterTest in Testsigma lets you create a block of steps after the test case as well as add a step group. Learn about AfterTest block in Testsigma"
 sidebar:
+  label: "AfterTest Case"
   order: 8.31
 ---
 

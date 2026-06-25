@@ -3,6 +3,7 @@ title: "Create & Use Test Data Profiles"
 pagetitle: "Create and Use Test Data Profiles"
 description: "This article discusses steps in detail on how to create test data profiles that can be used in a test cases in Testsigma application"
 sidebar:
+  label: "Create Test Data Profile"
   order: 5.21
 ---
 

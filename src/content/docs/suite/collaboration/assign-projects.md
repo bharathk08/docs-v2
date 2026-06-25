@@ -2,6 +2,7 @@
 title: "Assign Projects to Users"
 description: "In Testsigma, users can be assigned to multiple projects for better collaboration among the team | This article discusses how to add users to multiple projects in Testsigma application"
 sidebar:
+  label: "Assign Projects"
   order: 3.1
 ---
 

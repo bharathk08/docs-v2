@@ -2,6 +2,7 @@
 title: "Page Loading Issues in TestsigmaLab"
 description: "This article discusses how to troubleshoot the errors concerning page loading | Learn how to troubleshoot errors with page loading in cloud executions"
 sidebar:
+  label: "Page Loading Issues"
   order: 24.57
 ---
 

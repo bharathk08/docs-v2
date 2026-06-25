@@ -3,6 +3,7 @@ title: "Testing API Responses with Custom Values"
 description: "Learn how to send custom values and experiment with the different types of test data | Testsigma allows you give inputs while testing an API responses in Testsigma"
 search_keyword: ""
 sidebar:
+  label: "Testing API Responses"
   order: 4.793
 ---
 

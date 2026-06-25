@@ -2,6 +2,7 @@
 title: "Copilot in Testsigma"
 description: "The Copilot in Testsigma helps you debug, execute, and modify test cases in real time. It also enables you to generate test cases using Testsigma Copilot"
 sidebar:
+  label: "In Testsigma"
   order: 4.7433
 ---
 

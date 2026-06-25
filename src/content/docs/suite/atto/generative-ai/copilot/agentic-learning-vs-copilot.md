@@ -2,6 +2,7 @@
 title: "Understanding Agentic Learning and Run with Copilot"
 description: "Learn the difference between Agentic Learning and Run with Copilot in Testsigma. Discover how they improve test design and validate execution."
 sidebar:
+  label: "Agentic Learning vs Run with Copilot"
   order: 4.7434
 ---
 

@@ -3,6 +3,7 @@ title: "Generate API Key"
 pagetitle: "Generating API Key: Steps to Access Testsigma Programmatically"
 description: "Learn how to generate your API key in Testsigma to access and control Testsigma programmatically. Follow these simple steps for smooth integration and automation."
 sidebar:
+  label: "API Keys"
   order: 20.1
 ---
 

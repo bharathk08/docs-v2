@@ -2,6 +2,7 @@
 title: "Requirement Types in Testsigma"
 description: "What are requirement types in Testsigma and how to access, create, edit and delete them."
 sidebar:
+  label: "Requirement Types"
   order: 2.42
 ---
 

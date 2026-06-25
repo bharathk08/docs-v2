@@ -2,6 +2,7 @@
 title: "Strategies for Formulating Elements"
 description: "Learn how to find and create locators for the Elements using single attributes, text, or Xpath and CSS Selectors in Testsigma Application"
 sidebar:
+  label: "Formulating Elements"
   order: 6.26
 ---
 

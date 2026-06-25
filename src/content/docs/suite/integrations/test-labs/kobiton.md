@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Kobiton"
 description: "Kobiton integration lets you execute your Testsigma tests on BrowserStack. Learn how to integrate the Kobiton Test Execution Platform with Testsigma"
 sidebar:
+  label: "Kobiton"
   order: 17.45
 ---
 

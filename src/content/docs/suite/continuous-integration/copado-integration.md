@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Copado (Salesforce)"
 description: "Integrate Testsigma with Copado for effortless Salesforce test automation | Improve your testing efficiency accelerate Salesforce automation by integrating Testsigma with Copado"
 sidebar:
+  label: "Copado CI/CD"
   order: 13.24
 ---
 

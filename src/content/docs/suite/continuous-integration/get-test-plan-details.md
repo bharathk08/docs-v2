@@ -2,6 +2,7 @@
 title: "Get Test Plan ID"
 description: "A test plan ID is needed to call the execution of the Testsigma test plan from an external CI/CD tool |  Learn how to get test plan ID in Testsigma"
 sidebar:
+  label: "Test Plan Details"
   order: 13.11
 ---
 

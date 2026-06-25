@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with Travis CI"
 description: "Testsigma offers webhooks to trigger test plan executions remotely from the Travis CI tool | Learn how to integrate Travis CI with Testsigma"
 sidebar:
+  label: "Travis CI"
   order: 13.19
 ---
 

@@ -2,6 +2,7 @@
 title: "TestRail Integration with Testsigma"
 description: "TestRail is a Test Management tool that gives the structure to organize, plan, and report the progress of testing. Learn how to integrate TestRail with Testsigma Application"
 sidebar:
+  label: "TestRail"
   order: 17.58
 ---
 

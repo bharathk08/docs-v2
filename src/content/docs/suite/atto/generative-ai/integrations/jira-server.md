@@ -2,6 +2,7 @@
 title: "Integrating Jira Server/Data Center with Testsigma"
 description: "Integrate Testsigma with Jira Server or Data Center to log, manage, and track bugs seamlessly. Learn how to set up the integration step by step."
 sidebar:
+  label: "Jira Server"
   order: 4.7442
 ---
 

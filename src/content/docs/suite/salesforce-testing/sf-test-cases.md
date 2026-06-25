@@ -2,6 +2,7 @@
 title: "Test Cases for Salesforce (Manual + Live)"
 description: "Creating test cases for Salesforce automation is easy with Salesforce metadata artifacts and capabilities from Testsigma like smart NLPs, and the debugger"
 sidebar:
+  label: "Build Test Cases: Manual+Live"
   order: 28.7
 ---
 

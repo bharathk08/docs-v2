@@ -2,6 +2,7 @@
 title: "Integrate Testsigma with SauceLabs"
 description: "SauceLabs integration lets you execute your Testsigma tests on BrowserStack. Learn how to integrate the SauceLabs Test Execution Platform with Testsigma"
 sidebar:
+  label: "SauceLabs"
   order: 17.44
 ---
 

@@ -2,6 +2,7 @@
 title: "Selective Element Recorder for SAP Automation"
 description: "Selective Element Recorder lets you capture UI elements one at a time in SAP apps and view them in a tree structure. This article explains how to use it."
 sidebar:
+  label: "Selective Element Recorder"
   order: 29.2
 ---
 

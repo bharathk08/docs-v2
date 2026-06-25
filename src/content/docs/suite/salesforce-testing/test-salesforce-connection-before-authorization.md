@@ -2,6 +2,7 @@
 title: "Test Salesforce Connection Before Authorization"
 description: "Learn how to test your Salesforce connection in Testsigma before authorizing it. Ensure credentials are valid and avoid connection issues during the authentication process."
 sidebar:
+  label: "Test Salesforce Connection"
   order: 28.4
 ---
 

@@ -2,6 +2,7 @@
 title: "Install Testsigma Recorder Extension: Chrome"
 description: "To record test steps in chrome, you need to install Testsigma Recorder Chrome Extension | This article discusses how to download and install Testsigma chrome extension"
 sidebar:
+  label: "Install Chrome Extension"
   order: 7.11
 ---
 

@@ -2,6 +2,7 @@
 title: "Recording Tests with WebView for Hybrid Apps"
 description: "Recording tests with webview for hybrid apps | Learn how to switch the app from NATIVE to HYBRID app view in Testsgima app while recording tests"
 sidebar:
+  label: "Tests for Multiple WebViews"
   order: 4.425
 ---
 ---

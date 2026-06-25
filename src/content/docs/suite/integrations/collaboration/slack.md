@@ -2,6 +2,7 @@
 title: "Slack Integration with Testsigma"
 description: "Learn how to configure your Slack channel to receive Pass/Fail/Abort notifications about Test Results as in real-time from Testsigma application"
 sidebar:
+  label: "Slack"
   order: 17.21
 ---
 

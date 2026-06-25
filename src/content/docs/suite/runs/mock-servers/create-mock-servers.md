@@ -2,6 +2,7 @@
 title: "Create Mock Servers in Testsigma"
 description: "Learn how to create a mock server and configure mock rules in Testsigma to simulate backend API responses during test execution."
 sidebar:
+  label: "Create Mock Servers"
   order: 9.91
 ---
 
