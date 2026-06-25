@@ -778,6 +778,22 @@ nav .sl-badge {
     linear-gradient(to bottom, var(--qi-grid-line) 1px, transparent 1px);
   background-size: var(--qi-grid-size) var(--qi-grid-size);
 }
+/* Ambient Testsigma gear marks behind the page (above the grid, below content) */
+:root[data-qi-home] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    url('/docs/qi-mark.png'),
+    url('/docs/qi-mark-fade.png');
+  background-repeat: no-repeat, no-repeat;
+  background-position:
+    right -150px top 56px,
+    left -170px bottom -120px;
+  background-size: 420px, 500px;
+}
 
 /* Keep page chrome above the grid, and let the grid show through panels */
 :root[data-qi-home] .page,
