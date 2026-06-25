@@ -11,8 +11,13 @@ interface SubCard {
   label: string;
   icon: string;
   accent: 'a' | 'b';
-  body: string;
-  result: string;
+  items: string[];
+}
+
+interface Handoff {
+  fromLabel: string; fromIcon: string; fromAccent: 'a' | 'b';
+  toLabel: string;   toIcon: string;   toAccent: 'a' | 'b';
+  text: string;
 }
 
 interface Step {
@@ -26,6 +31,7 @@ interface Step {
   dashed: boolean;
   entryPath?: 'adhoc' | 'sprint';
   cards?: SubCard[];
+  handoff?: Handoff;
 }
 
 const ADHOC_ENTRY: Step = {
@@ -66,9 +72,10 @@ const SUITE_STEPS: Step[] = [
     badges: [], icon: 'layout-grid', dashed: false },
   { group: 'AI-POWERED AUTHORING', title: 'Test authoring', subtitle: 'Two ways to build your tests', resultText: 'Tests ready', pills: [], badges: [], icon: 'sparkles', dashed: false,
     cards: [
-      { label: 'Copilot', icon: 'bot', accent: 'a', body: 'Record tests live in your browser. Interact with the app and Copilot captures every step.', result: 'Tests recorded' },
-      { label: 'Atto', icon: 'sparkles', accent: 'b', body: 'Generate tests from Jira stories, Figma designs, and recordings automatically.', result: 'Tests generated' },
-    ] },
+      { label: 'Copilot', icon: 'bot', accent: 'a', items: ['Intent-based steps', 'Execute tests', 'Learn elements', 'Auto-heal', 'Analyze failures', 'Report bugs'] },
+      { label: 'Atto', icon: 'sparkles', accent: 'b', items: ['Tests from requirements', 'Learn test cases', 'Record steps', 'Manual to automated', 'Handover to Copilot'] },
+    ],
+    handoff: { fromLabel: 'Atto', fromIcon: 'sparkles', fromAccent: 'b', toLabel: 'Copilot', toIcon: 'bot', toAccent: 'a', text: 'Execution readiness verified' } },
   { group: 'PLANNING', title: 'Create test suites', subtitle: 'Group related tests into suites for organised runs', resultText: 'Suites ready', pills: [], badges: [], icon: 'stack', dashed: false },
   { group: null, title: 'Create test plans and add machines', subtitle: 'Bring suites together and assign execution machines', resultText: 'Plans configured',
     pills: [{ label: 'Cloud', icon: 'cloud' }, { label: 'Local', icon: 'home' }, { label: 'On-prem', icon: 'server' }], badges: [], icon: 'calendar', dashed: false },
@@ -222,10 +229,29 @@ const PATHS: { key: string; steps: Step[] }[] = product === 'suite'
                             <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[card.icon] ?? STEP_ICONS[card.icon] ?? ''} />
                             {card.label}
                           </span>
-                          <p class="qi-card-body">{card.body}</p>
-                          <span class="qi-card-result">{card.result}</span>
+                          <ul class="qi-mini">
+                            {card.items.map(it => (
+                              <li class="qi-mini-item"><span class="qi-mini-node"></span><span>{it}</span></li>
+                            ))}
+                          </ul>
                         </div>
                       ))}
+                    </div>
+                  )}
+                  {step.handoff && (
+                    <div class="qi-handoff">
+                      <span class="qi-handoff-flow">
+                        <span class={`qi-card-pill qi-card-pill--${step.handoff.fromAccent}`}>
+                          <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.fromIcon] ?? STEP_ICONS[step.handoff.fromIcon] ?? ''} />
+                          {step.handoff.fromLabel}
+                        </span>
+                        <svg class="qi-handoff-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        <span class={`qi-card-pill qi-card-pill--${step.handoff.toAccent}`}>
+                          <svg class="qi-pill-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={PILL_ICONS[step.handoff.toIcon] ?? STEP_ICONS[step.handoff.toIcon] ?? ''} />
+                          {step.handoff.toLabel}
+                        </span>
+                      </span>
+                      <span class="qi-handoff-text">{step.handoff.text}</span>
                     </div>
                   )}
                   {step.badges.length > 0 && (
@@ -797,7 +823,7 @@ if (document.readyState === 'loading') {
   padding: 10px 11px 11px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 /* Card A = teal (Copilot), Card B = green (the other end of the Suite gradient, Atto) */
 .qi-card--a { --qi-card-c: #0B7C84; --qi-card-bg: #E8F8FA; --qi-card-border: color-mix(in srgb, #00B2BD 28%, transparent); }
@@ -815,19 +841,81 @@ if (document.readyState === 'loading') {
   border: 1px solid color-mix(in srgb, var(--qi-card-c) 35%, transparent);
   background: #fff;
   color: var(--qi-card-c);
+  white-space: nowrap;
 }
 .qi-card-pill .qi-pill-icon { width: 12px; height: 12px; }
+/* Standalone pills (handoff banner) carry their own accent */
+.qi-card-pill--a { --qi-card-c: #0B7C84; }
+.qi-card-pill--b { --qi-card-c: #1F8A5B; }
 
-.qi-card-body {
-  font-size: 11.5px;
-  line-height: 1.5;
-  color: var(--ts-text-secondary);
-  margin: 0;
+/* Mini capability timeline inside each card */
+.qi-mini {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  position: relative;
 }
-.qi-card-result {
+/* vertical line linking the mini nodes */
+.qi-mini::before {
+  content: '';
+  position: absolute;
+  left: 4.5px;
+  top: 10px;
+  bottom: 10px;
+  width: 1.5px;
+  background: color-mix(in srgb, var(--qi-card-c) 35%, transparent);
+}
+.qi-mini-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 3.5px 0;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--qi-card-c);
+  position: relative;
+}
+.qi-mini-node {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--qi-card-c);
+  background: var(--qi-card-bg);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Atto → Copilot handoff banner */
+.qi-handoff {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #E9F7EF;
+  border: 1px solid color-mix(in srgb, #07C0A1 28%, transparent);
+}
+.qi-step[data-state="active"] .qi-handoff,
+.qi-step[data-state="done"]   .qi-handoff { display: flex; }
+.qi-handoff-flow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.qi-handoff-arrow {
+  width: 15px;
+  height: 15px;
+  color: var(--ts-text-tertiary);
+  flex-shrink: 0;
+}
+.qi-handoff-text {
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--qi-card-c);
+  color: var(--ts-text-secondary);
 }
 
 /* ── Animations ── */
