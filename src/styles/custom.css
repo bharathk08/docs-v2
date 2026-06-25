@@ -778,21 +778,29 @@ nav .sl-badge {
     linear-gradient(to bottom, var(--qi-grid-line) 1px, transparent 1px);
   background-size: var(--qi-grid-size) var(--qi-grid-size);
 }
-/* Ambient Testsigma gear marks behind the page (above the grid, below content) */
+/* Ambient Testsigma gear marks behind the page (above the grid, below content).
+   The PNGs are used as alpha MASKS (their shape), filled with a product-coloured
+   gradient — teal for Suite, the AI/Arcus gradient for Arcus. */
 :root[data-qi-home] body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image:
-    url('/docs/qi-mark.png'),
-    url('/docs/qi-mark-fade.png');
-  background-repeat: no-repeat, no-repeat;
-  background-position:
-    right -150px top 56px,
-    left -170px bottom -120px;
-  background-size: 420px, 500px;
+  opacity: 0.5;
+  background: var(--qi-mark-fill, linear-gradient(135deg, #00B2BD, #07C0A1));
+  -webkit-mask-image: url('/docs/qi-mark.png'), url('/docs/qi-mark-fade.png');
+  mask-image: url('/docs/qi-mark.png'), url('/docs/qi-mark-fade.png');
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-position: right -150px top 56px, left -170px bottom -120px;
+  mask-position: right -150px top 56px, left -170px bottom -120px;
+  -webkit-mask-size: 420px, 500px;
+  mask-size: 420px, 500px;
+}
+/* Suite: teal gradient (default above). Arcus: salmon→violet AI gradient. */
+:root[data-qi-home][data-product='arcus'] body::after {
+  --qi-mark-fill: linear-gradient(135deg, #E58086, #5C27F5);
 }
 
 /* Keep page chrome above the grid, and let the grid show through panels */
