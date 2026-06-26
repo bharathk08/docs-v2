@@ -7,7 +7,7 @@
  *   public/ask-index.meta.json  — parallel array of { url, title, product, excerpt }
  *
  * Usage:
- *   VOYAGE_API_KEY=vk-xxx node scripts/build-ask-index.mjs
+ *   VOYAGE_API_KEY=pa-xxx node scripts/build-ask-index.mjs
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
@@ -19,19 +19,25 @@ const ROOT      = join(__dirname, '..');
 const DOCS_DIR  = join(ROOT, 'src', 'content', 'docs');
 const PUBLIC    = join(ROOT, 'public');
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-if (!GOOGLE_API_KEY) {
-  console.error('Error: GOOGLE_API_KEY environment variable is not set.');
-  console.error('Get a free key at aistudio.google.com, then run:');
-  console.error('  GOOGLE_API_KEY=AIza... node scripts/build-ask-index.mjs');
+const VOYAGE_API_KEY = process.env.VOYAGE_API_KEY;
+// --meta-only just rewrites meta.json from local docs; no embedding, no key needed.
+if (!VOYAGE_API_KEY && !process.argv.includes('--meta-only')) {
+  console.error('Error: VOYAGE_API_KEY environment variable is not set.');
+  console.error('Get a key at https://dashboard.voyageai.com, then run:');
+  console.error('  VOYAGE_API_KEY=pa-... node scripts/build-ask-index.mjs');
   process.exit(1);
 }
 
-const GEMINI_MODEL  = 'gemini-embedding-2';
-const DIMS          = 768;    // reduced from 3072 via outputDimensionality
-const CONCURRENCY   = 50;     // parallel embedContent calls per wave
-const WAVE_MIN_MS   = 35000;  // minimum ms per wave — keeps rate under 90 RPM free limit
+const VOYAGE_MODEL  = 'voyage-3.5';
+const DIMS          = 1024;   // voyage-3.5 default embedding dimension
 const CHUNK_MAX     = 900;    // characters per chunk before splitting further
+
+// Throughput knobs — defaults suit Voyage's standard tier (fast). To build on the
+// trial tier (3 RPM / 10K TPM, before a payment method is added) run with:
+//   VOYAGE_BATCH_SIZE=12 VOYAGE_CONCURRENCY=1 VOYAGE_REQ_MIN_MS=21000
+const BATCH_SIZE    = Number(process.env.VOYAGE_BATCH_SIZE)  || 128;  // texts per request
+const CONCURRENCY   = Number(process.env.VOYAGE_CONCURRENCY) || 4;    // parallel requests
+const REQ_MIN_MS    = Number(process.env.VOYAGE_REQ_MIN_MS)  || 0;    // min ms between request starts
 
 // ── Walk docs directory ────────────────────────────────────────────────────────
 
@@ -126,62 +132,76 @@ function fileToUrl(filePath) {
 
 // ── Voyage AI batch embed ──────────────────────────────────────────────────────
 
-// Single embedContent call with retry on 429
-async function embedOne(text, taskType = 'RETRIEVAL_DOCUMENT', attempt = 0) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:embedContent?key=${GOOGLE_API_KEY}`;
-
-  const res = await fetch(url, {
+// Embed a batch of texts in one request, with retry on 429
+async function embedBatch(texts, inputType = 'document', attempt = 0) {
+  const res = await fetch('https://api.voyageai.com/v1/embeddings', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${VOYAGE_API_KEY}`,
+    },
     body: JSON.stringify({
-      model: `models/${GEMINI_MODEL}`,
-      content: { parts: [{ text }] },
-      taskType,
-      outputDimensionality: DIMS,
+      input: texts,
+      model: VOYAGE_MODEL,
+      input_type: inputType,        // 'document' for the index, 'query' at search time
+      output_dimension: DIMS,
     }),
   });
 
   if (res.status === 429) {
-    if (attempt >= 6) throw new Error('Google rate limit: too many retries. Try again later.');
+    if (attempt >= 6) throw new Error('Voyage rate limit: too many retries. Try again later.');
     const retryAfter = parseInt(res.headers.get('retry-after') || '0') * 1000;
-    const waitMs = retryAfter || Math.min(5000 * 2 ** attempt, 120000);
+    const waitMs = retryAfter || Math.min(2000 * 2 ** attempt, 60000);
     process.stdout.write(`\n  Rate limited — waiting ${Math.round(waitMs / 1000)}s…\n`);
     await new Promise(r => setTimeout(r, waitMs));
-    return embedOne(text, taskType, attempt + 1);
+    return embedBatch(texts, inputType, attempt + 1);
   }
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Google Embedding API ${res.status}: ${body}`);
+    throw new Error(`Voyage Embedding API ${res.status}: ${body}`);
   }
 
   const json = await res.json();
-  return json.embedding.values;
+  // Sort by index defensively so vectors line up with the input order
+  return json.data.sort((a, b) => a.index - b.index).map(d => d.embedding);
 }
 
-// Run CONCURRENCY requests in parallel, then wait out the rate-limit window
-async function embedAll(texts, taskType = 'RETRIEVAL_DOCUMENT') {
+// Split into batches, run CONCURRENCY batches in parallel at a time
+async function embedAll(texts, inputType = 'document') {
+  const batches = [];
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    batches.push(texts.slice(i, i + BATCH_SIZE));
+  }
+  const waves = Math.ceil(batches.length / CONCURRENCY);
+  const etaMin = REQ_MIN_MS ? Math.ceil((waves * REQ_MIN_MS) / 60000) : null;
+  console.log(
+    `  ${texts.length} texts across ${batches.length} batches of ≤${BATCH_SIZE}` +
+    (etaMin ? ` — throttled, ~${etaMin} min` : '')
+  );
+
   const results = new Array(texts.length);
-  const totalWaves = Math.ceil(texts.length / CONCURRENCY);
-  const etaMin = Math.ceil((totalWaves * WAVE_MIN_MS) / 60000);
-  console.log(`  ${texts.length} texts across ${totalWaves} waves (~${etaMin} min at free-tier rate limit)`);
+  let done = 0;
+  let lastStart = 0;
 
-  for (let i = 0; i < texts.length; i += CONCURRENCY) {
-    const wave = texts.slice(i, i + CONCURRENCY);
-    const waveNum = Math.floor(i / CONCURRENCY) + 1;
-    const waveStart = Date.now();
-    process.stdout.write(`  Wave ${waveNum}/${totalWaves}…\r`);
-
-    const vecs = await Promise.all(wave.map(t => embedOne(t, taskType)));
-    for (let j = 0; j < vecs.length; j++) results[i + j] = vecs[j];
-
-    // Respect the free-tier rate limit between waves
-    if (i + CONCURRENCY < texts.length) {
-      const elapsed = Date.now() - waveStart;
-      const wait = Math.max(WAVE_MIN_MS - elapsed, 300);
-      process.stdout.write(`  Wave ${waveNum}/${totalWaves} done — cooling down ${Math.round(wait / 1000)}s…\r`);
-      await new Promise(r => setTimeout(r, wait));
+  for (let i = 0; i < batches.length; i += CONCURRENCY) {
+    // Pace request starts to respect the rate limit (no-op when REQ_MIN_MS = 0)
+    if (REQ_MIN_MS && lastStart) {
+      const wait = REQ_MIN_MS - (Date.now() - lastStart);
+      if (wait > 0) await new Promise(r => setTimeout(r, wait));
     }
+    lastStart = Date.now();
+
+    const wave = batches.slice(i, i + CONCURRENCY);
+    const waveVecs = await Promise.all(wave.map(b => embedBatch(b, inputType)));
+
+    waveVecs.forEach((vecs, w) => {
+      const offset = (i + w) * BATCH_SIZE;
+      for (let j = 0; j < vecs.length; j++) results[offset + j] = vecs[j];
+    });
+
+    done += wave.reduce((n, b) => n + b.length, 0);
+    process.stdout.write(`  Embedded ${done}/${texts.length}…\r`);
   }
   return results;
 }
@@ -208,30 +228,50 @@ async function main() {
   }
 
   console.log(`Total chunks: ${allChunks.length}`);
-  console.log('Embedding…');
 
+  // ── Write metadata JSON ───────────────────────────────────────────────────
+  // `text` is the full chunk — api/ask.ts feeds it to the LLM as context.
+  // `excerpt` is a short preview kept for any display use.
+  const writeMeta = () => {
+    const meta = allChunks.map(({ url, title, product, text }) => ({
+      url,
+      title,
+      product,
+      text,
+      excerpt: text.slice(0, 220).replace(/\n+/g, ' ').trim(),
+    }));
+    writeFileSync(join(PUBLIC, 'ask-index.meta.json'), JSON.stringify(meta));
+  };
+
+  // --meta-only: rewrite meta.json from the (deterministic) chunks WITHOUT
+  // re-embedding. Safe only while the chunk count still matches the vector
+  // file — otherwise vectors and metadata would be misaligned.
+  if (process.argv.includes('--meta-only')) {
+    const vecCount = statSync(join(PUBLIC, 'ask-index.bin')).size / 4 / DIMS;
+    if (vecCount !== allChunks.length) {
+      throw new Error(
+        `Chunk count (${allChunks.length}) != index vectors (${vecCount}). ` +
+        `Docs changed — run a full rebuild, not --meta-only.`
+      );
+    }
+    writeMeta();
+    console.log(`meta.json regenerated from ${allChunks.length} chunks (no embedding).`);
+    return;
+  }
+
+  console.log('Embedding…');
   const texts      = allChunks.map(c => c.text);
   const embeddings = await embedAll(texts);
   console.log('');
 
   // ── Write binary vector file ──────────────────────────────────────────────
-
   const buffer = new Float32Array(embeddings.length * DIMS);
   for (let i = 0; i < embeddings.length; i++) {
     buffer.set(embeddings[i], i * DIMS);
   }
   writeFileSync(join(PUBLIC, 'ask-index.bin'), Buffer.from(buffer.buffer));
 
-  // ── Write metadata JSON ───────────────────────────────────────────────────
-
-  const meta = allChunks.map(({ url, title, product, text }) => ({
-    url,
-    title,
-    product,
-    // Keep a short excerpt for the "Related docs" panel — not the full text
-    excerpt: text.slice(0, 220).replace(/\n+/g, ' ').trim(),
-  }));
-  writeFileSync(join(PUBLIC, 'ask-index.meta.json'), JSON.stringify(meta));
+  writeMeta();
 
   const mb = (buffer.byteLength / 1024 / 1024).toFixed(1);
   console.log(`\nDone!`);

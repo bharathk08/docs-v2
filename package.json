@@ -6,12 +6,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "build:ask-index": "node --env-file=.env scripts/build-ask-index.mjs"
+    "build:ask-index": "node --env-file=.env scripts/build-ask-index.mjs",
+    "dev:ask": "node --import tsx --env-file=.env scripts/dev-server.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
     "@astrojs/starlight": "^0.34.0",
     "astro": "^5.7.0",
     "sharp": "^0.34.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.22.4"
   }
 }

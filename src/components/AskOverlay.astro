@@ -179,13 +179,14 @@
     // ── AI answer via SSE ────────────────────────────────────────────────────
     async function ask(query: string) {
       showResults();
+      input.value = '';   // clear the box once the question is sent
       results.innerHTML = `
-        <div class=”ts-ask-thinking” id=”ts-ask-thinking”>
-          <span class=”ts-ask-spinner”></span>
-          <span id=”ts-ask-status-text”>Finding relevant docs…</span>
+        <div class="ts-ask-thinking" id="ts-ask-thinking">
+          <span class="ts-ask-spinner"></span>
+          <span id="ts-ask-status-text">Finding relevant docs…</span>
         </div>
-        <div class=”ts-ask-answer” id=”ts-ask-answer”></div>
-        <div class=”ts-ask-sources” id=”ts-ask-sources” hidden></div>
+        <div class="ts-ask-answer" id="ts-ask-answer"></div>
+        <div class="ts-ask-sources" id="ts-ask-sources" hidden></div>
       `;
 
       const thinkingEl = document.getElementById('ts-ask-thinking')!;
@@ -235,10 +236,10 @@
                   const srcs = payload as { url: string; title: string }[];
                   if (srcs.length) {
                     sourcesEl.innerHTML =
-                      '<div class=”ts-ask-sources-head”>Related documentation</div>' +
+                      '<div class="ts-ask-sources-head">Related documentation</div>' +
                       srcs.map(s =>
-                        `<a class=”ts-ask-result” href=”${escapeHtml(s.url)}”>
-                          <div class=”ts-ask-result-title”>${escapeHtml(s.title || s.url)}</div>
+                        `<a class="ts-ask-result" href="${escapeHtml(s.url)}">
+                          <div class="ts-ask-result-title">${escapeHtml(s.title || s.url)}</div>
                         </a>`
                       ).join('');
                     sourcesEl.hidden = false;
@@ -252,7 +253,10 @@
           }
         }
 
-        // “Ask another question” link at the bottom
+        // Stream finished — make sure the "thinking" indicator is gone
+        thinkingEl.hidden = true;
+
+        // "Ask another question" link at the bottom
         const resetBtn = document.createElement('button');
         resetBtn.type = 'button';
         resetBtn.className = 'ts-ask-reset';
@@ -266,22 +270,105 @@
       }
     }
 
-    // ── Minimal markdown renderer for the answer ─────────────────────────────
+    // ── Markdown renderer for the answer ─────────────────────────────────────
+    // Block-level parser (headings, lists, code blocks, quotes) + inline
+    // formatting. XSS-safe: all text is HTML-escaped before any tags are added,
+    // and link hrefs are scheme-validated.
+    function escHtml(s: string): string {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Inline formatting — `text` MUST already be HTML-escaped.
+    function inlineMd(text: string): string {
+      // Split out inline-code spans; format only the non-code segments so
+      // markdown inside backticks is left verbatim.
+      return text.split(/(`[^`]+`)/).map((seg) => {
+        if (seg.length > 1 && seg[0] === '`' && seg[seg.length - 1] === '`') {
+          return `<code>${seg.slice(1, -1)}</code>`;
+        }
+        return seg
+          // Links [label](url) — only safe schemes, else fall back to the label
+          .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_m, label, url) =>
+            /^(https?:\/\/|\/|#|mailto:)/i.test(url)
+              ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
+              : label)
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/\[(\d+)\]/g, '<sup class="ts-ask-cite">[$1]</sup>');
+      }).join('');
+    }
+
     function renderMarkdown(md: string): string {
-      // Work paragraph-by-paragraph so we don't mangle inline elements
-      return md
-        .split(/\n\n+/)
-        .map(block => {
-          const inner = block
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
-            .replace(/`([^`\n]+)`/g, '<code>$1</code>')
-            .replace(/\[(\d+)\]/g, '<sup class=”ts-ask-cite”>[$1]</sup>')
-            .replace(/\n/g, '<br>');
-          return `<p>${inner}</p>`;
-        })
-        .join('');
+      const lines = md.replace(/\r\n/g, '\n').split('\n');
+      let html = '';
+      let para: string[] = [];
+      let i = 0;
+
+      const flush = () => {
+        if (para.length) { html += `<p>${inlineMd(escHtml(para.join(' ')))}</p>`; para = []; }
+      };
+
+      while (i < lines.length) {
+        const line = lines[i];
+
+        const fence = line.match(/^```(\w*)\s*$/);
+        if (fence) {                                   // fenced code block
+          flush();
+          const buf: string[] = [];
+          i++;
+          while (i < lines.length && !/^```\s*$/.test(lines[i])) { buf.push(lines[i]); i++; }
+          i++;                                         // skip closing fence (or run to EOF)
+          html += `<pre class="ts-ask-pre"><code>${escHtml(buf.join('\n'))}</code></pre>`;
+          continue;
+        }
+
+        const h = line.match(/^(#{1,6})\s+(.*)$/);
+        if (h) {                                       // heading
+          flush();
+          const lvl = h[1].length;
+          html += `<h${lvl}>${inlineMd(escHtml(h[2].trim()))}</h${lvl}>`;
+          i++; continue;
+        }
+
+        if (/^>\s?/.test(line)) {                      // blockquote
+          flush();
+          const buf: string[] = [];
+          while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i++; }
+          html += `<blockquote>${inlineMd(escHtml(buf.join(' ')))}</blockquote>`;
+          continue;
+        }
+
+        if (/^\s*[-*+]\s+/.test(line)) {               // unordered list
+          flush();
+          html += '<ul>';
+          while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+            html += `<li>${inlineMd(escHtml(lines[i].replace(/^\s*[-*+]\s+/, '')))}</li>`; i++;
+          }
+          html += '</ul>';
+          continue;
+        }
+
+        if (/^\s*\d+\.\s+/.test(line)) {               // ordered list
+          flush();
+          html += '<ol>';
+          while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+            html += `<li>${inlineMd(escHtml(lines[i].replace(/^\s*\d+\.\s+/, '')))}</li>`; i++;
+          }
+          html += '</ol>';
+          continue;
+        }
+
+        if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { // horizontal rule
+          flush(); html += '<hr>'; i++; continue;
+        }
+
+        if (line.trim() === '') { flush(); i++; continue; }
+
+        para.push(line.trim());                        // normal paragraph text
+        i++;
+      }
+      flush();
+      return html;
     }
 
     // ── Pagefind keyword search (fallback) ───────────────────────────────────
@@ -301,11 +388,11 @@
     }
 
     async function keywordSearch(query: string) {
-      results.innerHTML = '<div class=”ts-ask-status”>Searching the docs…</div>';
+      results.innerHTML = '<div class="ts-ask-status">Searching the docs…</div>';
       const engine = await loadPagefind();
       if (!engine) {
         results.innerHTML =
-          '<div class=”ts-ask-status”>Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
+          '<div class="ts-ask-status">Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
         return;
       }
       const prefix = `/docs/${product()}/`;
@@ -314,21 +401,21 @@
       const hits   = raw.filter((d: any) => (d.url || '').includes(prefix)).slice(0, 6);
 
       if (!hits.length) {
-        results.innerHTML = `<div class=”ts-ask-status”>No results for “${escapeHtml(query)}” in ${product()} docs.</div>`;
+        results.innerHTML = `<div class="ts-ask-status">No results for “${escapeHtml(query)}” in ${product()} docs.</div>`;
         return;
       }
       results.innerHTML =
-        `<div class=”ts-ask-results-head”>Results for “${escapeHtml(query)}”</div>` +
+        `<div class="ts-ask-results-head">Results for “${escapeHtml(query)}”</div>` +
         hits.map((d: any) =>
-          `<a class=”ts-ask-result” href=”${d.url}”>
-            <div class=”ts-ask-result-title”>${escapeHtml(d.meta?.title || d.url)}</div>
-            <div class=”ts-ask-result-excerpt”>${d.excerpt || ''}</div>
+          `<a class="ts-ask-result" href="${d.url}">
+            <div class="ts-ask-result-title">${escapeHtml(d.meta?.title || d.url)}</div>
+            <div class="ts-ask-result-excerpt">${d.excerpt || ''}</div>
           </a>`
         ).join('');
     }
 
     function escapeHtml(s: string): string {
-      return s.replace(/[&<>”]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '”': '&quot;' }[c] as string));
+      return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
     }
   }
 </script>
@@ -499,6 +586,9 @@
     font-size: 13.5px; color: var(--ts-text-secondary);
     padding: 4px 0 16px;
   }
+  /* The class sets display:flex, which would override the `hidden` attribute —
+     this restores the hide so the indicator disappears once the answer starts. */
+  .ts-ask-thinking[hidden] { display: none; }
   .ts-ask-spinner {
     display: inline-block;
     width: 14px; height: 14px; flex-shrink: 0;
@@ -519,6 +609,37 @@
   .ts-ask-answer code {
     font-size: 12.5px; background: var(--ts-hover-row);
     padding: 1px 5px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;
+  }
+  .ts-ask-answer :first-child { margin-top: 0; }
+  .ts-ask-answer h1, .ts-ask-answer h2, .ts-ask-answer h3,
+  .ts-ask-answer h4, .ts-ask-answer h5, .ts-ask-answer h6 {
+    font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+    color: var(--ts-text-primary); margin: 1.15em 0 0.5em;
+  }
+  .ts-ask-answer h1 { font-size: 18px; }
+  .ts-ask-answer h2 { font-size: 16px; }
+  .ts-ask-answer h3 { font-size: 15px; }
+  .ts-ask-answer h4, .ts-ask-answer h5, .ts-ask-answer h6 { font-size: 14px; }
+  .ts-ask-answer ul, .ts-ask-answer ol { margin: 0 0 0.9em; padding-left: 1.45em; }
+  .ts-ask-answer li { margin: 0.3em 0; }
+  .ts-ask-answer li::marker { color: var(--ts-text-tertiary); }
+  .ts-ask-answer a {
+    color: var(--ts-accent-text); text-decoration: underline; text-underline-offset: 2px;
+  }
+  .ts-ask-answer a:hover { text-decoration: none; }
+  .ts-ask-answer blockquote {
+    margin: 0 0 0.9em; padding: 6px 0 6px 12px;
+    border-left: 3px solid var(--ts-border-strong); color: var(--ts-text-secondary);
+  }
+  .ts-ask-answer hr { border: none; border-top: 1px solid var(--ts-border); margin: 1.1em 0; }
+  .ts-ask-pre {
+    margin: 0 0 0.9em; padding: 12px 14px; overflow-x: auto;
+    background: var(--ts-hover-row); border: 1px solid var(--ts-border); border-radius: 8px;
+  }
+  .ts-ask-pre code {
+    display: block; padding: 0; background: none; border-radius: 0;
+    font-size: 12.5px; line-height: 1.55; white-space: pre;
+    font-family: 'IBM Plex Mono', monospace; color: var(--ts-text-primary);
   }
   .ts-ask-cite {
     font-size: 10px; color: var(--ts-accent-text);
