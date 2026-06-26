@@ -7,11 +7,13 @@
 import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
 import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
 import SidebarSublist from './SidebarSublist.astro';
+import { filtersForProduct } from '../data/app-type-filters';
 
 const { sidebar } = Astro.locals.starlightRoute;
 const pathname = Astro.url.pathname;
 const isArcus = pathname.includes('/arcus/');
 const productLabel = isArcus ? 'Arcus' : 'Suite';
+const filters = filtersForProduct(isArcus ? 'arcus' : 'suite');
 
 // True when the current page lives in the API reference section
 const isApiPage = pathname.includes('/arcus/api-reference/') || pathname.includes('/suite/api/');
@@ -41,34 +43,40 @@ const sections = isApiPage
 ---
 
 {!isApiPage && (
-  <div class="ts-sidebar-welcome-wrap">
-    <a class="ts-sidebar-welcome" href={`/docs/${productLabel.toLowerCase()}/`}>Welcome to {productLabel} Docs</a>
+  <div class="ts-app-filter" data-app-filter-root>
+    <p class="ts-app-filter-label">{isArcus ? 'Filter by area' : 'Filter by app type'}</p>
+    <div class="ts-app-filter-chips" role="group" aria-label="Filter docs by app type">
+      <button type="button" class="ts-chip ts-chip--active" data-app-filter="all" aria-pressed="true">All</button>
+      {filters.map((t) => (
+        <button type="button" class="ts-chip" data-app-filter={t.id} aria-pressed="false">{t.label}</button>
+      ))}
+    </div>
   </div>
 )}
 
 {isApiPage && (
   <div class="ts-api-version">
     <p class="ts-api-version-label">API Version</p>
-    <details class="ts-api-version-dd">
-      <summary class="ts-api-version-trigger">
-        <span class="ts-api-version-name">API v1</span>
-        <span class="ts-api-version-badge">Stable</span>
-        <svg class="ts-api-version-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-          <polyline points="6 9 12 15 18 9" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </summary>
-      <div class="ts-api-version-menu" role="listbox">
-        <div class="ts-api-version-option ts-api-version-option--active" role="option" aria-selected="true">
-          <span class="ts-api-version-option-text">
-            <span class="ts-api-version-option-name">API v1</span>
-            <span class="ts-api-version-option-meta">Stable · current release</span>
-          </span>
-          <svg class="ts-api-version-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-            <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-      </div>
-    </details>
+    <div class="ts-api-version-tabs" role="tablist" aria-label="API version">
+      <span
+        class="ts-api-version-tab ts-api-version-tab--active"
+        role="tab"
+        aria-selected="true"
+      >
+        <span class="ts-api-version-tab-name">API v1</span>
+        <span class="ts-api-version-tab-badge">Stable</span>
+      </span>
+      <span
+        class="ts-api-version-tab ts-api-version-tab--disabled"
+        role="tab"
+        aria-selected="false"
+        aria-disabled="true"
+        title="API v2 is coming soon"
+      >
+        <span class="ts-api-version-tab-name">API v2</span>
+        <span class="ts-api-version-tab-badge ts-api-version-tab-badge--soon">Soon</span>
+      </span>
+    </div>
   </div>
 )}
 
@@ -80,26 +88,155 @@ const sections = isApiPage
   <MobileMenuFooter />
 </div>
 
-<style>
-  .ts-sidebar-welcome-wrap {
-    padding: 14px 12px 0;
+<script define:vars={{ FILTERS: filters }}>
+  // ── Doc filtering ──────────────────────────────────────────────────────
+  // Picking a chip shows ONLY the docs matching that filter: every other link
+  // (including general/universal docs) is hidden, and any sub-group / section
+  // left empty is collapsed away. Matching sub-groups are auto-expanded so
+  // their docs are visible. "All" restores everything.
+  // Selection persists in localStorage and re-applies after navigation.
+  const STORAGE_KEY = 'ts-app-filter';
+  const ALL = 'all';
+
+  function appTypesForHref(href) {
+    const ids = [];
+    for (const t of FILTERS) {
+      if (t.match.some((frag) => href.includes(frag))) ids.push(t.id);
+    }
+    return ids;
   }
-  .ts-sidebar-welcome {
-    display: block;
-    font-size: 13.5px;
+
+  // Captured once per page so we can fully restore order/open-state when the
+  // filter changes. Re-captured in init() after each navigation.
+  let originalOrder = null;   // [Element] — direct children of .ts-nav-sections
+  let detailsOpen = null;     // Map<details, boolean>
+
+  function snapshot(root) {
+    if (originalOrder) return;
+    originalOrder = [...root.children];
+    detailsOpen = new Map();
+    root.querySelectorAll('details.ts-sub-details').forEach((d) => detailsOpen.set(d, d.open));
+  }
+
+  function reset(root) {
+    root.querySelectorAll('[data-filtered-hidden]').forEach((el) => {
+      el.hidden = false;
+      el.removeAttribute('data-filtered-hidden');
+    });
+    if (detailsOpen) detailsOpen.forEach((open, d) => { d.open = open; });
+    if (originalOrder) originalOrder.forEach((n) => root.appendChild(n)); // restore order
+  }
+
+  function applyFilter(active) {
+    const root = document.querySelector('.ts-nav-sections');
+    if (!root) return;
+    snapshot(root);
+    reset(root);
+
+    const hide = (el) => {
+      const target = el.closest('li') || el;
+      target.hidden = true;
+      target.setAttribute('data-filtered-hidden', '');
+    };
+    const isVisible = (a) => !a.closest('[data-filtered-hidden]');
+    const matchesActive = (a) => appTypesForHref(a.getAttribute('href') || '').includes(active);
+
+    if (active !== ALL) {
+      // 1. Hide every leaf link that does NOT match the active filter
+      //    (this includes general/universal docs).
+      root.querySelectorAll('a.ts-nav-item[href]').forEach((a) => {
+        if (!matchesActive(a)) hide(a);
+      });
+      // 2. Sub-groups: hide if now empty, else expand so matches are visible.
+      root.querySelectorAll('details.ts-sub-details').forEach((d) => {
+        const links = [...d.querySelectorAll('a.ts-nav-item[href]')];
+        if (links.length && !links.some(isVisible)) { hide(d); return; }
+        d.open = true;
+      });
+      // 3. Sections: hide any left with no visible links.
+      root.querySelectorAll(':scope > .ts-nav-section').forEach((s) => {
+        const links = [...s.querySelectorAll('a.ts-nav-item[href]')];
+        if (links.length && !links.some(isVisible)) hide(s);
+      });
+    }
+
+    // Reflect active state on the chips.
+    document.querySelectorAll('[data-app-filter]').forEach((chip) => {
+      const on = chip.getAttribute('data-app-filter') === active;
+      chip.classList.toggle('ts-chip--active', on);
+      chip.setAttribute('aria-pressed', String(on));
+    });
+  }
+
+  function currentFilter() {
+    const ids = new Set(FILTERS.map((t) => t.id));
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored && (stored === ALL || ids.has(stored)) ? stored : ALL;
+  }
+
+  function init() {
+    const wrap = document.querySelector('[data-app-filter-root]');
+    if (!wrap) return; // not on a filterable page (e.g. API reference)
+    originalOrder = null; // fresh DOM after navigation — re-snapshot
+    detailsOpen = null;
+    applyFilter(currentFilter());
+    wrap.querySelectorAll('[data-app-filter]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const next = chip.getAttribute('data-app-filter') || ALL;
+        localStorage.setItem(STORAGE_KEY, next);
+        applyFilter(next);
+      });
+    });
+  }
+
+  init();
+  // Starlight uses view transitions — re-run after each swap.
+  document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+  /* ── App-type filter chips ── */
+  .ts-app-filter {
+    padding: 14px 12px 4px;
+  }
+  .ts-app-filter-label {
+    font-size: 11px;
     font-weight: 700;
-    color: var(--ts-text-primary) !important;
-    text-decoration: none !important;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ts-label-grey);
+    margin: 0 0 8px;
+    padding: 0 2px;
+    user-select: none;
+  }
+  .ts-app-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .ts-chip {
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ts-text-secondary);
     background: #ffffff;
     border: 1px solid var(--ts-border-strong);
-    border-radius: 10px;
-    padding: 10px 14px;
-    text-align: left;
-    letter-spacing: -0.01em;
-    transition: background 0.12s, border-color 0.12s;
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
   }
-  .ts-sidebar-welcome:hover {
+  .ts-chip:hover {
     background: var(--ts-hover-row);
+    border-color: var(--ts-accent);
+    color: var(--ts-text-primary);
+  }
+  .ts-chip--active,
+  .ts-chip--active:hover {
+    color: var(--ts-accent-text);
+    background: var(--ts-accent-low);
     border-color: var(--ts-accent);
   }
 
@@ -118,48 +255,34 @@ const sections = isApiPage
     user-select: none;
   }
 
-  .ts-api-version-dd {
-    position: relative;
-  }
-  .ts-api-version-dd > summary {
-    list-style: none;
-  }
-  .ts-api-version-dd > summary::-webkit-details-marker,
-  .ts-api-version-dd > summary::marker {
-    display: none;
-  }
-
-  .ts-api-version-trigger {
+  /* Segmented v1 / v2 tabs */
+  .ts-api-version-tabs {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 7px 11px;
-    background: #ffffff;
+    gap: 4px;
+    padding: 4px;
+    background: var(--ts-hover-row);
     border: 1px solid var(--ts-border-strong);
-    border-radius: 9px;
-    cursor: pointer;
-    transition: border-color 0.12s, box-shadow 0.12s;
+    border-radius: 11px;
   }
-  .ts-api-version-trigger:hover {
-    border-color: var(--ts-accent);
-  }
-  /* Active/focus ring when the dropdown is open */
-  .ts-api-version-dd[open] > .ts-api-version-trigger {
-    border-color: var(--ts-accent);
-    box-shadow: 0 0 0 3px var(--ts-accent-low);
-  }
-
-  .ts-api-version-name {
+  .ts-api-version-tab {
     flex: 1;
     min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.12s, box-shadow 0.12s;
+  }
+  .ts-api-version-tab-name {
     font-size: 13.5px;
     font-weight: 700;
     letter-spacing: -0.01em;
-    color: var(--ts-text-primary);
+    color: var(--ts-text-tertiary);
   }
-  .ts-api-version-badge {
+  .ts-api-version-tab-badge {
     flex-shrink: 0;
     padding: 2px 7px;
     font-size: 10px;
@@ -168,69 +291,34 @@ const sections = isApiPage
     color: var(--ts-accent-text);
     background: var(--ts-accent-low);
   }
-  .ts-api-version-caret {
-    width: 15px;
-    height: 15px;
-    flex-shrink: 0;
-    color: var(--ts-text-tertiary);
-    transition: transform 0.15s;
-  }
-  .ts-api-version-dd[open] > .ts-api-version-trigger .ts-api-version-caret {
-    transform: rotate(180deg);
-  }
 
-  /* ── Menu ── */
-  .ts-api-version-menu {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 6px);
-    z-index: 20;
-    padding: 6px;
+  /* Active version — white "lifted" pill */
+  .ts-api-version-tab--active {
     background: #ffffff;
-    border: 1px solid var(--ts-border-strong);
-    border-radius: 12px;
-    box-shadow: 0 10px 28px rgba(9, 30, 66, 0.14);
+    box-shadow: 0 1px 3px rgba(9, 30, 66, 0.12);
   }
-
-  .ts-api-version-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-  .ts-api-version-option:hover {
-    background: var(--ts-hover-row);
-  }
-  .ts-api-version-option--active,
-  .ts-api-version-option--active:hover {
-    background: var(--ts-accent-low);
-  }
-  .ts-api-version-option-text {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .ts-api-version-option-name {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+  .ts-api-version-tab--active .ts-api-version-tab-name {
     color: var(--ts-text-primary);
   }
-  .ts-api-version-option-meta {
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--ts-text-tertiary);
+
+  /* Hover for an enabled, non-active version (e.g. once v2 ships) */
+  .ts-api-version-tab:not(.ts-api-version-tab--active):not(.ts-api-version-tab--disabled) {
+    cursor: pointer;
   }
-  .ts-api-version-check {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    color: var(--ts-accent-text);
+  .ts-api-version-tab:not(.ts-api-version-tab--active):not(.ts-api-version-tab--disabled):hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Disabled (coming soon) version */
+  .ts-api-version-tab--disabled {
+    cursor: not-allowed;
+  }
+  .ts-api-version-tab--disabled .ts-api-version-tab-name {
+    opacity: 0.55;
+  }
+  .ts-api-version-tab-badge--soon {
+    color: var(--ts-text-tertiary);
+    background: transparent;
+    border: 1px solid var(--ts-border-strong);
   }
 </style>

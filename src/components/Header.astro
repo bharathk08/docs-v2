@@ -352,14 +352,23 @@ const base      = import.meta.env.BASE_URL; // '/docs/'
   });
 
   // ── Search forwarding ──
+  // Our custom trigger forwards the click to Starlight's hidden Pagefind button,
+  // which opens the search <dialog>. CRITICAL: stop our click from bubbling to
+  // window. The moment the dialog opens, Starlight registers an outside-click
+  // listener on window; if this same click reaches it, it sees the target sits
+  // outside the dialog and closes it again in the same tick. stopPropagation()
+  // keeps the dialog open.
+  //
+  // ⌘K is handled natively by Starlight's own keydown listener, so we do NOT bind
+  // it here — a second handler just toggled against Starlight's (open then close).
   function openSearch() {
     const btn = document.querySelector<HTMLButtonElement>('button[data-open-modal]');
     if (btn) { btn.click(); return; }
     if (import.meta.env.DEV) console.warn('[ts-search] button[data-open-modal] not found — search requires a production build (npm run build)');
   }
-  document.getElementById('ts-search-trigger')?.addEventListener('click', openSearch);
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  document.getElementById('ts-search-trigger')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openSearch();
   });
 
 
