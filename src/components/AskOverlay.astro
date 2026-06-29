@@ -176,16 +176,52 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
     });
 
-    // Copy buttons on code blocks (delegated — the answer HTML is rebuilt on
-    // every stream delta, so a listener on the stable container survives).
+    // Briefly flip an inline endpoint/URL chip to a "copied" check state.
+    function flashCopied(chip: HTMLElement) {
+      const ic = chip.querySelector('.ts-ask-ic-btn');
+      if (chip.classList.contains('is-copied')) return;   // ignore rapid re-clicks mid-flash
+      chip.classList.add('is-copied');
+      chip.setAttribute('title', 'Copied');
+      const prev = ic ? ic.innerHTML : '';
+      if (ic) ic.innerHTML = IC_CHECK;
+      setTimeout(() => {
+        chip.classList.remove('is-copied');
+        chip.setAttribute('title', 'Copy');
+        if (ic) ic.innerHTML = prev;
+      }, 1300);
+    }
+
+    function copyInlineChip(chip: HTMLElement) {
+      const txt = chip.querySelector('.ts-ask-ic-txt')?.textContent || chip.textContent || '';
+      navigator.clipboard?.writeText(txt.trim());
+      flashCopied(chip);
+    }
+
+    // Copy affordances (delegated — the answer HTML is rebuilt on every stream
+    // delta, so a listener on the stable container survives). Handles both the
+    // code-block copy button and inline endpoint/URL chips.
     results.addEventListener('click', (e) => {
-      const btn = (e.target as HTMLElement).closest('.ts-ask-copy') as HTMLElement | null;
+      const target = e.target as HTMLElement;
+
+      const chip = target.closest('.ts-ask-inline-copy') as HTMLElement | null;
+      if (chip) { copyInlineChip(chip); return; }
+
+      const btn = target.closest('.ts-ask-copy') as HTMLElement | null;
       if (!btn) return;
       const codeEl = btn.closest('.ts-ask-codeblock')?.querySelector('code');
       if (!codeEl) return;
       navigator.clipboard?.writeText(codeEl.textContent || '');
       const lbl = btn.querySelector('.ts-ask-copy-text');
       if (lbl) { const prev = lbl.textContent; lbl.textContent = 'Copied'; setTimeout(() => { lbl.textContent = prev || 'Copy'; }, 1300); }
+    });
+
+    // Keyboard activation for inline copy chips (role="button").
+    results.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const chip = (e.target as HTMLElement).closest('.ts-ask-inline-copy') as HTMLElement | null;
+      if (!chip) return;
+      e.preventDefault();
+      copyInlineChip(chip);
     });
 
     // ── AI answer via SSE ────────────────────────────────────────────────────
@@ -296,7 +332,22 @@
       // markdown inside backticks is left verbatim.
       return text.split(/(`[^`]+`)/).map((seg) => {
         if (seg.length > 1 && seg[0] === '`' && seg[seg.length - 1] === '`') {
-          return `<code>${seg.slice(1, -1)}</code>`;
+          const inner = seg.slice(1, -1);
+          // Endpoints and URLs get a click-to-copy affordance. `inner` is already
+          // HTML-escaped, so &amp; etc. are decoded back to real chars on copy
+          // (we copy the text node's textContent, not this escaped markup).
+          const t = inner.trim();
+          const copyable =
+            /^https?:\/\/\S+$/.test(t) ||                                   // full URL
+            /^\/[A-Za-z0-9_~%.\/:{}()[\]@&;=?+#-]*$/.test(t) ||             // /endpoint path
+            /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+\/\S+$/i.test(t);  // METHOD /path
+          if (copyable) {
+            return '<code class="ts-ask-inline-copy" role="button" tabindex="0" title="Copy">' +
+                     `<span class="ts-ask-ic-txt">${inner}</span>` +
+                     `<span class="ts-ask-ic-btn" aria-hidden="true">${IC_COPY}</span>` +
+                   '</code>';
+          }
+          return `<code>${inner}</code>`;
         }
         return seg
           // Links [label](url) — only safe schemes, else fall back to the label
@@ -442,6 +493,8 @@
     // ── Code block: language label + lightweight syntax highlighting ─────────
     const IC_COPY =
       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const IC_CHECK =
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 
     const LANG_LABELS: Record<string, string> = {
       bash: 'Bash', sh: 'Shell', shell: 'Shell', console: 'Shell', zsh: 'Shell',
@@ -702,6 +755,29 @@
     color: var(--ts-text-primary);
     overflow-wrap: anywhere;
   }
+  /* Inline endpoint/URL chips — click to copy */
+  .ts-ask-answer code.ts-ask-inline-copy {
+    display: inline-flex; align-items: center; gap: 5px;
+    cursor: pointer; padding-right: 5px;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy .ts-ask-ic-txt { overflow-wrap: anywhere; }
+  .ts-ask-answer code.ts-ask-inline-copy .ts-ask-ic-btn {
+    display: inline-flex; align-items: center;
+    color: var(--ts-text-tertiary); opacity: 0.55;
+    transition: opacity 0.12s, color 0.12s;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy:hover {
+    border-color: var(--ts-accent-text); color: var(--ts-accent-text);
+  }
+  .ts-ask-answer code.ts-ask-inline-copy:hover .ts-ask-ic-btn { opacity: 1; color: var(--ts-accent-text); }
+  .ts-ask-answer code.ts-ask-inline-copy:focus-visible {
+    outline: 2px solid var(--ts-accent-text); outline-offset: 1px;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy.is-copied {
+    border-color: #1F8A5B; color: #1F8A5B;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy.is-copied .ts-ask-ic-btn { opacity: 1; color: #1F8A5B; }
   .ts-ask-answer :first-child { margin-top: 0; }
   .ts-ask-answer h1, .ts-ask-answer h2, .ts-ask-answer h3,
   .ts-ask-answer h4, .ts-ask-answer h5, .ts-ask-answer h6 {
