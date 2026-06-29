@@ -16,6 +16,7 @@
     "sharp": "^0.34.0"
   },
   "devDependencies": {
+    "js-yaml": "^4.1.0",
     "tsx": "^4.22.4"
   }
 }
