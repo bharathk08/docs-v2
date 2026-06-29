@@ -119,6 +119,15 @@
     const panel   = overlay!.querySelector('.ts-ask-panel') as HTMLElement;
     const expandBtn = document.getElementById('ts-ask-expand')!;
 
+    // Grow the input with its content (up to the CSS max-height), shrink back
+    // to the default height when cleared.
+    function autoGrow() {
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
+    }
+    function clearInput() { input.value = ''; input.style.height = ''; }
+    input.addEventListener('input', autoGrow);
+
     // Widen the panel for more comfortable reading; remembered per browser.
     const EXPAND_KEY = 'ts-ask-expanded';
     function setExpanded(on: boolean) {
@@ -165,7 +174,7 @@
         results.hidden = true;
         results.innerHTML = '';
         intro.hidden = false;
-        input.value = '';
+        clearInput();
       }, 220);
       lastFocus?.focus?.();
     }
@@ -174,7 +183,7 @@
       results.hidden = true;
       results.innerHTML = '';
       intro.hidden = false;
-      input.value = '';
+      clearInput();
       input.focus();
     }
 
@@ -246,7 +255,7 @@
     // ── AI answer via SSE ────────────────────────────────────────────────────
     async function ask(query: string) {
       showResults();
-      input.value = '';   // clear the box once the question is sent
+      clearInput();       // clear the box once the question is sent
       results.innerHTML = `
         <div class="ts-ask-question">
           <span class="ts-ask-question-ic" aria-hidden="true">
@@ -764,7 +773,8 @@
   .ts-ask-input {
     width: 100%; border: none; outline: none; resize: none;
     font-family: inherit; font-size: 14px; color: var(--ts-text-primary);
-    background: transparent; line-height: 1.5; max-height: 120px;
+    background: transparent; line-height: 1.5;
+    min-height: 72px; max-height: 220px; overflow-y: auto;
   }
   .ts-ask-input::placeholder { color: var(--ts-text-tertiary); }
   .ts-ask-input-row {
