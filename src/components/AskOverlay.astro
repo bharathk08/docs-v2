@@ -176,6 +176,18 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
     });
 
+    // Copy buttons on code blocks (delegated — the answer HTML is rebuilt on
+    // every stream delta, so a listener on the stable container survives).
+    results.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.ts-ask-copy') as HTMLElement | null;
+      if (!btn) return;
+      const codeEl = btn.closest('.ts-ask-codeblock')?.querySelector('code');
+      if (!codeEl) return;
+      navigator.clipboard?.writeText(codeEl.textContent || '');
+      const lbl = btn.querySelector('.ts-ask-copy-text');
+      if (lbl) { const prev = lbl.textContent; lbl.textContent = 'Copied'; setTimeout(() => { lbl.textContent = prev || 'Copy'; }, 1300); }
+    });
+
     // ── AI answer via SSE ────────────────────────────────────────────────────
     async function ask(query: string) {
       showResults();
@@ -314,11 +326,20 @@
         const fence = line.match(/^```(\w*)\s*$/);
         if (fence) {                                   // fenced code block
           flush();
+          const lang = (fence[1] || '').toLowerCase();
           const buf: string[] = [];
           i++;
           while (i < lines.length && !/^```\s*$/.test(lines[i])) { buf.push(lines[i]); i++; }
           i++;                                         // skip closing fence (or run to EOF)
-          html += `<pre class="ts-ask-pre"><code>${escHtml(buf.join('\n'))}</code></pre>`;
+          const code = buf.join('\n');
+          html +=
+            '<div class="ts-ask-codeblock">' +
+              '<div class="ts-ask-code-head">' +
+                `<span class="ts-ask-code-lang">${escHtml(langLabel(lang))}</span>` +
+                `<button type="button" class="ts-ask-copy" aria-label="Copy code">${IC_COPY}<span class="ts-ask-copy-text">Copy</span></button>` +
+              '</div>' +
+              `<pre class="ts-ask-pre"><code>${highlightCode(code, lang)}</code></pre>` +
+            '</div>';
           continue;
         }
 
@@ -416,6 +437,71 @@
 
     function escapeHtml(s: string): string {
       return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+    }
+
+    // ── Code block: language label + lightweight syntax highlighting ─────────
+    const IC_COPY =
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+    const LANG_LABELS: Record<string, string> = {
+      bash: 'Bash', sh: 'Shell', shell: 'Shell', console: 'Shell', zsh: 'Shell',
+      powershell: 'PowerShell', ps: 'PowerShell', ps1: 'PowerShell',
+      cmd: 'CMD', bat: 'Batch', json: 'JSON', yaml: 'YAML', yml: 'YAML',
+      js: 'JavaScript', javascript: 'JavaScript', ts: 'TypeScript', typescript: 'TypeScript',
+      java: 'Java', python: 'Python', py: 'Python', http: 'HTTP', xml: 'XML', html: 'HTML', sql: 'SQL',
+    };
+    function langLabel(lang: string): string {
+      return LANG_LABELS[lang] || (lang ? lang.toUpperCase() : 'Code');
+    }
+
+    // Tiny, dependency-free highlighter. Walks the raw code with a prioritized
+    // list of sticky regexes so tokens never overlap; everything else is escaped
+    // verbatim. Token <span> classes are styled in the stylesheet below.
+    function tokenize(code: string, specs: [RegExp, string][]): string {
+      let out = '', i = 0;
+      while (i < code.length) {
+        let matched = false;
+        for (const [re, cls] of specs) {
+          re.lastIndex = i;
+          const m = re.exec(code);
+          if (m && m.index === i && m[0].length) {
+            out += cls ? `<span class="hl-${cls}">${escHtml(m[0])}</span>` : escHtml(m[0]);
+            i += m[0].length; matched = true; break;
+          }
+        }
+        if (!matched) { out += escHtml(code[i]); i++; }
+      }
+      return out;
+    }
+    function highlightCode(code: string, lang: string): string {
+      const SHELL: [RegExp, string][] = [
+        [/#[^\n]*/y, 'comment'],
+        [/"(?:[^"\\]|\\.)*"/y, 'string'],
+        [/'(?:[^'\\]|\\.)*'/y, 'string'],
+        [/https?:\/\/[^\s'"`)]+/y, 'url'],
+        [/(?:--?[A-Za-z][\w-]*)/y, 'flag'],
+        [/[|&;><]+/y, 'oper'],
+        [/\b\d+(?:\.\d+)*\b/y, 'num'],
+      ];
+      const JSON_: [RegExp, string][] = [
+        [/"(?:[^"\\]|\\.)*"(?=\s*:)/y, 'key'],
+        [/"(?:[^"\\]|\\.)*"/y, 'string'],
+        [/\b(?:true|false|null)\b/y, 'kw'],
+        [/-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/y, 'num'],
+      ];
+      const GENERIC: [RegExp, string][] = [
+        [/\/\/[^\n]*/y, 'comment'],
+        [/#[^\n]*/y, 'comment'],
+        [/"(?:[^"\\]|\\.)*"/y, 'string'],
+        [/'(?:[^'\\]|\\.)*'/y, 'string'],
+        [/`(?:[^`\\]|\\.)*`/y, 'string'],
+        [/https?:\/\/[^\s'"`)]+/y, 'url'],
+        [/\b\d+(?:\.\d+)?\b/y, 'num'],
+      ];
+      if (['json'].includes(lang)) return tokenize(code, JSON_);
+      if (['bash','sh','shell','console','zsh','powershell','ps','ps1','cmd','bat','yaml','yml','http'].includes(lang) || !lang)
+        return tokenize(code, SHELL);
+      return tokenize(code, GENERIC);
     }
   }
 </script>
@@ -606,9 +692,15 @@
   .ts-ask-answer p { margin: 0 0 0.9em; }
   .ts-ask-answer p:last-child { margin-bottom: 0; }
   .ts-ask-answer strong { font-weight: 700; }
+  /* Inline code chips */
   .ts-ask-answer code {
-    font-size: 12.5px; background: var(--ts-hover-row);
-    padding: 1px 5px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    background: var(--ts-hover-row);
+    border: 1px solid var(--ts-border);
+    padding: 1px 6px; border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ts-text-primary);
+    overflow-wrap: anywhere;
   }
   .ts-ask-answer :first-child { margin-top: 0; }
   .ts-ask-answer h1, .ts-ask-answer h2, .ts-ask-answer h3,
@@ -632,15 +724,51 @@
     border-left: 3px solid var(--ts-border-strong); color: var(--ts-text-secondary);
   }
   .ts-ask-answer hr { border: none; border-top: 1px solid var(--ts-border); margin: 1.1em 0; }
+  /* Code block — header (language + copy) over the snippet */
+  .ts-ask-codeblock {
+    margin: 0 0 1em;
+    border: 1px solid var(--ts-border);
+    border-radius: 9px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .ts-ask-code-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px 6px 12px;
+    background: var(--ts-panel);
+    border-bottom: 1px solid var(--ts-border);
+  }
+  .ts-ask-code-lang {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--ts-text-tertiary);
+  }
+  .ts-ask-copy {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: none; background: transparent; cursor: pointer;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    color: var(--ts-text-tertiary);
+    padding: 3px 7px; border-radius: 6px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .ts-ask-copy:hover { background: var(--ts-hover-row); color: var(--ts-accent-text); }
   .ts-ask-pre {
-    margin: 0 0 0.9em; padding: 12px 14px; overflow-x: auto;
-    background: var(--ts-hover-row); border: 1px solid var(--ts-border); border-radius: 8px;
+    margin: 0; padding: 12px 14px; overflow-x: auto;
+    background: #fff;
   }
   .ts-ask-pre code {
-    display: block; padding: 0; background: none; border-radius: 0;
-    font-size: 12.5px; line-height: 1.55; white-space: pre;
+    display: block; padding: 0; background: none; border: none; border-radius: 0;
+    font-size: 12.5px; line-height: 1.6; white-space: pre;
     font-family: 'IBM Plex Mono', monospace; color: var(--ts-text-primary);
   }
+  /* Syntax-highlight tokens (light theme) */
+  .ts-ask-pre .hl-comment { color: var(--ts-text-tertiary); font-style: italic; }
+  .ts-ask-pre .hl-string  { color: #1F8A5B; }
+  .ts-ask-pre .hl-url     { color: var(--ts-info); }
+  .ts-ask-pre .hl-flag    { color: #9F57C0; }
+  .ts-ask-pre .hl-oper    { color: var(--ts-text-tertiary); }
+  .ts-ask-pre .hl-num     { color: #D9730D; }
+  .ts-ask-pre .hl-key     { color: var(--ts-arcus-purple-text); }
+  .ts-ask-pre .hl-kw      { color: var(--ts-danger); font-weight: 600; }
   .ts-ask-cite {
     font-size: 10px; color: var(--ts-accent-text);
     font-weight: 700; vertical-align: super; line-height: 1;

@@ -185,20 +185,28 @@ export default async function handler(req: any, res: any) {
 
     send('status', { text: 'Writing answer…' });
 
-    // 3. Build context string from top hits
+    // 3. Build context string from top hits (title + URL + text)
     const context = hits
-      .map((h, i) => `[${i + 1}] ${h.title}\n${h.text}`)
+      .map((h, i) => `[${i + 1}] ${h.title} — ${h.url}\n${h.text}`)
       .join('\n\n---\n\n');
 
     // 4. Stream answer from Claude Sonnet 4.6
     const stream = anthropic.messages.stream({
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
-      system: `You are a concise, helpful documentation assistant for Testsigma.
-Answer the user's question using ONLY the numbered documentation excerpts below.
-Be direct. Use [N] inline to cite which excerpt supports each fact.
-If the excerpts don't contain enough information, say so honestly — do not guess.
+      system: `You are a documentation assistant for Testsigma. Answer the user's question using ONLY the numbered excerpts below.
 
+Be concise and lead with the answer — no preamble ("Sure", "I'll show you…") and no restating the question. Give only what's needed; do not dump whole pages.
+
+Format the answer in clean GitHub-flavored Markdown:
+- Put EVERY command, code snippet, or config in a fenced code block with a language tag (e.g. \`\`\`bash, \`\`\`powershell, \`\`\`json, \`\`\`yaml). Never place multi-line commands or code in prose.
+- Use inline \`backticks\` for short commands, flags, file names, env vars, values, and exact UI labels.
+- Use **bold** for key UI elements; use numbered steps for procedures and bullets for option lists.
+- When a page is worth opening, link it inline as [Page title](url) using the excerpt's URL.
+- Cite the supporting excerpt with [N] inline.
+- If the excerpts don't contain enough information, say so honestly — do not guess.
+
+Documentation excerpts:
 ${context}`,
       messages: [{ role: 'user', content: question.trim() }],
     });
