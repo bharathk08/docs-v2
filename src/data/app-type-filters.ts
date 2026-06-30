@@ -7,8 +7,8 @@
  * "All". Matching sub-groups are auto-expanded so their docs are visible.
  *
  * The two products get DIFFERENT chip sets:
- *   • Suite → app types only (Web, Android, iOS, Mobile Web, Salesforce,
- *     Desktop).
+ *   • Suite → app types only (Web application, Salesforce, Android, iOS,
+ *     Mobile web, Rest API, Windows (Lite), Windows).
  *   • Arcus → feature areas (Test Cases, Test Plans, Test Runs…); it isn't
  *     app-specific, so no platform chips.
  *
@@ -35,11 +35,19 @@ export interface DocFilter {
 }
 
 // ── Suite: app types ────────────────────────────────────────────────────────
+// Mirrors Testsigma's "Application type" picker. (Unified has no dedicated docs
+// yet, so it is intentionally omitted — a chip with no matches would empty the
+// nav; add it once Unified docs exist.)
 export const SUITE_FILTERS: DocFilter[] = [
   {
     id: 'web',
-    label: 'Web',
+    label: 'Web application',
     match: ['/elements/web-apps/', '/faqs/web-apps/', '/troubleshooting/web-apps/'],
+  },
+  {
+    id: 'salesforce',
+    label: 'Salesforce',
+    match: ['/salesforce-testing/'],
   },
   {
     id: 'android',
@@ -53,21 +61,25 @@ export const SUITE_FILTERS: DocFilter[] = [
   },
   {
     id: 'mobile-web',
-    label: 'Mobile Web',
+    label: 'Mobile web',
     match: ['/elements/mobile-web-application/'],
   },
   {
-    id: 'salesforce',
-    label: 'Salesforce',
-    match: ['/salesforce-testing/'],
+    id: 'rest-api',
+    label: 'Rest API',
+    match: ['/create-steps-restapi/', '/troubleshooting/rest-api/'],
   },
   {
-    id: 'desktop',
-    label: 'Desktop',
+    id: 'windows-lite',
+    label: 'Windows (Lite)',
+    match: ['/windows-lite-automation/'],
+  },
+  {
+    id: 'windows',
+    label: 'Windows',
     match: [
-      '/desktop-automation/',
       '/windows-automation/',
-      '/windows-lite-automation/',
+      '/desktop-automation/',
       '/troubleshooting/desktop-windows/',
     ],
   },
