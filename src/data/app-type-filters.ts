@@ -7,7 +7,8 @@
  * "All". Matching sub-groups are auto-expanded so their docs are visible.
  *
  * The two products get DIFFERENT chip sets:
- *   • Suite → app types (Web, Android, iOS…) plus feature topics.
+ *   • Suite → app types only (Web, Android, iOS, Mobile Web, Salesforce,
+ *     Desktop).
  *   • Arcus → feature areas (Test Cases, Test Plans, Test Runs…); it isn't
  *     app-specific, so no platform chips.
  *
@@ -33,9 +34,8 @@ export interface DocFilter {
   match: string[];
 }
 
-// ── Suite: app types + feature topics ──────────────────────────────────────
+// ── Suite: app types ────────────────────────────────────────────────────────
 export const SUITE_FILTERS: DocFilter[] = [
-  // App types
   {
     id: 'web',
     label: 'Web',
@@ -70,68 +70,6 @@ export const SUITE_FILTERS: DocFilter[] = [
       '/windows-lite-automation/',
       '/troubleshooting/desktop-windows/',
     ],
-  },
-
-  // Topics / feature areas
-  {
-    id: 'on-prem',
-    label: 'On-Prem',
-    match: ['/on-premise-setup/', '/troubleshooting/on-prem/'],
-  },
-  {
-    id: 'testsigma-terminal',
-    label: 'Testsigma Terminal',
-    match: ['/testsigma-terminal/'],
-  },
-  {
-    id: 'testsigma-tunnel',
-    label: 'Testsigma Tunnel',
-    match: ['/testsigma-tunnel/'],
-  },
-  {
-    id: 'copilot',
-    label: 'Copilot',
-    match: ['/copilot/', '/troubleshooting-for-copilot/'],
-  },
-  {
-    id: 'ai-agents',
-    label: 'AI Agents',
-    match: ['/ai-agents/'],
-  },
-  {
-    id: 'auto-healing',
-    label: 'Auto-Healing',
-    match: ['/auto-healing/'],
-  },
-  {
-    id: 'visual-testing',
-    label: 'Visual Testing',
-    match: ['/visual-testing/'],
-  },
-  {
-    id: 'accessibility',
-    label: 'Accessibility',
-    match: ['/accessibility-testing/'],
-  },
-  {
-    id: 'sap',
-    label: 'SAP',
-    match: ['/sap-automation/'],
-  },
-  {
-    id: 'ci-cd',
-    label: 'CI/CD',
-    match: ['/continuous-integration/'],
-  },
-  {
-    id: 'integrations',
-    label: 'Integrations',
-    match: ['/integrations/'],
-  },
-  {
-    id: 'sdk',
-    label: 'SDK',
-    match: ['/sdk/'],
   },
 ];
 
