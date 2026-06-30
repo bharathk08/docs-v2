@@ -7,7 +7,8 @@
  * "All". Matching sub-groups are auto-expanded so their docs are visible.
  *
  * The two products get DIFFERENT chip sets:
- *   • Suite → app types (Web, Android, iOS…) plus feature topics.
+ *   • Suite → app types only (Web application, Salesforce, Android, iOS,
+ *     Mobile web, Rest API, Windows (Lite), Windows).
  *   • Arcus → feature areas (Test Cases, Test Plans, Test Runs…); it isn't
  *     app-specific, so no platform chips.
  *
@@ -33,13 +34,20 @@ export interface DocFilter {
   match: string[];
 }
 
-// ── Suite: app types + feature topics ──────────────────────────────────────
+// ── Suite: app types ────────────────────────────────────────────────────────
+// Mirrors Testsigma's "Application type" picker. (Unified has no dedicated docs
+// yet, so it is intentionally omitted — a chip with no matches would empty the
+// nav; add it once Unified docs exist.)
 export const SUITE_FILTERS: DocFilter[] = [
-  // App types
   {
     id: 'web',
-    label: 'Web',
+    label: 'Web application',
     match: ['/elements/web-apps/', '/faqs/web-apps/', '/troubleshooting/web-apps/'],
+  },
+  {
+    id: 'salesforce',
+    label: 'Salesforce',
+    match: ['/salesforce-testing/'],
   },
   {
     id: 'android',
@@ -53,85 +61,27 @@ export const SUITE_FILTERS: DocFilter[] = [
   },
   {
     id: 'mobile-web',
-    label: 'Mobile Web',
+    label: 'Mobile web',
     match: ['/elements/mobile-web-application/'],
   },
   {
-    id: 'salesforce',
-    label: 'Salesforce',
-    match: ['/salesforce-testing/'],
+    id: 'rest-api',
+    label: 'Rest API',
+    match: ['/create-steps-restapi/', '/troubleshooting/rest-api/'],
   },
   {
-    id: 'desktop',
-    label: 'Desktop',
+    id: 'windows-lite',
+    label: 'Windows (Lite)',
+    match: ['/windows-lite-automation/'],
+  },
+  {
+    id: 'windows',
+    label: 'Windows',
     match: [
-      '/desktop-automation/',
       '/windows-automation/',
-      '/windows-lite-automation/',
+      '/desktop-automation/',
       '/troubleshooting/desktop-windows/',
     ],
-  },
-
-  // Topics / feature areas
-  {
-    id: 'on-prem',
-    label: 'On-Prem',
-    match: ['/on-premise-setup/', '/troubleshooting/on-prem/'],
-  },
-  {
-    id: 'testsigma-terminal',
-    label: 'Testsigma Terminal',
-    match: ['/testsigma-terminal/'],
-  },
-  {
-    id: 'testsigma-tunnel',
-    label: 'Testsigma Tunnel',
-    match: ['/testsigma-tunnel/'],
-  },
-  {
-    id: 'copilot',
-    label: 'Copilot',
-    match: ['/copilot/', '/troubleshooting-for-copilot/'],
-  },
-  {
-    id: 'ai-agents',
-    label: 'AI Agents',
-    match: ['/ai-agents/'],
-  },
-  {
-    id: 'auto-healing',
-    label: 'Auto-Healing',
-    match: ['/auto-healing/'],
-  },
-  {
-    id: 'visual-testing',
-    label: 'Visual Testing',
-    match: ['/visual-testing/'],
-  },
-  {
-    id: 'accessibility',
-    label: 'Accessibility',
-    match: ['/accessibility-testing/'],
-  },
-  {
-    id: 'sap',
-    label: 'SAP',
-    match: ['/sap-automation/'],
-  },
-  {
-    id: 'ci-cd',
-    label: 'CI/CD',
-    match: ['/continuous-integration/'],
-  },
-  {
-    id: 'integrations',
-    label: 'Integrations',
-    match: ['/integrations/'],
-  },
-  {
-    id: 'sdk',
-    label: 'SDK',
-    match: ['/sdk/'],
   },
 ];
 

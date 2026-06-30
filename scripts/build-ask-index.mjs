@@ -7,31 +7,32 @@
  *   public/ask-index.meta.json  — parallel array of { url, title, product, excerpt }
  *
  * Usage:
- *   VOYAGE_API_KEY=vk-xxx node scripts/build-ask-index.mjs
+ *   VOYAGE_API_KEY=pa-xxx node scripts/build-ask-index.mjs
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, appendFileSync, unlinkSync } from 'fs';
 import { join, dirname, relative } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { createHash } from 'crypto';
+import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT      = join(__dirname, '..');
 const DOCS_DIR  = join(ROOT, 'src', 'content', 'docs');
 const PUBLIC    = join(ROOT, 'public');
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-if (!GOOGLE_API_KEY) {
-  console.error('Error: GOOGLE_API_KEY environment variable is not set.');
-  console.error('Get a free key at aistudio.google.com, then run:');
-  console.error('  GOOGLE_API_KEY=AIza... node scripts/build-ask-index.mjs');
-  process.exit(1);
-}
+const VOYAGE_API_KEY = process.env.VOYAGE_API_KEY;
 
-const GEMINI_MODEL  = 'gemini-embedding-2';
-const DIMS          = 768;    // reduced from 3072 via outputDimensionality
-const CONCURRENCY   = 50;     // parallel embedContent calls per wave
-const WAVE_MIN_MS   = 35000;  // minimum ms per wave — keeps rate under 90 RPM free limit
+const VOYAGE_MODEL  = 'voyage-3.5';
+const DIMS          = 1024;   // voyage-3.5 default embedding dimension
 const CHUNK_MAX     = 900;    // characters per chunk before splitting further
+
+// Throughput knobs — defaults suit Voyage's standard tier (fast). To build on the
+// trial tier (3 RPM / 10K TPM, before a payment method is added) run with:
+//   VOYAGE_BATCH_SIZE=12 VOYAGE_CONCURRENCY=1 VOYAGE_REQ_MIN_MS=21000
+const BATCH_SIZE    = Number(process.env.VOYAGE_BATCH_SIZE)  || 128;  // texts per request
+const CONCURRENCY   = Number(process.env.VOYAGE_CONCURRENCY) || 4;    // parallel requests
+const REQ_MIN_MS    = Number(process.env.VOYAGE_REQ_MIN_MS)  || 0;    // min ms between request starts
 
 // ── Walk docs directory ────────────────────────────────────────────────────────
 
@@ -51,11 +52,56 @@ function walkDocs(dir, results = []) {
 
 function parseFrontmatter(raw) {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-  if (!m) return { title: '', body: raw };
-  const yaml  = m[1];
-  const body  = m[2];
-  const titleM = yaml.match(/^title:\s*['"]?(.*?)['"]?\s*$/m);
-  return { title: titleM ? titleM[1].trim() : '', body };
+  if (!m) return { title: '', description: '', body: raw, data: {} };
+  const body = m[2];
+  let data = {};
+  try {
+    data = yaml.load(m[1]) || {};
+  } catch {
+    // Fall back to a title-only parse if the YAML is malformed
+    const titleM = m[1].match(/^title:\s*['"]?(.*?)['"]?\s*$/m);
+    data = titleM ? { title: titleM[1].trim() } : {};
+  }
+  return {
+    title: data.title ? String(data.title).trim() : '',
+    description: data.description ? String(data.description).trim() : '',
+    body,
+    data,
+  };
+}
+
+// ── Render an `api:` frontmatter block as searchable plain text ─────────────────
+// API reference pages keep all their content (endpoint, params, response schema)
+// in the `api:` YAML block and have an empty markdown body. Without this, those
+// pages would only ever be indexed by their title — so the Ask Assistant could
+// surface them as "related" but never had the endpoint URL or field descriptions
+// in the context it feeds the LLM.
+
+function apiToText(api) {
+  if (!api || typeof api !== 'object') return '';
+  const lines = [];
+  const method = api.method ? String(api.method).toUpperCase() : '';
+  const path   = api.path ? String(api.path) : '';
+  const base   = api.baseUrl ? String(api.baseUrl).replace(/\/+$/, '') : '';
+
+  if (method || path) lines.push(`${method} ${path}`.trim());
+  if (base && path)   lines.push(`Endpoint URL: ${base}${path}`);
+  if (method)         lines.push(`HTTP method: ${method}`);
+
+  const fields = (label, arr) => {
+    if (!Array.isArray(arr) || !arr.length) return;
+    lines.push(`${label}:`);
+    for (const p of arr) {
+      if (p && p.name) lines.push(`- ${p.name}: ${p.desc || ''}`.trim());
+    }
+  };
+  fields('Path parameters',    api.pathParams);
+  fields('Query parameters',   api.query);
+  fields('Form data fields',   api.formData);
+  fields('Request body fields', api.bodyFields);
+  fields('Response attributes', api.responseAttributes);
+
+  return lines.join('\n');
 }
 
 // ── Strip markdown to plain text ───────────────────────────────────────────────
@@ -126,62 +172,151 @@ function fileToUrl(filePath) {
 
 // ── Voyage AI batch embed ──────────────────────────────────────────────────────
 
-// Single embedContent call with retry on 429
-async function embedOne(text, taskType = 'RETRIEVAL_DOCUMENT', attempt = 0) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:embedContent?key=${GOOGLE_API_KEY}`;
-
-  const res = await fetch(url, {
+// Embed a batch of texts in one request, with retry on 429
+async function embedBatch(texts, inputType = 'document', attempt = 0) {
+  const res = await fetch('https://api.voyageai.com/v1/embeddings', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${VOYAGE_API_KEY}`,
+    },
     body: JSON.stringify({
-      model: `models/${GEMINI_MODEL}`,
-      content: { parts: [{ text }] },
-      taskType,
-      outputDimensionality: DIMS,
+      input: texts,
+      model: VOYAGE_MODEL,
+      input_type: inputType,        // 'document' for the index, 'query' at search time
+      output_dimension: DIMS,
     }),
   });
 
   if (res.status === 429) {
-    if (attempt >= 6) throw new Error('Google rate limit: too many retries. Try again later.');
+    if (attempt >= 6) throw new Error('Voyage rate limit: too many retries. Try again later.');
     const retryAfter = parseInt(res.headers.get('retry-after') || '0') * 1000;
-    const waitMs = retryAfter || Math.min(5000 * 2 ** attempt, 120000);
+    const waitMs = retryAfter || Math.min(2000 * 2 ** attempt, 60000);
     process.stdout.write(`\n  Rate limited — waiting ${Math.round(waitMs / 1000)}s…\n`);
     await new Promise(r => setTimeout(r, waitMs));
-    return embedOne(text, taskType, attempt + 1);
+    return embedBatch(texts, inputType, attempt + 1);
   }
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Google Embedding API ${res.status}: ${body}`);
+    throw new Error(`Voyage Embedding API ${res.status}: ${body}`);
   }
 
   const json = await res.json();
-  return json.embedding.values;
+  // Sort by index defensively so vectors line up with the input order
+  return json.data.sort((a, b) => a.index - b.index).map(d => d.embedding);
 }
 
-// Run CONCURRENCY requests in parallel, then wait out the rate-limit window
-async function embedAll(texts, taskType = 'RETRIEVAL_DOCUMENT') {
-  const results = new Array(texts.length);
-  const totalWaves = Math.ceil(texts.length / CONCURRENCY);
-  const etaMin = Math.ceil((totalWaves * WAVE_MIN_MS) / 60000);
-  console.log(`  ${texts.length} texts across ${totalWaves} waves (~${etaMin} min at free-tier rate limit)`);
+// ── Resumable checkpoint helpers ────────────────────────────────────────────────
+// On the trial tier a full build takes ~90 min, so an interruption (sleep, kill)
+// would otherwise throw away all that work — the final files are only written on
+// success. We checkpoint completed batches to PARTIAL_BIN (+ a PARTIAL_META
+// progress file) after every wave, so a restart resumes where it left off.
+// The checkpoint is keyed to a signature of the exact chunk list, so any change
+// to the docs/chunking invalidates a stale partial and forces a clean rebuild.
 
-  for (let i = 0; i < texts.length; i += CONCURRENCY) {
-    const wave = texts.slice(i, i + CONCURRENCY);
-    const waveNum = Math.floor(i / CONCURRENCY) + 1;
-    const waveStart = Date.now();
-    process.stdout.write(`  Wave ${waveNum}/${totalWaves}…\r`);
+const PARTIAL_BIN  = join(PUBLIC, 'ask-index.partial.bin');
+const PARTIAL_META = join(PUBLIC, 'ask-index.partial.json');
 
-    const vecs = await Promise.all(wave.map(t => embedOne(t, taskType)));
-    for (let j = 0; j < vecs.length; j++) results[i + j] = vecs[j];
+function chunkSignature(texts) {
+  const h = createHash('sha1');
+  for (const t of texts) h.update(t).update(' ');
+  return `${VOYAGE_MODEL}:${DIMS}:${BATCH_SIZE}:${texts.length}:${h.digest('hex').slice(0, 16)}`;
+}
 
-    // Respect the free-tier rate limit between waves
-    if (i + CONCURRENCY < texts.length) {
-      const elapsed = Date.now() - waveStart;
-      const wait = Math.max(WAVE_MIN_MS - elapsed, 300);
-      process.stdout.write(`  Wave ${waveNum}/${totalWaves} done — cooling down ${Math.round(wait / 1000)}s…\r`);
-      await new Promise(r => setTimeout(r, wait));
+// Returns the number of completed batches that were loaded into `results`,
+// or 0 if there is no usable checkpoint (also resets the partial files then).
+function loadCheckpoint(sig, total, results) {
+  if (!existsSync(PARTIAL_META) || !existsSync(PARTIAL_BIN)) return 0;
+  try {
+    const meta = JSON.parse(readFileSync(PARTIAL_META, 'utf-8'));
+    const doneBatches = meta.doneBatches | 0;
+    // Non-final batches are full size; the final batch may be smaller, so cap at total.
+    const doneTexts   = Math.min(doneBatches * BATCH_SIZE, total);
+    const expectBytes = doneTexts * DIMS * 4;
+    if (meta.sig !== sig || doneBatches <= 0 || statSync(PARTIAL_BIN).size !== expectBytes) {
+      return 0;
     }
+    const buf  = readFileSync(PARTIAL_BIN);
+    const vecs = new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4);
+    for (let i = 0; i < doneTexts && i < total; i++) {
+      results[i] = Array.from(vecs.subarray(i * DIMS, i * DIMS + DIMS));
+    }
+    return doneBatches;
+  } catch {
+    return 0;
+  }
+}
+
+function resetCheckpoint(sig, total) {
+  writeFileSync(PARTIAL_BIN, Buffer.alloc(0));
+  writeFileSync(PARTIAL_META, JSON.stringify({ sig, total, batchSize: BATCH_SIZE, doneBatches: 0 }));
+}
+
+function appendCheckpoint(sig, total, doneBatches, newVecs) {
+  // newVecs: array of embeddings (each a DIMS-length array), in index order
+  const f32 = new Float32Array(newVecs.length * DIMS);
+  for (let i = 0; i < newVecs.length; i++) f32.set(newVecs[i], i * DIMS);
+  appendFileSync(PARTIAL_BIN, Buffer.from(f32.buffer, f32.byteOffset, f32.byteLength));
+  writeFileSync(PARTIAL_META, JSON.stringify({ sig, total, batchSize: BATCH_SIZE, doneBatches }));
+}
+
+function clearCheckpoint() {
+  for (const f of [PARTIAL_BIN, PARTIAL_META]) {
+    try { if (existsSync(f)) unlinkSync(f); } catch { /* ignore */ }
+  }
+}
+
+// Split into batches, run CONCURRENCY batches in parallel at a time
+async function embedAll(texts, inputType = 'document') {
+  const batches = [];
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    batches.push(texts.slice(i, i + BATCH_SIZE));
+  }
+  const waves = Math.ceil(batches.length / CONCURRENCY);
+  const etaMin = REQ_MIN_MS ? Math.ceil((waves * REQ_MIN_MS) / 60000) : null;
+  console.log(
+    `  ${texts.length} texts across ${batches.length} batches of ≤${BATCH_SIZE}` +
+    (etaMin ? ` — throttled, ~${etaMin} min` : '')
+  );
+
+  const results = new Array(texts.length);
+  const sig = chunkSignature(texts);
+
+  // Resume from a matching checkpoint, or start fresh.
+  let startBatch = loadCheckpoint(sig, texts.length, results);
+  if (startBatch > 0) {
+    console.log(`  Resuming from checkpoint: ${startBatch}/${batches.length} batches already embedded.`);
+  } else {
+    resetCheckpoint(sig, texts.length);
+  }
+
+  let done = startBatch * BATCH_SIZE;
+  let lastStart = 0;
+
+  for (let i = startBatch; i < batches.length; i += CONCURRENCY) {
+    // Pace request starts to respect the rate limit (no-op when REQ_MIN_MS = 0)
+    if (REQ_MIN_MS && lastStart) {
+      const wait = REQ_MIN_MS - (Date.now() - lastStart);
+      if (wait > 0) await new Promise(r => setTimeout(r, wait));
+    }
+    lastStart = Date.now();
+
+    const wave = batches.slice(i, i + CONCURRENCY);
+    const waveVecs = await Promise.all(wave.map(b => embedBatch(b, inputType)));
+
+    const flat = [];
+    waveVecs.forEach((vecs, w) => {
+      const offset = (i + w) * BATCH_SIZE;
+      for (let j = 0; j < vecs.length; j++) results[offset + j] = vecs[j];
+      flat.push(...vecs);
+    });
+
+    // Checkpoint this wave's batches so an interruption resumes from here.
+    appendCheckpoint(sig, texts.length, i + wave.length, flat);
+
+    done += wave.reduce((n, b) => n + b.length, 0);
+    process.stdout.write(`  Embedded ${done}/${texts.length}…\r`);
   }
   return results;
 }
@@ -189,6 +324,14 @@ async function embedAll(texts, taskType = 'RETRIEVAL_DOCUMENT') {
 // ── Main ───────────────────────────────────────────────────────────────────────
 
 async function main() {
+  // --meta-only just rewrites meta.json from local docs; no embedding, no key needed.
+  if (!VOYAGE_API_KEY && !process.argv.includes('--meta-only')) {
+    console.error('Error: VOYAGE_API_KEY environment variable is not set.');
+    console.error('Get a key at https://dashboard.voyageai.com, then run:');
+    console.error('  VOYAGE_API_KEY=pa-... node scripts/build-ask-index.mjs');
+    process.exit(1);
+  }
+
   console.log('Scanning docs...');
   const files = walkDocs(DOCS_DIR);
   console.log(`Found ${files.length} files.`);
@@ -197,10 +340,16 @@ async function main() {
 
   for (const file of files) {
     const raw     = readFileSync(file, 'utf-8');
-    const { title, body } = parseFrontmatter(raw);
+    const { title, description, body, data } = parseFrontmatter(raw);
     const url     = fileToUrl(file);
     const product = file.includes('/arcus/') ? 'arcus' : 'suite';
-    const chunks  = makeChunks(title, body);
+    // Fold the frontmatter description and any `api:` block into the indexable
+    // content. API reference pages have an empty body, so the api block is the
+    // only thing that makes them findable by endpoint, params, or fields.
+    const content = [description, apiToText(data.api), body]
+      .filter(Boolean)
+      .join('\n\n');
+    const chunks  = makeChunks(title, content);
 
     for (const text of chunks) {
       allChunks.push({ url, title, product, text });
@@ -208,30 +357,51 @@ async function main() {
   }
 
   console.log(`Total chunks: ${allChunks.length}`);
-  console.log('Embedding…');
 
+  // ── Write metadata JSON ───────────────────────────────────────────────────
+  // `text` is the full chunk — api/ask.ts feeds it to the LLM as context.
+  // `excerpt` is a short preview kept for any display use.
+  const writeMeta = () => {
+    const meta = allChunks.map(({ url, title, product, text }) => ({
+      url,
+      title,
+      product,
+      text,
+      excerpt: text.slice(0, 220).replace(/\n+/g, ' ').trim(),
+    }));
+    writeFileSync(join(PUBLIC, 'ask-index.meta.json'), JSON.stringify(meta));
+  };
+
+  // --meta-only: rewrite meta.json from the (deterministic) chunks WITHOUT
+  // re-embedding. Safe only while the chunk count still matches the vector
+  // file — otherwise vectors and metadata would be misaligned.
+  if (process.argv.includes('--meta-only')) {
+    const vecCount = statSync(join(PUBLIC, 'ask-index.bin')).size / 4 / DIMS;
+    if (vecCount !== allChunks.length) {
+      throw new Error(
+        `Chunk count (${allChunks.length}) != index vectors (${vecCount}). ` +
+        `Docs changed — run a full rebuild, not --meta-only.`
+      );
+    }
+    writeMeta();
+    console.log(`meta.json regenerated from ${allChunks.length} chunks (no embedding).`);
+    return;
+  }
+
+  console.log('Embedding…');
   const texts      = allChunks.map(c => c.text);
   const embeddings = await embedAll(texts);
   console.log('');
 
   // ── Write binary vector file ──────────────────────────────────────────────
-
   const buffer = new Float32Array(embeddings.length * DIMS);
   for (let i = 0; i < embeddings.length; i++) {
     buffer.set(embeddings[i], i * DIMS);
   }
   writeFileSync(join(PUBLIC, 'ask-index.bin'), Buffer.from(buffer.buffer));
 
-  // ── Write metadata JSON ───────────────────────────────────────────────────
-
-  const meta = allChunks.map(({ url, title, product, text }) => ({
-    url,
-    title,
-    product,
-    // Keep a short excerpt for the "Related docs" panel — not the full text
-    excerpt: text.slice(0, 220).replace(/\n+/g, ' ').trim(),
-  }));
-  writeFileSync(join(PUBLIC, 'ask-index.meta.json'), JSON.stringify(meta));
+  writeMeta();
+  clearCheckpoint();   // build succeeded — discard the resumable partial files
 
   const mb = (buffer.byteLength / 1024 / 1024).toFixed(1);
   console.log(`\nDone!`);
@@ -240,7 +410,13 @@ async function main() {
   console.log(`  Meta   : public/ask-index.meta.json`);
 }
 
-main().catch(err => {
-  console.error('\nFailed:', err.message);
-  process.exit(1);
-});
+// Exported so the chunking logic can be imported/tested; only run main when
+// this file is invoked directly (not when imported).
+export { parseFrontmatter, apiToText, makeChunks };
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(err => {
+    console.error('\nFailed:', err.message);
+    process.exit(1);
+  });
+}

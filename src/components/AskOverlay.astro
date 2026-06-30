@@ -12,6 +12,8 @@
   <div class="ts-ask-backdrop" data-ask-close></div>
 
   <aside class="ts-ask-panel" role="dialog" aria-modal="true" aria-label="Ask Assistant">
+    <div class="ts-ask-resizer" id="ts-ask-resizer" role="separator" aria-orientation="vertical"
+         aria-label="Drag to resize panel" tabindex="0"></div>
     <header class="ts-ask-head">
       <span class="ts-ask-head-icon" aria-hidden="true">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -112,6 +114,69 @@
     const sugWrap = document.getElementById('ts-ask-suggestions')!;
     const form    = document.getElementById('ts-ask-form') as HTMLFormElement;
     const input   = document.getElementById('ts-ask-input') as HTMLTextAreaElement;
+    const panel   = overlay!.querySelector('.ts-ask-panel') as HTMLElement;
+    const resizer = document.getElementById('ts-ask-resizer')!;
+
+    // Grow the input with its content (up to the CSS max-height), shrink back
+    // to the default height when cleared.
+    function autoGrow() {
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
+    }
+    function clearInput() { input.value = ''; input.style.height = ''; }
+    input.addEventListener('input', autoGrow);
+
+    // Drag the left edge to resize the panel; width is remembered per browser.
+    const WIDTH_KEY = 'ts-ask-width';
+    const MIN_W = 380;
+    const maxW = () => Math.min(window.innerWidth * 0.96, 1100);
+    function applyWidth(px: number) {
+      const w = Math.round(Math.max(MIN_W, Math.min(px, maxW())));
+      panel.style.width = w + 'px';
+      return w;
+    }
+    function saveWidth() {
+      try { localStorage.setItem(WIDTH_KEY, String(parseInt(panel.style.width, 10) || MIN_W)); } catch { /* ignore */ }
+    }
+    try {
+      const saved = parseInt(localStorage.getItem(WIDTH_KEY) || '', 10);
+      if (saved > 0) applyWidth(saved);
+    } catch { /* ignore */ }
+
+    let dragging = false;
+    function onDragMove(e: PointerEvent) {
+      if (!dragging) return;
+      // Panel is anchored to the right edge, so width grows as the pointer
+      // moves left of that edge.
+      applyWidth(window.innerWidth - e.clientX);
+    }
+    function onDragEnd() {
+      if (!dragging) return;
+      dragging = false;
+      panel.classList.remove('ts-ask-resizing');
+      document.documentElement.style.userSelect = '';
+      window.removeEventListener('pointermove', onDragMove);
+      window.removeEventListener('pointerup', onDragEnd);
+      saveWidth();
+    }
+    resizer.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dragging = true;
+      panel.classList.add('ts-ask-resizing');
+      document.documentElement.style.userSelect = 'none';
+      window.addEventListener('pointermove', onDragMove);
+      window.addEventListener('pointerup', onDragEnd);
+    });
+    // Keyboard resize for accessibility (arrow keys nudge width).
+    resizer.addEventListener('keydown', (e) => {
+      const cur = parseInt(panel.style.width, 10) || panel.offsetWidth;
+      if (e.key === 'ArrowLeft')       { e.preventDefault(); applyWidth(cur + 40); saveWidth(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); applyWidth(cur - 40); saveWidth(); }
+    });
+    // Keep the panel within bounds if the window shrinks.
+    window.addEventListener('resize', () => {
+      if (panel.style.width) applyWidth(parseInt(panel.style.width, 10) || MIN_W);
+    });
 
     const product = () =>
       document.documentElement.getAttribute('data-product') === 'arcus' ? 'arcus' : 'suite';
@@ -146,7 +211,7 @@
         results.hidden = true;
         results.innerHTML = '';
         intro.hidden = false;
-        input.value = '';
+        clearInput();
       }, 220);
       lastFocus?.focus?.();
     }
@@ -155,7 +220,7 @@
       results.hidden = true;
       results.innerHTML = '';
       intro.hidden = false;
-      input.value = '';
+      clearInput();
       input.focus();
     }
 
@@ -176,16 +241,66 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
     });
 
+    // Briefly flip an inline endpoint/URL chip to a "copied" check state.
+    function flashCopied(chip: HTMLElement) {
+      const ic = chip.querySelector('.ts-ask-ic-btn');
+      if (chip.classList.contains('is-copied')) return;   // ignore rapid re-clicks mid-flash
+      chip.classList.add('is-copied');
+      chip.setAttribute('title', 'Copied');
+      const prev = ic ? ic.innerHTML : '';
+      if (ic) ic.innerHTML = IC_CHECK;
+      setTimeout(() => {
+        chip.classList.remove('is-copied');
+        chip.setAttribute('title', 'Copy');
+        if (ic) ic.innerHTML = prev;
+      }, 1300);
+    }
+
+    function copyInlineChip(chip: HTMLElement) {
+      const txt = chip.querySelector('.ts-ask-ic-txt')?.textContent || chip.textContent || '';
+      navigator.clipboard?.writeText(txt.trim());
+      flashCopied(chip);
+    }
+
+    // Copy affordances (delegated — the answer HTML is rebuilt on every stream
+    // delta, so a listener on the stable container survives). Handles both the
+    // code-block copy button and inline endpoint/URL chips.
+    results.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+
+      const chip = target.closest('.ts-ask-inline-copy') as HTMLElement | null;
+      if (chip) { copyInlineChip(chip); return; }
+
+      const btn = target.closest('.ts-ask-copy') as HTMLElement | null;
+      if (!btn) return;
+      const codeEl = btn.closest('.ts-ask-codeblock')?.querySelector('code');
+      if (!codeEl) return;
+      navigator.clipboard?.writeText(codeEl.textContent || '');
+      const lbl = btn.querySelector('.ts-ask-copy-text');
+      if (lbl) { const prev = lbl.textContent; lbl.textContent = 'Copied'; setTimeout(() => { lbl.textContent = prev || 'Copy'; }, 1300); }
+    });
+
+    // Keyboard activation for inline copy chips (role="button").
+    results.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const chip = (e.target as HTMLElement).closest('.ts-ask-inline-copy') as HTMLElement | null;
+      if (!chip) return;
+      e.preventDefault();
+      copyInlineChip(chip);
+    });
+
     // ── AI answer via SSE ────────────────────────────────────────────────────
     async function ask(query: string) {
       showResults();
+      clearInput();       // clear the box once the question is sent
       results.innerHTML = `
-        <div class=”ts-ask-thinking” id=”ts-ask-thinking”>
-          <span class=”ts-ask-spinner”></span>
-          <span id=”ts-ask-status-text”>Finding relevant docs…</span>
+        <div class="ts-ask-question">${escapeHtml(query)}</div>
+        <div class="ts-ask-thinking" id="ts-ask-thinking">
+          <span class="ts-ask-spinner"></span>
+          <span id="ts-ask-status-text">Finding relevant docs…</span>
         </div>
-        <div class=”ts-ask-answer” id=”ts-ask-answer”></div>
-        <div class=”ts-ask-sources” id=”ts-ask-sources” hidden></div>
+        <div class="ts-ask-answer" id="ts-ask-answer"></div>
+        <div class="ts-ask-sources" id="ts-ask-sources" hidden></div>
       `;
 
       const thinkingEl = document.getElementById('ts-ask-thinking')!;
@@ -235,10 +350,10 @@
                   const srcs = payload as { url: string; title: string }[];
                   if (srcs.length) {
                     sourcesEl.innerHTML =
-                      '<div class=”ts-ask-sources-head”>Related documentation</div>' +
+                      '<div class="ts-ask-sources-head">Related documentation</div>' +
                       srcs.map(s =>
-                        `<a class=”ts-ask-result” href=”${escapeHtml(s.url)}”>
-                          <div class=”ts-ask-result-title”>${escapeHtml(s.title || s.url)}</div>
+                        `<a class="ts-ask-result" href="${escapeHtml(s.url)}">
+                          <div class="ts-ask-result-title">${escapeHtml(s.title || s.url)}</div>
                         </a>`
                       ).join('');
                     sourcesEl.hidden = false;
@@ -252,7 +367,10 @@
           }
         }
 
-        // “Ask another question” link at the bottom
+        // Stream finished — make sure the "thinking" indicator is gone
+        thinkingEl.hidden = true;
+
+        // "Ask another question" link at the bottom
         const resetBtn = document.createElement('button');
         resetBtn.type = 'button';
         resetBtn.className = 'ts-ask-reset';
@@ -266,22 +384,155 @@
       }
     }
 
-    // ── Minimal markdown renderer for the answer ─────────────────────────────
+    // ── Markdown renderer for the answer ─────────────────────────────────────
+    // Block-level parser (headings, lists, code blocks, quotes) + inline
+    // formatting. XSS-safe: all text is HTML-escaped before any tags are added,
+    // and link hrefs are scheme-validated.
+    function escHtml(s: string): string {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Inline formatting — `text` MUST already be HTML-escaped.
+    function inlineMd(text: string): string {
+      // Split out inline-code spans; format only the non-code segments so
+      // markdown inside backticks is left verbatim.
+      return text.split(/(`[^`]+`)/).map((seg) => {
+        if (seg.length > 1 && seg[0] === '`' && seg[seg.length - 1] === '`') {
+          const inner = seg.slice(1, -1);
+          // Endpoints and URLs get a click-to-copy affordance. `inner` is already
+          // HTML-escaped, so &amp; etc. are decoded back to real chars on copy
+          // (we copy the text node's textContent, not this escaped markup).
+          const t = inner.trim();
+          const copyable =
+            /^https?:\/\/\S+$/.test(t) ||                                   // full URL
+            /^\/[A-Za-z0-9_~%.\/:{}()[\]@&;=?+#-]*$/.test(t) ||             // /endpoint path
+            /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+\/\S+$/i.test(t);  // METHOD /path
+          if (copyable) {
+            return '<code class="ts-ask-inline-copy" role="button" tabindex="0" title="Copy">' +
+                     `<span class="ts-ask-ic-txt">${inner}</span>` +
+                     `<span class="ts-ask-ic-btn" aria-hidden="true">${IC_COPY}</span>` +
+                   '</code>';
+          }
+          return `<code>${inner}</code>`;
+        }
+        return seg
+          // Links [label](url) — only safe schemes, else fall back to the label
+          .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_m, label, url) =>
+            /^(https?:\/\/|\/|#|mailto:)/i.test(url)
+              ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
+              : label)
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/\[(\d+)\]/g, '<sup class="ts-ask-cite">[$1]</sup>');
+      }).join('');
+    }
+
     function renderMarkdown(md: string): string {
-      // Work paragraph-by-paragraph so we don't mangle inline elements
-      return md
-        .split(/\n\n+/)
-        .map(block => {
-          const inner = block
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
-            .replace(/`([^`\n]+)`/g, '<code>$1</code>')
-            .replace(/\[(\d+)\]/g, '<sup class=”ts-ask-cite”>[$1]</sup>')
-            .replace(/\n/g, '<br>');
-          return `<p>${inner}</p>`;
-        })
-        .join('');
+      const lines = md.replace(/\r\n/g, '\n').split('\n');
+      let html = '';
+      let para: string[] = [];
+      let i = 0;
+
+      const flush = () => {
+        if (para.length) { html += `<p>${inlineMd(escHtml(para.join(' ')))}</p>`; para = []; }
+      };
+
+      while (i < lines.length) {
+        const line = lines[i];
+
+        const fence = line.match(/^```(\w*)\s*$/);
+        if (fence) {                                   // fenced code block
+          flush();
+          const lang = (fence[1] || '').toLowerCase();
+          const buf: string[] = [];
+          i++;
+          while (i < lines.length && !/^```\s*$/.test(lines[i])) { buf.push(lines[i]); i++; }
+          i++;                                         // skip closing fence (or run to EOF)
+          const code = buf.join('\n');
+          html +=
+            '<div class="ts-ask-codeblock">' +
+              '<div class="ts-ask-code-head">' +
+                `<span class="ts-ask-code-lang">${escHtml(langLabel(lang))}</span>` +
+                `<button type="button" class="ts-ask-copy" aria-label="Copy code">${IC_COPY}<span class="ts-ask-copy-text">Copy</span></button>` +
+              '</div>' +
+              `<pre class="ts-ask-pre"><code>${highlightCode(code, lang)}</code></pre>` +
+            '</div>';
+          continue;
+        }
+
+        const h = line.match(/^(#{1,6})\s+(.*)$/);
+        if (h) {                                       // heading
+          flush();
+          const lvl = h[1].length;
+          html += `<h${lvl}>${inlineMd(escHtml(h[2].trim()))}</h${lvl}>`;
+          i++; continue;
+        }
+
+        // GFM table: a header row followed by a |---|---| separator row.
+        const isTableSep = (s: string) =>
+          /^\s*\|?\s*:?-{1,}:?\s*(\|\s*:?-{1,}:?\s*)*\|?\s*$/.test(s);
+        const splitRow = (s: string) =>
+          s.trim().replace(/^\|/, '').replace(/\|\s*$/, '').split('|').map((c) => c.trim());
+        if (line.includes('|') && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+          flush();
+          const header = splitRow(line);
+          i += 2;                                      // skip header + separator
+          const rows: string[][] = [];
+          while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('|')) {
+            rows.push(splitRow(lines[i])); i++;
+          }
+          let t = '<div class="ts-ask-tablewrap"><table class="ts-ask-table"><thead><tr>';
+          for (const c of header) t += `<th>${inlineMd(escHtml(c))}</th>`;
+          t += '</tr></thead><tbody>';
+          for (const r of rows) {
+            t += '<tr>';
+            for (let c = 0; c < header.length; c++) t += `<td>${inlineMd(escHtml(r[c] || ''))}</td>`;
+            t += '</tr>';
+          }
+          t += '</tbody></table></div>';
+          html += t;
+          continue;
+        }
+
+        if (/^>\s?/.test(line)) {                      // blockquote
+          flush();
+          const buf: string[] = [];
+          while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i++; }
+          html += `<blockquote>${inlineMd(escHtml(buf.join(' ')))}</blockquote>`;
+          continue;
+        }
+
+        if (/^\s*[-*+]\s+/.test(line)) {               // unordered list
+          flush();
+          html += '<ul>';
+          while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+            html += `<li>${inlineMd(escHtml(lines[i].replace(/^\s*[-*+]\s+/, '')))}</li>`; i++;
+          }
+          html += '</ul>';
+          continue;
+        }
+
+        if (/^\s*\d+\.\s+/.test(line)) {               // ordered list
+          flush();
+          html += '<ol>';
+          while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+            html += `<li>${inlineMd(escHtml(lines[i].replace(/^\s*\d+\.\s+/, '')))}</li>`; i++;
+          }
+          html += '</ol>';
+          continue;
+        }
+
+        if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { // horizontal rule
+          flush(); html += '<hr>'; i++; continue;
+        }
+
+        if (line.trim() === '') { flush(); i++; continue; }
+
+        para.push(line.trim());                        // normal paragraph text
+        i++;
+      }
+      flush();
+      return html;
     }
 
     // ── Pagefind keyword search (fallback) ───────────────────────────────────
@@ -301,11 +552,11 @@
     }
 
     async function keywordSearch(query: string) {
-      results.innerHTML = '<div class=”ts-ask-status”>Searching the docs…</div>';
+      results.innerHTML = '<div class="ts-ask-status">Searching the docs…</div>';
       const engine = await loadPagefind();
       if (!engine) {
         results.innerHTML =
-          '<div class=”ts-ask-status”>Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
+          '<div class="ts-ask-status">Search requires a built site. Run <code>npm run build</code> first, or use the deployed site.</div>';
         return;
       }
       const prefix = `/docs/${product()}/`;
@@ -314,21 +565,88 @@
       const hits   = raw.filter((d: any) => (d.url || '').includes(prefix)).slice(0, 6);
 
       if (!hits.length) {
-        results.innerHTML = `<div class=”ts-ask-status”>No results for “${escapeHtml(query)}” in ${product()} docs.</div>`;
+        results.innerHTML = `<div class="ts-ask-status">No results for “${escapeHtml(query)}” in ${product()} docs.</div>`;
         return;
       }
       results.innerHTML =
-        `<div class=”ts-ask-results-head”>Results for “${escapeHtml(query)}”</div>` +
+        `<div class="ts-ask-results-head">Results for “${escapeHtml(query)}”</div>` +
         hits.map((d: any) =>
-          `<a class=”ts-ask-result” href=”${d.url}”>
-            <div class=”ts-ask-result-title”>${escapeHtml(d.meta?.title || d.url)}</div>
-            <div class=”ts-ask-result-excerpt”>${d.excerpt || ''}</div>
+          `<a class="ts-ask-result" href="${d.url}">
+            <div class="ts-ask-result-title">${escapeHtml(d.meta?.title || d.url)}</div>
+            <div class="ts-ask-result-excerpt">${d.excerpt || ''}</div>
           </a>`
         ).join('');
     }
 
     function escapeHtml(s: string): string {
-      return s.replace(/[&<>”]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '”': '&quot;' }[c] as string));
+      return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+    }
+
+    // ── Code block: language label + lightweight syntax highlighting ─────────
+    const IC_COPY =
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const IC_CHECK =
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+    const LANG_LABELS: Record<string, string> = {
+      bash: 'Bash', sh: 'Shell', shell: 'Shell', console: 'Shell', zsh: 'Shell',
+      powershell: 'PowerShell', ps: 'PowerShell', ps1: 'PowerShell',
+      cmd: 'CMD', bat: 'Batch', json: 'JSON', yaml: 'YAML', yml: 'YAML',
+      js: 'JavaScript', javascript: 'JavaScript', ts: 'TypeScript', typescript: 'TypeScript',
+      java: 'Java', python: 'Python', py: 'Python', http: 'HTTP', xml: 'XML', html: 'HTML', sql: 'SQL',
+    };
+    function langLabel(lang: string): string {
+      return LANG_LABELS[lang] || (lang ? lang.toUpperCase() : 'Code');
+    }
+
+    // Tiny, dependency-free highlighter. Walks the raw code with a prioritized
+    // list of sticky regexes so tokens never overlap; everything else is escaped
+    // verbatim. Token <span> classes are styled in the stylesheet below.
+    function tokenize(code: string, specs: [RegExp, string][]): string {
+      let out = '', i = 0;
+      while (i < code.length) {
+        let matched = false;
+        for (const [re, cls] of specs) {
+          re.lastIndex = i;
+          const m = re.exec(code);
+          if (m && m.index === i && m[0].length) {
+            out += cls ? `<span class="hl-${cls}">${escHtml(m[0])}</span>` : escHtml(m[0]);
+            i += m[0].length; matched = true; break;
+          }
+        }
+        if (!matched) { out += escHtml(code[i]); i++; }
+      }
+      return out;
+    }
+    function highlightCode(code: string, lang: string): string {
+      const SHELL: [RegExp, string][] = [
+        [/#[^\n]*/y, 'comment'],
+        [/"(?:[^"\\]|\\.)*"/y, 'string'],
+        [/'(?:[^'\\]|\\.)*'/y, 'string'],
+        [/https?:\/\/[^\s'"`)]+/y, 'url'],
+        [/(?:--?[A-Za-z][\w-]*)/y, 'flag'],
+        [/[|&;><]+/y, 'oper'],
+        [/\b\d+(?:\.\d+)*\b/y, 'num'],
+      ];
+      const JSON_: [RegExp, string][] = [
+        [/"(?:[^"\\]|\\.)*"(?=\s*:)/y, 'key'],
+        [/"(?:[^"\\]|\\.)*"/y, 'string'],
+        [/\b(?:true|false|null)\b/y, 'kw'],
+        [/-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/y, 'num'],
+      ];
+      const GENERIC: [RegExp, string][] = [
+        [/\/\/[^\n]*/y, 'comment'],
+        [/#[^\n]*/y, 'comment'],
+        [/"(?:[^"\\]|\\.)*"/y, 'string'],
+        [/'(?:[^'\\]|\\.)*'/y, 'string'],
+        [/`(?:[^`\\]|\\.)*`/y, 'string'],
+        [/https?:\/\/[^\s'"`)]+/y, 'url'],
+        [/\b\d+(?:\.\d+)?\b/y, 'num'],
+      ];
+      if (['json'].includes(lang)) return tokenize(code, JSON_);
+      if (['bash','sh','shell','console','zsh','powershell','ps','ps1','cmd','bat','yaml','yml','http'].includes(lang) || !lang)
+        return tokenize(code, SHELL);
+      return tokenize(code, GENERIC);
     }
   }
 </script>
@@ -367,9 +685,24 @@
     display: flex;
     flex-direction: column;
     transform: translateX(100%);
-    transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1), width 0.18s ease;
   }
+  .ts-ask-panel.ts-ask-resizing { transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1); }
   .ts-ask-overlay.ts-ask-open .ts-ask-panel { transform: translateX(0); }
+  /* Left-edge drag handle to resize the panel */
+  .ts-ask-resizer {
+    position: absolute; top: 0; left: 0; height: 100%; width: 8px;
+    cursor: ew-resize; z-index: 3; touch-action: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ts-ask-resizer::before {
+    content: ''; width: 2px; height: 100%;
+    background: transparent; transition: background 0.12s;
+  }
+  .ts-ask-resizer:hover::before,
+  .ts-ask-panel.ts-ask-resizing .ts-ask-resizer::before,
+  .ts-ask-resizer:focus-visible::before { background: var(--ts-accent); }
+  .ts-ask-resizer:focus-visible { outline: none; }
 
   /* Header */
   .ts-ask-head {
@@ -472,7 +805,8 @@
   .ts-ask-input {
     width: 100%; border: none; outline: none; resize: none;
     font-family: inherit; font-size: 14px; color: var(--ts-text-primary);
-    background: transparent; line-height: 1.5; max-height: 120px;
+    background: transparent; line-height: 1.5;
+    min-height: 72px; max-height: 220px; overflow-y: auto;
   }
   .ts-ask-input::placeholder { color: var(--ts-text-tertiary); }
   .ts-ask-input-row {
@@ -499,6 +833,9 @@
     font-size: 13.5px; color: var(--ts-text-secondary);
     padding: 4px 0 16px;
   }
+  /* The class sets display:flex, which would override the `hidden` attribute —
+     this restores the hide so the indicator disappears once the answer starts. */
+  .ts-ask-thinking[hidden] { display: none; }
   .ts-ask-spinner {
     display: inline-block;
     width: 14px; height: 14px; flex-shrink: 0;
@@ -509,6 +846,14 @@
   }
   @keyframes ts-spin { to { transform: rotate(360deg); } }
 
+  /* The asked question, shown as a heading above its answer */
+  .ts-ask-question {
+    font-size: 19px; font-weight: 700; line-height: 1.35;
+    color: var(--ts-text-primary); letter-spacing: -0.015em;
+    overflow-wrap: anywhere;
+    margin-bottom: 16px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--ts-border);
+  }
   .ts-ask-answer {
     font-size: 14px; line-height: 1.7; color: var(--ts-text-primary);
     margin-bottom: 20px;
@@ -516,10 +861,122 @@
   .ts-ask-answer p { margin: 0 0 0.9em; }
   .ts-ask-answer p:last-child { margin-bottom: 0; }
   .ts-ask-answer strong { font-weight: 700; }
+  /* Inline code chips */
   .ts-ask-answer code {
-    font-size: 12.5px; background: var(--ts-hover-row);
-    padding: 1px 5px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    background: var(--ts-hover-row);
+    border: 1px solid var(--ts-border);
+    padding: 1px 6px; border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ts-text-primary);
+    overflow-wrap: anywhere;
   }
+  /* Inline endpoint/URL chips — click to copy */
+  .ts-ask-answer code.ts-ask-inline-copy {
+    display: inline-flex; align-items: center; gap: 5px;
+    cursor: pointer; padding-right: 5px;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy .ts-ask-ic-txt { overflow-wrap: anywhere; }
+  .ts-ask-answer code.ts-ask-inline-copy .ts-ask-ic-btn {
+    display: inline-flex; align-items: center;
+    color: var(--ts-text-tertiary); opacity: 0.55;
+    transition: opacity 0.12s, color 0.12s;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy:hover {
+    border-color: var(--ts-accent-text); color: var(--ts-accent-text);
+  }
+  .ts-ask-answer code.ts-ask-inline-copy:hover .ts-ask-ic-btn { opacity: 1; color: var(--ts-accent-text); }
+  .ts-ask-answer code.ts-ask-inline-copy:focus-visible {
+    outline: 2px solid var(--ts-accent-text); outline-offset: 1px;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy.is-copied {
+    border-color: #1F8A5B; color: #1F8A5B;
+  }
+  .ts-ask-answer code.ts-ask-inline-copy.is-copied .ts-ask-ic-btn { opacity: 1; color: #1F8A5B; }
+  .ts-ask-answer :first-child { margin-top: 0; }
+  .ts-ask-answer h1, .ts-ask-answer h2, .ts-ask-answer h3,
+  .ts-ask-answer h4, .ts-ask-answer h5, .ts-ask-answer h6 {
+    font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+    color: var(--ts-text-primary); margin: 1.15em 0 0.5em;
+  }
+  .ts-ask-answer h1 { font-size: 18px; }
+  .ts-ask-answer h2 { font-size: 16px; }
+  .ts-ask-answer h3 { font-size: 15px; }
+  .ts-ask-answer h4, .ts-ask-answer h5, .ts-ask-answer h6 { font-size: 14px; }
+  .ts-ask-answer ul, .ts-ask-answer ol { margin: 0 0 0.9em; padding-left: 1.45em; }
+  .ts-ask-answer li { margin: 0.3em 0; }
+  .ts-ask-answer li::marker { color: var(--ts-text-tertiary); }
+  .ts-ask-answer a {
+    color: var(--ts-accent-text); text-decoration: underline; text-underline-offset: 2px;
+  }
+  .ts-ask-answer a:hover { text-decoration: none; }
+  .ts-ask-answer blockquote {
+    margin: 0 0 0.9em; padding: 6px 0 6px 12px;
+    border-left: 3px solid var(--ts-border-strong); color: var(--ts-text-secondary);
+  }
+  .ts-ask-answer hr { border: none; border-top: 1px solid var(--ts-border); margin: 1.1em 0; }
+  /* Tables (GFM) */
+  .ts-ask-tablewrap {
+    margin: 0 0 1em; overflow-x: auto;
+    border: 1px solid var(--ts-border); border-radius: 9px;
+  }
+  .ts-ask-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .ts-ask-table th, .ts-ask-table td {
+    text-align: left; padding: 9px 14px; vertical-align: top;
+    border-bottom: 1px solid var(--ts-border);
+  }
+  .ts-ask-table thead th {
+    font-weight: 700; color: var(--ts-text-primary);
+    background: var(--ts-panel); white-space: nowrap;
+  }
+  .ts-ask-table td { color: var(--ts-text-secondary); }
+  .ts-ask-table tbody tr:last-child td { border-bottom: none; }
+  /* Code block — header (language + copy) over the snippet */
+  .ts-ask-codeblock {
+    margin: 0 0 1em;
+    border: 1px solid var(--ts-border);
+    border-radius: 9px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .ts-ask-code-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px 6px 12px;
+    background: var(--ts-panel);
+    border-bottom: 1px solid var(--ts-border);
+  }
+  .ts-ask-code-lang {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--ts-text-tertiary);
+  }
+  .ts-ask-copy {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: none; background: transparent; cursor: pointer;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    color: var(--ts-text-tertiary);
+    padding: 3px 7px; border-radius: 6px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .ts-ask-copy:hover { background: var(--ts-hover-row); color: var(--ts-accent-text); }
+  .ts-ask-pre {
+    margin: 0; padding: 12px 14px; overflow-x: auto;
+    background: #fff;
+  }
+  .ts-ask-pre code {
+    display: block; padding: 0; background: none; border: none; border-radius: 0;
+    font-size: 12.5px; line-height: 1.6; white-space: pre;
+    font-family: 'IBM Plex Mono', monospace; color: var(--ts-text-primary);
+  }
+  /* Syntax-highlight tokens (light theme) */
+  .ts-ask-pre .hl-comment { color: var(--ts-text-tertiary); font-style: italic; }
+  .ts-ask-pre .hl-string  { color: #1F8A5B; }
+  .ts-ask-pre .hl-url     { color: var(--ts-info); }
+  .ts-ask-pre .hl-flag    { color: #9F57C0; }
+  .ts-ask-pre .hl-oper    { color: var(--ts-text-tertiary); }
+  .ts-ask-pre .hl-num     { color: #D9730D; }
+  .ts-ask-pre .hl-key     { color: var(--ts-arcus-purple-text); }
+  .ts-ask-pre .hl-kw      { color: var(--ts-danger); font-weight: 600; }
   .ts-ask-cite {
     font-size: 10px; color: var(--ts-accent-text);
     font-weight: 700; vertical-align: super; line-height: 1;
@@ -544,6 +1001,7 @@
   .ts-ask-reset:hover { border-color: var(--ts-accent); color: var(--ts-accent-text); }
 
   @media (max-width: 30rem) {
-    .ts-ask-panel { width: 100vw; }
+    .ts-ask-panel { width: 100vw !important; }
+    .ts-ask-resizer { display: none; }
   }
 </style>
